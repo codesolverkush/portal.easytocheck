@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "targets": [
+      "easy_portal"
+    ],
+    "ignore": [],
+    "source": "functions"
+  },
+  "client": {
+    "source": "client",
+    "plugin": "zcatalyst-cli-plugin-react"
+  }
+}

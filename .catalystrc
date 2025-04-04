@@ -1,0 +1,30 @@
+{
+  "defaults": {
+    "project": 1,
+    "env": 1
+  },
+  "actives": {
+    "project": 1,
+    "env": 1
+  },
+  "projects": [
+    {
+      "idx": 1,
+      "id": "4340000000043006",
+      "name": "EasyPortal",
+      "domain": {
+        "id": "10096162526",
+        "name": "easyportal-704392036.development"
+      },
+      "timezone": "Asia/Kolkata",
+      "env": [
+        {
+          "idx": 1,
+          "id": "704392036",
+          "name": "Development",
+          "type": 3
+        }
+      ]
+    }
+  ]
+}
