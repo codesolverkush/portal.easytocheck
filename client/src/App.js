@@ -28,6 +28,7 @@ const AttachFilePage = lazy(() => import('./component/testPages/AttachFilePage.j
 const LocationPage = lazy(() => import('./component/testPages/LocationPage.js'));
 const CreateEvents = lazy(() => import('./component/testPages/CreateEvents.js'));
 const LeadView = lazy(() => import('./component/testPages/LeadsView.js'));
+
 const LeadProfile = lazy(() => import('./component/testPages/LeadProfile.js'));
 const TaskView = lazy(() => import('./component/view/TaskView/TaskView.js'));
 const TaskProfile = lazy(() => import('./component/view/TaskView/TaskProfile.js'));
@@ -36,7 +37,10 @@ const ContactView = lazy(() => import('./component/view/ContactView/ContactView.
 const ContactProfile = lazy(() => import('./component/view/ContactView/ContactProfile.js'));
 const CachePage = lazy(() => import('./component/testPages/CachePage.js'));
 const NotFound = lazy(() => import('./pages/NotFound.js'));
-const Webtab = lazy(()=> import('./pages/Webtab.js'));
+const Webtab = lazy(() => import('./pages/Webtab.js'));
+const CreateDealForm = lazy(() => import('./component/forms/CreateDealForm.js'));
+const DealView = lazy(() => import('./component/view/DealView/DealView.js'));
+const DealProfile = lazy(()=> import('./component/view/DealView/DealProfile.js'));
 
 // Enhanced Loader Component
 const EnhancedLoader = () => {
@@ -45,9 +49,9 @@ const EnhancedLoader = () => {
       <div className="spinner">
         <div className="dots">
           {[...Array(12)].map((_, i) => (
-            <div 
-              key={i} 
-              className="dot" 
+            <div
+              key={i}
+              className="dot"
               style={{
                 transform: `rotate(${i * 30}deg) translateY(-40px)`,
                 opacity: 0.3 + (i % 4) * 0.2
@@ -65,7 +69,7 @@ const EnhancedLoader = () => {
 const licenseExemptRoutes = [
   "/app/license",
   "/app/orgregister",
-  "/app/orgProfile" 
+  "/app/orgProfile"
 ];
 
 // Component for protected routes with license check
@@ -93,7 +97,7 @@ function App() {
           />
           <Route
             path="/app/signup"
-            element={user ? <Navigate to="/app/home" replace /> : <LandingPage/>}
+            element={user ? <Navigate to="/app/home" replace /> : <LandingPage />}
           />
 
           {/* License-exempt Protected Routes */}
@@ -101,7 +105,7 @@ function App() {
             path="/app/license"
             element={
               <ProtectedRouteWithLicense exemptFromLicense={true}>
-                <LicenseExpiredPage /> 
+                <LicenseExpiredPage />
               </ProtectedRouteWithLicense>
             }
           />
@@ -147,12 +151,12 @@ function App() {
               </ProtectedRouteWithLicense>
             }
           />
-    
+
           <Route
             path="/app/connection"
             element={
               <ProtectedRouteWithLicense>
-                <MakeConnection/>
+                <MakeConnection />
               </ProtectedRouteWithLicense>
             }
           />
@@ -160,7 +164,7 @@ function App() {
             path="/app/attach"
             element={
               <ProtectedRouteWithLicense>
-                <AttachFilePage/>
+                <AttachFilePage />
               </ProtectedRouteWithLicense>
             }
           />
@@ -168,7 +172,7 @@ function App() {
             path="/app/location"
             element={
               <ProtectedRouteWithLicense>
-                <LocationPage/>
+                <LocationPage />
               </ProtectedRouteWithLicense>
             }
           />
@@ -176,14 +180,14 @@ function App() {
             path="/app/checkin"
             element={
               <ProtectedRouteWithLicense>
-                <CreateEvents/>
+                <CreateEvents />
               </ProtectedRouteWithLicense>
             }
           />
-           
-           {/* Lead route start */}
 
-           <Route
+          {/* Lead route start */}
+
+          <Route
             path="/app/first"
             element={
               <ProtectedRouteWithLicense>
@@ -196,7 +200,7 @@ function App() {
             path="/app/leadprofile"
             element={
               <ProtectedRouteWithLicense>
-                <LeadProfile/>
+                <LeadProfile />
               </ProtectedRouteWithLicense>
             }
           />
@@ -204,12 +208,42 @@ function App() {
             path="/app/leadview"
             element={
               <ProtectedRouteWithLicense>
-                <LeadView/>
+                <LeadView />
               </ProtectedRouteWithLicense>
             }
           />
 
           {/* Lead route end */}
+
+          {/* Deal route Start */}
+          <Route
+            path="/app/dealCreate"
+            element={
+              <ProtectedRouteWithLicense>
+                <CreateDealForm />
+              </ProtectedRouteWithLicense>
+            }
+          />
+
+          <Route
+            path="/app/dealView"
+            element={
+              <ProtectedRouteWithLicense>
+                <DealView />
+              </ProtectedRouteWithLicense>
+            }
+          />
+
+         <Route
+            path="/app/dealProfile"
+            element={
+              <ProtectedRouteWithLicense>
+                <DealProfile />
+              </ProtectedRouteWithLicense>
+            }
+          />
+
+          {/* Deal route end */}
 
           {/* Task route start */}
 
@@ -217,7 +251,7 @@ function App() {
             path="/app/taskview"
             element={
               <ProtectedRouteWithLicense>
-                <TaskView/>
+                <TaskView />
               </ProtectedRouteWithLicense>
             }
           />
@@ -225,7 +259,7 @@ function App() {
             path="/app/taskProfile"
             element={
               <ProtectedRouteWithLicense>
-                <TaskProfile/>
+                <TaskProfile />
               </ProtectedRouteWithLicense>
             }
           />
@@ -233,7 +267,7 @@ function App() {
             path="/app/taskform"
             element={
               <ProtectedRouteWithLicense>
-                <CreateTaskForm/>
+                <CreateTaskForm />
               </ProtectedRouteWithLicense>
             }
           />
@@ -246,16 +280,16 @@ function App() {
             path='/app/contactview'
             element={
               <ProtectedRouteWithLicense>
-                <ContactView/>
+                <ContactView />
               </ProtectedRouteWithLicense>
             }
           />
 
-         <Route
+          <Route
             path="/app/contactProfile"
             element={
               <ProtectedRouteWithLicense>
-                <ContactProfile/>
+                <ContactProfile />
               </ProtectedRouteWithLicense>
             }
           />
@@ -266,7 +300,7 @@ function App() {
             path="/app/cache"
             element={
               <ProtectedRouteWithLicense>
-                <CachePage/>
+                <CachePage />
               </ProtectedRouteWithLicense>
             }
           />
@@ -277,18 +311,18 @@ function App() {
             path="/app/webtab"
             element={
               <ProtectedRouteWithLicense>
-                <Webtab/>
+                <Webtab />
               </ProtectedRouteWithLicense>
             }
           />
 
           {/* Meeting Route Start */}
-          
+
           <Route
             path='/app/meetingView'
             element={
               <ProtectedRouteWithLicense>
-                <MeetingView/>
+                <MeetingView />
               </ProtectedRouteWithLicense>
             }
           />
@@ -296,7 +330,7 @@ function App() {
             path='/app/meetingprofile'
             element={
               <ProtectedRouteWithLicense>
-                <MeetingProfile/>
+                <MeetingProfile />
               </ProtectedRouteWithLicense>
             }
           />
@@ -308,7 +342,7 @@ function App() {
             path="/app/notfound"
             element={
               <ProtectedRouteWithLicense>
-                <NotFound/>
+                <NotFound />
               </ProtectedRouteWithLicense>
             }
           />
@@ -316,17 +350,17 @@ function App() {
             path='/app/kushal'
             element={
               <ProtectedRouteWithLicense>
-                <TestPage/>
+                <TestPage />
               </ProtectedRouteWithLicense>
             }
           />
 
 
-         <Route
+          <Route
             path='/app/unauth'
             element={
               <ProtectedRouteWithLicense>
-                <AuthorizedPage/>
+                <AuthorizedPage />
               </ProtectedRouteWithLicense>
             }
           />

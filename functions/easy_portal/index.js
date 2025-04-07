@@ -4,6 +4,7 @@ const userRouter = require('./routes/user.route');
 const orgRouter = require('./routes/organization.route');
 const testRouter = require('./routes/test.routes');
 const leadRouter = require('./routes/lead.routes');
+const dealRouter = require('./routes/deal.routes');
 const getRouter = require('./routes/get.routes');
 const adminRouter = require('./routes/admin.routes');
 const relateListRouter = require('./routes/relatedList.route');
@@ -56,6 +57,9 @@ app.use('/get',getRouter);
 app.use('/related',relateListRouter);
 app.use('/admin',adminRouter);
 app.use('/special',specialRouter);
+app.use('/deal',dealRouter);
+
+
 
 
 module.exports = app;
