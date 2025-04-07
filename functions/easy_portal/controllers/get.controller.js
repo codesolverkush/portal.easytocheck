@@ -4,7 +4,7 @@ const FormData = require("form-data");
 const refreshAccessToken = require('../utils/genaccestoken');
 const { getAccessToken, handleZohoRequest } = require("./lead.controller");
 
-
+// THIS IS NOT IN USED
 const totalLead = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
@@ -88,7 +88,7 @@ const totalTask = async (req, res) => {
         const url = "https://www.zohoapis.com/crm/v7/coql";
 
         const requestData = {
-            select_query: "SELECT Subject,Due_Date,Status,Priority,Created_Time FROM Tasks WHERE Status != 'kushal' ORDER BY Created_Time DESC LIMIT 1000"
+            select_query: "SELECT Subject,Due_Date,Status,Priority,Created_Time FROM Tasks WHERE Subject IS NOT NULL ORDER BY Created_Time DESC LIMIT 1000"
         };
 
 
@@ -206,7 +206,7 @@ const totalDeals = async (req, res) => {
         //     select_query: `SELECT id FROM Deals WHERE Created_Time > '${startDate}' LIMIT 1000`
         // };
         const requestData = {
-            select_query: `SELECT COUNT(id) FROM Deals WHERE Stage != 'Closed_Lost' ORDER BY Created_Time DESC LIMIT 1000`
+            select_query: `SELECT COUNT(id) FROM Deals WHERE Stage != '' ORDER BY Created_Time DESC LIMIT 1000`
         };
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
@@ -354,4 +354,68 @@ const leadDetails = async (req, res) => {
     }
 };
 
-module.exports = {totalLead,totalTask,totalMeeting,totalDeals,leadDetails,totalContacts};
+const dealDetails = async (req, res) => {
+    try {
+        const userId = req.currentUser?.user_id;
+        // console.log(userId);
+
+        const accessScore = req.userDetails[0].usermanagement?.Leads;
+        // if(accesScore < 2){
+        //     return res.status(403).json({ success: false, message: "Access Not Available" });
+        // }
+        
+        if (!userId) {
+            return res.status(404).json({ message: "User ID not found." });
+        }
+
+        const { catalyst } = res.locals;
+        const zcql = catalyst.zcql();
+        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const user = await zcql.executeZCQLQuery(userQuery);
+        const orgId = user[0]?.usermanagement?.orgid;
+
+        // console.log(orgId);
+
+        if (!orgId) {
+            return res.status(404).json({ message: "Organization ID not found." });
+        }
+
+        let token = await getAccessToken(orgId, res);
+        const url = "https://www.zohoapis.com/crm/v7/coql";
+
+        const requestData = {
+            select_query: "SELECT id,Deal_Name,Closing_Date,Contact_Name,Account_Name,Stage,Pipeline,Created_Time FROM Deals WHERE Deal_Name != '' ORDER BY Created_Time DESC LIMIT 2000 "
+            // select_query: "SELECT * FROM Leads LIMIT 200"
+
+        };
+
+        //  const requestData = {
+        //     select_query: "select COUNT(id) from Leads where Last_Name != ''"
+        // };
+           
+        try {
+            const data = await handleZohoRequest(url, 'post', requestData, token);
+            return res.status(200).json({ success: true, data, accessScore });
+        } catch (error) {
+            if (error.message === "TOKEN_EXPIRED") {
+                try {
+                    token = await refreshAccessToken(req, res);
+                    const data = await handleZohoRequest(url, 'get', null, token);
+                    return res.status(200).json({ success: true, data,accessScore });
+                } catch (refreshError) {
+                    console.error("Error after token refresh:", refreshError.message);
+                    return res.status(500).json({ success: false, message: refreshError.message });
+                }
+            } else {
+                throw error;
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching lead:", error);
+        if (!res.headersSent) {
+            return res.status(500).json({ success: false, message: error.message });
+        }
+    }
+};
+
+module.exports = {totalLead,totalTask,totalMeeting,totalDeals,leadDetails,totalContacts,dealDetails};

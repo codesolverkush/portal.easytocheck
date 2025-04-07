@@ -1,5 +1,5 @@
 const express = require('express');
-const { totalLead,totalTask,totalMeeting, totalDeals, leadDetails, totalContacts } = require('../controllers/get.controller');
+const { totalLead,totalTask,totalMeeting, totalDeals, leadDetails, totalContacts,dealDetails } = require('../controllers/get.controller');
 const catalystAuth = require('../middlewares/catalystAuth');
 const accessControl = require('../middlewares/accesscontrol.middeware');
 const router = express.Router();
@@ -16,6 +16,7 @@ router.get('/deal',catalystAuth,totalDeals);
 
 router.get('/leaddetails',catalystAuth,accessControl,leadDetails);
 router.get('/contactdetails',catalystAuth,accessControl,totalContacts);
+router.get('/dealdetails',catalystAuth,accessControl,dealDetails)
 
 
 
