@@ -8,7 +8,6 @@ import { BrowserRouter, HashRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 
-
 // This is the ID of the div in your index.html file
 
 const rootElement = document.getElementById('root');

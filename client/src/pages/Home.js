@@ -108,7 +108,7 @@ const HomePage = () => {
 
     try {
       let leadsCount;
-      if (!skipCache) {
+      
         const cachedLeads = await getFromCache('/api/leads');
         const cachedLeadsDetails = await getFromCache('/api/leaddetails');
 
@@ -118,16 +118,20 @@ const HomePage = () => {
           setMetrics(prev => ({ ...prev, leads: leadsCount, loadingLeads: false }));
           return;
         }
-      }
+      
 
       const leadsResponse = await axios.get(`${process.env.REACT_APP_APP_API}/get/leaddetails`);
-      leadsCount = leadsResponse?.data?.data?.info?.count || 0;
+    
+      if(leadsResponse.status === 200){
+        console.log(leadsResponse)
+        leadsCount = leadsResponse?.data?.data?.info?.count || 0;
       const leadData = leadsResponse?.data?.data?.data || recentLeads;
       setLeads(leadData);
       await saveToCache('/api/leads', leadsCount);
       await saveToCache('/api/leaddetails', leadData);
 
       setMetrics(prev => ({ ...prev, leads: leadsCount, loadingLeads: false }));
+      }
     } catch (error) {
       console.error('Error fetching leads:', error);
       if (error?.response?.data?.code === 'ORG_NOT_AUTHORIZED') {
@@ -143,7 +147,7 @@ const HomePage = () => {
 
     try {
       let tasksCount;
-      if (!skipCache) {
+      
         const cachedTasks = await getFromCache('/api/tasks');
         const cachedTaskData = await getFromCache('/api/taskdetails');
         if (cachedTasks !== null && cachedTaskData !== null) {
@@ -152,7 +156,7 @@ const HomePage = () => {
           setMetrics(prev => ({ ...prev, tasks: tasksCount, loadingTasks: false }));
           return;
         }
-      }
+      
 
       const tasksResponse = await axios.get(`${process.env.REACT_APP_APP_API}/get/task`);
       tasksCount = tasksResponse?.data?.data?.info?.count || 0;
@@ -175,14 +179,14 @@ const HomePage = () => {
 
     try {
       let contactsCount;
-      if (!skipCache) {
+      
         const cachedContacts = await getFromCache('/api/contacts');
         if (cachedContacts !== null) {
           contactsCount = cachedContacts;
           setMetrics(prev => ({ ...prev, contacts: contactsCount, loadingContacts: false }));
           return;
         }
-      }
+      
 
       const contactsResponse = await axios.get(`${process.env.REACT_APP_APP_API}/get/contact`);
       contactsCount = contactsResponse?.data?.data?.info?.count || 0;
@@ -200,14 +204,14 @@ const HomePage = () => {
     setMetrics(prev => ({ ...prev, loadingDeals: true }));
     try {
       let dealsCount;
-      if (!skipCache) {
+      
         const cachedDeals = await getFromCache('/api/deals');
         if (cachedDeals !== null) {
           dealsCount = cachedDeals;
           setMetrics(prev => ({ ...prev, deals: dealsCount, loadingDeals: false }));
           return;
         }
-      }
+      
 
       const dealsResponse = await axios.get(`${process.env.REACT_APP_APP_API}/get/deal`);
       dealsCount = dealsResponse?.data?.data?.data[0]?.["COUNT(id)"] || 0;
@@ -228,10 +232,10 @@ const HomePage = () => {
     try {
       // Fetch all data in parallel
       await Promise.all([
-        fetchLeads(skipCache),
-        fetchTasks(skipCache),
-        fetchContacts(skipCache),
-        fetchDeals(skipCache),
+        fetchLeads(true),
+        fetchTasks(true),
+        fetchContacts(true),
+        fetchDeals(true),
       ]);
 
       setMetrics(prev => ({ ...prev, isLoading: false }));
@@ -742,330 +746,298 @@ const HomePage = () => {
               className={`flex-1 py-3 px-4 text-sm font-medium rounded-md transition-all duration-200 ${activeTab === "tasks"
                 ? "bg-white text-indigo-700 shadow-sm"
                 : "text-gray-600 hover:text-gray-900 hover:bg-white hover:bg-opacity-50"
-                }`}
-            >
-              Tasks
-            </button>
-          </nav>
-        </div>
-
-        {/* Tab Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column: Charts */}
-          <div className="lg:col-span-2 space-y-8">
-            {activeTab === "overview" && (
-              <>
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900">Sales Performance</h3>
-                    <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-200">
-                      <option>This Year</option>
-                      <option>Last Year</option>
-                      <option>All Time</option>
-                    </select>
-                  </div>
-                  <div className="h-80">
-                    <Bar
-                      data={salesData}
-                      options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                          legend: {
-                            position: 'top',
-                            labels: {
-                              boxWidth: 12,
-                              usePointStyle: true,
-                              pointStyle: 'circle'
-                            }
-                          },
-                          tooltip: {
-                            backgroundColor: 'rgba(53, 71, 125, 0.8)',
-                            titleColor: 'white',
-                            bodyColor: 'white',
-                            padding: 12,
-                            cornerRadius: 8
-                          }
-                        },
-                        scales: {
-                          x: {
-                            grid: {
-                              display: false
-                            }
-                          },
-                          y: {
-                            grid: {
-                              color: 'rgba(0, 0, 0, 0.05)'
-                            }
-                          }
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900">Lead Acquisition</h3>
-                    <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-200">
-                      <option>Last 6 Months</option>
-                      <option>Last 12 Months</option>
-                      <option>All Time</option>
-                    </select>
-                  </div>
-                  <div className="h-72">
-                    <Line
-                      data={leadsData}
-                      options={{
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                          legend: {
-                            position: 'top',
-                            labels: {
-                              boxWidth: 12,
-                              usePointStyle: true,
-                              pointStyle: 'circle'
-                            }
-                          },
-                          tooltip: {
-                            backgroundColor: 'rgba(53, 71, 125, 0.8)',
-                            titleColor: 'white',
-                            bodyColor: 'white',
-                            padding: 12,
-                            cornerRadius: 8
-                          }
-                        },
-                        scales: {
-                          x: {
-                            grid: {
-                              display: false
-                            }
-                          },
-                          y: {
-                            grid: {
-                              color: 'rgba(0, 0, 0, 0.05)'
-                            },
-                            beginAtZero: true
-                          }
-                        },
-                        elements: {
-                          line: {
-                            tension: 0.4
-                          },
-                          point: {
-                            radius: 3,
-                            hoverRadius: 6
-                          }
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900">External Content</h3>
-                    <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-200">
-                      <option>View 1</option>
-                      <option>View 2</option>
-                      <option>View 3</option>
-                    </select>
-                  </div>
-                  <div className="relative w-full h-96"> {/* Increased height */}
-                    <iframe
-                      src="https://crm.zoho.com/crm/specific/ViewChartImage?width=1000&height=500&embedDetails=350870214961ec7506e8e2c2e9504fb60b7c4f880b6b74462f8b6f01c3bf35cca1e5a2fc0cde2a401899f16ff7d79e392f88258fa798e528031e24c2decbcccf557e8c42f10b5cf5b05268e3f89c7fb48656669b303f2f18d5d96570a0977d5e13d47176cf2f04220d9783039a67a94d"
-                      title="External Content"
-                      className="w-full h-full border-0 rounded-lg"
-                      style={{
-                        backgroundColor: '#ffffff',
-                        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-                        transform: 'scale(0.9)', /* Zoom out slightly */
-                        transformOrigin: 'center center',
-                        width: '110%', /* Slightly wider than container */
-                        height: '110%', /* Slightly taller than container */
-                        position: 'absolute',
-                        top: '-5%',
-                        left: '-5%'
-                      }}
-                      sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                      loading="lazy"
-                      scrolling="no"
-                      frameBorder="0"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
-            {activeTab === "leads" && (
-              <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
-                  <h3 className="text-lg font-semibold text-gray-900">Lead Management</h3>
-                  <p className="text-gray-500 text-sm mt-1">Track and manage your sales pipeline efficiently</p>
-                </div>
-                <div className="p-6">
-                  <div className="bg-indigo-50 rounded-lg p-4 mb-6 border border-indigo-100">
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0">
-                        <svg className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="text-sm font-medium text-indigo-800">Lead Management Dashboard</h3>
-                        <div className="mt-2 text-sm text-indigo-700">
-                          <p>Create and track leads, monitor conversion rates, and optimize your sales funnel all in one place.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link
-                    to="/app/first"
-                    className="inline-flex items-center px-5 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Add New Lead
-                  </Link>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "tasks" && (
-              <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
-                  <h3 className="text-lg font-semibold text-gray-900">Task Management</h3>
-                  <p className="text-gray-500 text-sm mt-1">Organize and prioritize your daily activities</p>
-                </div>
-                <div className="p-6">
-                  <div className="bg-green-50 rounded-lg p-4 mb-6 border border-green-100">
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0">
-                        <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                        </svg>
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="text-sm font-medium text-green-800">Task Management Center</h3>
-                        <div className="mt-2 text-sm text-green-700">
-                          <p>Create, assign, and track tasks to stay on top of your daily activities and improve team productivity.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link
-                    to="/app/tasks"
-                    className="inline-flex items-center px-5 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Create New Task
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Right Column: Info Cards */}
-          <div className="space-y-6">
-            {/* Recent Leads Card */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden">
-              <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 flex justify-between items-center">
-                <h3 className="text-md font-semibold text-white">Recent Leads</h3>
-                <span className="bg-blue-500 text-white text-xs py-1 px-2 rounded-full">{leads.length} total</span>
-              </div>
-              <div className="divide-y divide-gray-100">
-                {leads.slice(0, 3).map((lead, index) => (
-                  <div key={index} className="p-4 hover:bg-blue-50 transition-colors duration-200">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-900">{lead.Full_Name || lead.name}</h4>
-                        <p className="text-xs text-gray-500 mt-1">{lead.company}</p>
-                        <p className="text-xs text-gray-400 mt-1">{lead.Email || lead.value}</p>
-                      </div>
-                      <div className="flex flex-col items-end">
-                        <span className="text-sm font-medium text-blue-600">{lead.Mobile}</span>
-                        <span className="mt-1 text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">{lead?.Lead_Status}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="p-4 bg-gray-50 border-t border-gray-100">
-                <Link
-                  to="/app/leadview"
-                  className="flex items-center justify-center text-sm text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  View all leads →
-                </Link>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="p-4 bg-green-800 border-b border-green-100 flex justify-between items-center">
-                <h3 className="text-md font-medium text-white">Upcoming Tasks</h3>
-                <span className="bg-green-500 text-white text-xs py-1 px-2 rounded-full">{task.length} total</span>
-              </div>
-              <div className="divide-y divide-gray-200">
-                {task.slice(0, 3).map((task, index) => (
-                  <div key={index} className="p-4 hover:bg-gray-50">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-900">{task.Subject}</h4>
-                        <p className="text-xs text-gray-500">Due: {task.Due_Date}</p>
-                      </div>
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium  ${priorityColors[task.Priority] || "bg-gray-200 text-gray-700"}`}>
-                        {task.Priority}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="p-4 bg-gray-50 border-t border-gray-100">
-                <Link
-                  to="/app/taskView"
-                  className="text-sm text-green-600 hover:text-green-800 font-medium"
-                >
-                  View all tasks →
-                </Link>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg shadow-md overflow-hidden text-white">
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-4">Need Help?</h3>
-                <p className="mb-6 text-indigo-100">Our support team is available 24/7 to assist you with any questions.</p>
-                <button className="bg-white text-indigo-600 px-4 py-2 rounded-md font-medium hover:bg-indigo-50 transition-colors">
-                  Contact Support
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+            }`}
+          >
+            Tasks
+          </button>
+        </nav>
       </div>
-
-      <CreateTaskForm
-        isOpen={isTaskModalOpen}
-        onClose={() => setIsTaskModalOpen(false)}
-        onTaskCreated={() => {
-          setIsTaskModalOpen(false);
-          // Add any refresh logic here if needed
-        }}
-      />
-
-      <CreateContactForm
-        isOpen={isContactModelOpen}
-        onClose={() => setIsContactModalOpen(false)}
-        onTaskCreated={() => {
-          setIsContactModalOpen(false);
-          // Add any refresh logic here if needed
-        }}
-      />
-
-      <UnauthorizedModal
-        isOpen={isUnauthorizedModalOpen}
-        onClose={() => setIsUnauthorizedModalOpen(false)}
-        onConnect={handleConnectOrganization}
-      />
-    </div>
+  
+      {/* Tab Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Charts */}
+        <div className="lg:col-span-2 space-y-8">
+          {activeTab === "overview" && (
+            <>
+              <div className="bg-white p-6 rounded-xl shadow-md">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Sales Performance</h3>
+                  <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-200">
+                    <option>This Year</option>
+                    <option>Last Year</option>
+                    <option>All Time</option>
+                  </select>
+                </div>
+                <div className="h-80">
+                  <Bar
+                    data={salesData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          position: 'top',
+                          labels: {
+                            boxWidth: 12,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                          }
+                        },
+                        tooltip: {
+                          backgroundColor: 'rgba(53, 71, 125, 0.8)',
+                          titleColor: 'white',
+                          bodyColor: 'white',
+                          padding: 12,
+                          cornerRadius: 8
+                        }
+                      },
+                      scales: {
+                        x: {
+                          grid: {
+                            display: false
+                          }
+                        },
+                        y: {
+                          grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                          }
+                        }
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+  
+              <div className="bg-white p-6 rounded-xl shadow-md">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Lead Acquisition</h3>
+                  <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-200">
+                    <option>Last 6 Months</option>
+                    <option>Last 12 Months</option>
+                    <option>All Time</option>
+                  </select>
+                </div>
+                <div className="h-72">
+                  <Line
+                    data={leadsData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          position: 'top',
+                          labels: {
+                            boxWidth: 12,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                          }
+                        },
+                        tooltip: {
+                          backgroundColor: 'rgba(53, 71, 125, 0.8)',
+                          titleColor: 'white',
+                          bodyColor: 'white',
+                          padding: 12,
+                          cornerRadius: 8
+                        }
+                      },
+                      scales: {
+                        x: {
+                          grid: {
+                            display: false
+                          }
+                        },
+                        y: {
+                          grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                          },
+                          beginAtZero: true
+                        }
+                      },
+                      elements: {
+                        line: {
+                          tension: 0.4
+                        },
+                        point: {
+                          radius: 3,
+                          hoverRadius: 6
+                        }
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+  
+          {activeTab === "leads" && (
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="p-6 border-b border-gray-100">
+                <h3 className="text-lg font-semibold text-gray-900">Lead Management</h3>
+                <p className="text-gray-500 text-sm mt-1">Track and manage your sales pipeline efficiently</p>
+              </div>
+              <div className="p-6">
+                <div className="bg-indigo-50 rounded-lg p-4 mb-6 border border-indigo-100">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      <svg className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-indigo-800">Lead Management Dashboard</h3>
+                      <div className="mt-2 text-sm text-indigo-700">
+                        <p>Create and track leads, monitor conversion rates, and optimize your sales funnel all in one place.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Link
+                  to="/app/first"
+                  className="inline-flex items-center px-5 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                >
+                  <Plus className="w-5 h-5 mr-2" />
+                  Add New Lead
+                </Link>
+              </div>
+            </div>
+          )}
+  
+          {activeTab === "tasks" && (
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="p-6 border-b border-gray-100">
+                <h3 className="text-lg font-semibold text-gray-900">Task Management</h3>
+                <p className="text-gray-500 text-sm mt-1">Organize and prioritize your daily activities</p>
+              </div>
+              <div className="p-6">
+                <div className="bg-green-50 rounded-lg p-4 mb-6 border border-green-100">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-green-800">Task Management Center</h3>
+                      <div className="mt-2 text-sm text-green-700">
+                        <p>Create, assign, and track tasks to stay on top of your daily activities and improve team productivity.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Link
+                  to="/app/tasks"
+                  className="inline-flex items-center px-5 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
+                >
+                  <Plus className="w-5 h-5 mr-2" />
+                  Create New Task
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+  
+        {/* Right Column: Info Cards */}
+        <div className="space-y-6">
+          {/* Recent Leads Card */}
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 flex justify-between items-center">
+              <h3 className="text-md font-semibold text-white">Recent Leads</h3>
+              <span className="bg-blue-500 text-white text-xs py-1 px-2 rounded-full">{leads.length} total</span>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {leads.slice(0, 3).map((lead, index) => (
+                <div key={index} className="p-4 hover:bg-blue-50 transition-colors duration-200">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900">{lead.Full_Name || lead.name}</h4>
+                      <p className="text-xs text-gray-500 mt-1">{lead.company}</p>
+                      <p className="text-xs text-gray-400 mt-1">{lead.Email || lead.value}</p>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-sm font-medium text-blue-600">{lead.Mobile}</span>
+                      <span className="mt-1 text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">{lead?.Lead_Status}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="p-4 bg-gray-50 border-t border-gray-100">
+              <Link
+                to="/app/leadview"
+                className="flex items-center justify-center text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                    View all leads →
+                  </Link>
+                </div>
+              </div>
+  
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="p-4 bg-green-800 border-b border-green-100 flex justify-between items-center">
+                  <h3 className="text-md font-medium text-white">Upcoming Tasks</h3>
+                  <span className="bg-green-500 text-white text-xs py-1 px-2 rounded-full">{task.length} total</span>
+                </div>
+                <div className="divide-y divide-gray-200">
+                  {task.slice(0, 3).map((task, index) => (
+                    <div key={index} className="p-4 hover:bg-gray-50">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-900">{task.Subject}</h4>
+                          <p className="text-xs text-gray-500">Due: {task.Due_Date}</p>
+                        </div>
+                        <span className={`text-xs px-2 py-1 rounded-full font-medium  ${priorityColors[task.Priority] || "bg-gray-200 text-gray-700"}`}>
+                          {task.Priority}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="p-4 bg-gray-50 border-t border-gray-100">
+                  <Link
+                    to="/app/taskView"
+                    className="text-sm text-green-600 hover:text-green-800 font-medium"
+                  >
+                    View all tasks →
+                  </Link>
+                </div>
+              </div>
+  
+              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg shadow-md overflow-hidden text-white">
+                <div className="p-6">
+                  <h3 className="text-xl font-bold mb-4">Need Help?</h3>
+                  <p className="mb-6 text-indigo-100">Our support team is available 24/7 to assist you with any questions.</p>
+                  <button className="bg-white text-indigo-600 px-4 py-2 rounded-md font-medium hover:bg-indigo-50 transition-colors">
+                    Contact Support
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <CreateTaskForm
+          isOpen={isTaskModalOpen}
+          onClose={() => setIsTaskModalOpen(false)}
+          onTaskCreated={() => {
+            setIsTaskModalOpen(false);
+            // Add any refresh logic here if needed
+          }}
+        />
+  
+        <CreateContactForm
+          isOpen={isContactModelOpen}
+          onClose={() => setIsContactModalOpen(false)}
+          onTaskCreated={() => {
+            setIsContactModalOpen(false);
+            // Add any refresh logic here if needed
+          }}
+        />
+  
+        <UnauthorizedModal
+          isOpen={isUnauthorizedModalOpen}
+          onClose={() => setIsUnauthorizedModalOpen(false)}
+          onConnect={handleConnectOrganization}
+        />
+      </div>
   );
 };
 
@@ -1607,7 +1579,7 @@ export default HomePage;
 //                     toast.error("Insufficient access rights to create a contact");
 //                   } else {
 //                     setIsContactModalOpen(true);
-//                   }
+//                   } 
 //                 }}
 //               >
 //                 <FilePlus className="icon" />
