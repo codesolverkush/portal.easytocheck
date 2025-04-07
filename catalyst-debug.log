@@ -15558,3 +15558,63 @@ change of controllers\get.controller.js in easy_portal detected. Preparing your 
 change of controllers\get.controller.js in easy_portal detected. Preparing your function, please wait...
 [info] [2025-04-07T06:53:52.102Z] : i AdvancedIO[easy_portal]: ready!
 [info] [2025-04-07T06:53:52.103Z] : i AdvancedIO[easy_portal]: http://localhost:3000/server/easy_portal/
+[debug] [2025-04-07T07:54:10.388Z] : 
+[debug] [2025-04-07T07:54:10.391Z] : ----------------------------------------------------------------------
+[debug] [2025-04-07T07:54:10.392Z] : Command:      C:\Program Files\nodejs\node.exe C:\Users\Dell5490\AppData\Roaming\npm\node_modules\zcatalyst-cli\lib\bin\catalyst.js serve
+[debug] [2025-04-07T07:54:10.392Z] : CLI Version:  1.17.6
+[debug] [2025-04-07T07:54:10.393Z] : Platform:     win32
+[debug] [2025-04-07T07:54:10.393Z] : Node Version: v22.12.0
+[debug] [2025-04-07T07:54:10.394Z] : Time:         Mon Apr 07 2025 13:24:10 GMT+0530 (India Standard Time)
+[debug] [2025-04-07T07:54:10.394Z] : ----------------------------------------------------------------------
+[debug] [2025-04-07T07:54:10.394Z] : 
+[debug] [2025-04-07T07:54:12.360Z] : > authorizing via signed-in user option
+[debug] [2025-04-07T07:54:12.360Z] : > command requires scopes: ["ZohoCatalyst.projects.ALL","ZohoCatalyst.functions.ALL","ZohoCatalyst.functions.EXECUTE","ZohoCatalyst.webapp.ALL","ZohoCatalyst.pdfshot.execute","ZohoCatalyst.authentication.CREATE"]
+[debug] [2025-04-07T07:54:12.381Z] : > refreshing access token <
+[debug] [2025-04-07T07:54:12.383Z] : >>>> HTTP REQUEST : POST https://accounts.zoho.com/oauth/v2/token 
+<request body omitted>
+
+[debug] [2025-04-07T07:54:13.371Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Mon, 07 Apr 2025 07:54:13 GMT","content-type":"application/json;charset=UTF-8","content-length":"1980","connection":"keep-alive","set-cookie":["zalb_b266a5bf57=a7f15cb1555106de5ac96d088b72e7c8; Path=/; Secure; HttpOnly","iamcsr=3e6f38c5-238f-429a-902b-5d7c3052c35c;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=3e6f38c5-238f-429a-902b-5d7c3052c35c;path=/;SameSite=Strict;Secure;priority=high"],"cache-control":"no-store","x-content-type-options":"nosniff","pragma":"no-cache","x-frame-options":"SAMEORIGIN","vary":"accept-encoding","content-language":"en-US","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-04-07T07:54:13.385Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006 
+
+[debug] [2025-04-07T07:54:14.453Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Mon, 07 Apr 2025 07:54:14 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=4ead9897700827f973c0f7dbded7f673; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=00e38f05-943d-4cff-90e6-81e0c5138486;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=00e38f05-943d-4cff-90e6-81e0c5138486;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-04-07T07:54:14.458Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006/environment 
+
+[debug] [2025-04-07T07:54:14.834Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Mon, 07 Apr 2025 07:54:14 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=c3d5ec374d3dc932973a3d50f55d8d00; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=20a9e836-4d20-433f-9ebe-477281658d8b;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=20a9e836-4d20-433f-9ebe-477281658d8b;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-04-07T07:54:15.481Z] : Build folder already exists, starting cleanup
+[debug] [2025-04-07T07:54:28.098Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006/function 
+Query params: {"type":"basicio,event,cron,applogic,integration,browser_logic"}
+
+[debug] [2025-04-07T07:54:29.415Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Mon, 07 Apr 2025 07:54:29 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=c3d5ec374d3dc932973a3d50f55d8d00; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=09a06772-affe-422b-8e32-89094840441d;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=09a06772-affe-422b-8e32-89094840441d;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-04-07T07:54:29.426Z] : unknown eol undefined hence skipping check
+[info] [2025-04-07T07:54:43.140Z] : [react-plugin]: Starting the development server...
+
+[info] [2025-04-07T07:54:43.142Z] : 
+[info] [2025-04-07T07:54:43.142Z] : i Client[client]: Plugin : "zcatalyst-cli-plugin-react" is used for client serve
+[info] [2025-04-07T07:54:43.143Z] : 
+[info] [2025-04-07T07:54:46.995Z] : 
+[info] [2025-04-07T07:54:46.995Z] :  >>>>>>>>>>>>> AdvancedIO <<<<<<<<<<<< 
+[info] [2025-04-07T07:54:46.996Z] : i easy_portal: http://localhost:3000/server/easy_portal/
+[info] [2025-04-07T07:54:46.996Z] : 
+[info] [2025-04-07T07:54:46.997Z] : 
+[info] [2025-04-07T07:54:46.997Z] :  >>>>>>>>>>>>> Web Client <<<<<<<<<<<<
+[info] [2025-04-07T07:54:46.998Z] : i client[client]: http://localhost:3000/app/
+[info] [2025-04-07T07:54:46.998Z] : 
+[info] [2025-04-07T07:54:53.039Z] : [react-plugin]: Compiled successfully!
+[info] [2025-04-07T07:54:53.039Z] : [react-plugin]: 
+[info] [2025-04-07T07:54:53.040Z] : [react-plugin]: You can now view client in the browser.
+[info] [2025-04-07T07:54:53.040Z] : [react-plugin]: 
+[info] [2025-04-07T07:54:53.040Z] : [react-plugin]:   Local:            http://localhost:3000/app/
+[info] [2025-04-07T07:54:53.041Z] : [react-plugin]:   On Your Network:  http://192.168.29.247:3000/app/
+[info] [2025-04-07T07:54:53.041Z] : [react-plugin]: 
+[info] [2025-04-07T07:54:53.041Z] : [react-plugin]: Note that the development build is not optimized.
+[info] [2025-04-07T07:54:53.042Z] : [react-plugin]: To create a production build, use npm run build.
+[info] [2025-04-07T07:54:53.042Z] : [react-plugin]: 
+[info] [2025-04-07T07:57:36.560Z] : Shutting down server
