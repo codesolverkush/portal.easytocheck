@@ -31,7 +31,7 @@ export default function CreateDealForm() {
       if (cachedResponse) {
         const data = await cachedResponse.json();
         processFieldData(data);
-        console.log("DEals form fields loaded from Cache Storage!");
+        console.log("Deals form fields loaded from Cache Storage!");
         return;
       }
       

@@ -3,7 +3,9 @@ const {
     getDeal, 
     createDeal, 
     getDealById, 
-    cacheRetriveForDeal 
+    cacheRetriveForDeal, 
+    getDealFields,
+    updateDeal
 } = require('../controllers/deal.controller');
 const catalystAuth = require('../middlewares/catalystAuth');
 const accessControl = require('../middlewares/accesscontrol.middeware');
@@ -23,5 +25,8 @@ router.get('/getdealbyid/:dealId', catalystAuth, getDealById);
 
 // Cache-related route
 router.get('/getcachedeal', catalystAuth, cacheRetriveForDeal);
+
+router.get('/dealfields',catalystAuth,getDealFields);
+router.put('/updatedeal',catalystAuth,accessControl,updateDeal);
 
 module.exports = router;

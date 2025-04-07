@@ -39,7 +39,8 @@ const CachePage = lazy(() => import('./component/testPages/CachePage.js'));
 const NotFound = lazy(() => import('./pages/NotFound.js'));
 const Webtab = lazy(() => import('./pages/Webtab.js'));
 const CreateDealForm = lazy(() => import('./component/forms/CreateDealForm.js'));
-const DealView = lazy(() => import('./component/testPages/DealsView.js'));
+const DealView = lazy(() => import('./component/view/DealView/DealView.js'));
+const DealProfile = lazy(()=> import('./component/view/DealView/DealProfile.js'));
 
 // Enhanced Loader Component
 const EnhancedLoader = () => {
@@ -232,6 +233,17 @@ function App() {
               </ProtectedRouteWithLicense>
             }
           />
+
+         <Route
+            path="/app/dealProfile"
+            element={
+              <ProtectedRouteWithLicense>
+                <DealProfile />
+              </ProtectedRouteWithLicense>
+            }
+          />
+
+          {/* Deal route end */}
 
           {/* Task route start */}
 

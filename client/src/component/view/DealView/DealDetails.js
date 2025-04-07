@@ -21,11 +21,11 @@ import Navbar from "../../common/Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import NotesUi from "../../ui/NotesUi";
-import AddContactNoteModal from "./AddContactNoteModal";
-import ShowAttachment from "../../testPages/ShowAttachment";
-import AttachFileContactPage from "./AttachFileContactPage";
-import ShowContactAttachement from "./ShowContactAttachment";
-import TaskDetailsContactPage from "./TaskDetailsContactPage";
+// import AddContactNoteModal from "./AddContactNoteModal";
+// import ShowAttachment from "../../testPages/ShowAttachment";
+// import AttachFileContactPage from "./AttachFileContactPage";
+// import ShowContactAttachement from "./ShowContactAttachment";
+// import TaskDetailsContactPage from "./TaskDetailsContactPage";
 import DetailsShimmer from "../../ui/DetailsShimmer";
 
 const leadSourceColors = {
@@ -109,10 +109,11 @@ const NotesCard = ({ note }) => {
   );
 };
 
-const ContactDetails = ({ accessScore,data,username }) => {
+const DealDetails = ({ accessScore,data,username }) => {
+
   const location = useLocation();
   const navigate = useNavigate();
-  const initialContactId = location?.state?.contactId;
+  const initialContactId = location?.state?.dealId;
 
   const [selectedContactId, setSelectedContactId] = useState(initialContactId);
   const [contactList, setContactList] = useState([]);
@@ -123,28 +124,17 @@ const ContactDetails = ({ accessScore,data,username }) => {
   const [sortDirection, setSortDirection] = useState("asc");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [newContact, setNewContact] = useState({
-    First_Name: "",
-    Last_Name: "",
-    Email: "",
-    Phone: "",
-    Lead_Source: "External Referral",
-    Description: "",
-  });
+ 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editContact, setEditContact] = useState({
-    First_Name: "",
-    Last_Name: "",
-    Email: "",
-    Phone: "",
-    Lead_Source: "External Referral",
-    Description: "",
-  });
+  
 
   // Contact field variables...
 
   const [fields, setFields] = useState([]);
   const [formData, setFormData] = useState({});
+
+//   console.log(fields);
+  
 
   // Edit variable
 
@@ -177,17 +167,18 @@ const ContactDetails = ({ accessScore,data,username }) => {
 
       // Try to get data from cache first
       const cache = await caches.open(CACHE_NAME);
-      const cachedResponse = await cache.match("/contact-fields");
+      const cachedResponse = await cache.match("/deal-fields");
 
       if (cachedResponse) {
         const data = await cachedResponse.json();
+        console.log(data);
         processFieldData(data);
         return;
       }
 
       // If no cached data, fetch from API
       const response = await axios.get(
-        `${process.env.REACT_APP_APP_API}/lead/contactfield`
+        `${process.env.REACT_APP_APP_API}/deal/dealfields`
       );
 
       const fieldData = response?.data?.data?.fields || [];
@@ -196,7 +187,7 @@ const ContactDetails = ({ accessScore,data,username }) => {
       const newResponse = new Response(JSON.stringify(fieldData), {
         headers: { "Content-Type": "application/json" },
       });
-      await cache.put("/contact-fields", newResponse);
+      await cache.put("/deal-fields", newResponse);
 
       processFieldData(fieldData);
     } catch (error) {
@@ -259,13 +250,13 @@ const ContactDetails = ({ accessScore,data,username }) => {
     }
     setIsEditing(!isEditing);
   };
-
+ console.log("Hello ji",selectedContact?.data[0]?.id);
   // Function to save edited lead data
   const saveLead = async () => {
     setIsSaving(true);
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_APP_API}/lead/updatecontact`,
+        `${process.env.REACT_APP_APP_API}/deal/updatedeal`,
         {
           id: selectedContact?.data[0]?.id,
           ...editedContact,
@@ -273,21 +264,18 @@ const ContactDetails = ({ accessScore,data,username }) => {
       );
 
       if (response.data.success) {
-        // Update the local lead data with the edited values
-        // const updatedContact = { ...selectedContact, ...editedContact };
-        // setSelectedContact(updatedContact);
-
+        // Create a deep copy of the selectedContact to avoid reference issues
         const updatedContact = JSON.parse(JSON.stringify(selectedContact));
-      
-      // Update the data array with the edited values
-      if (updatedContact.data && updatedContact.data.length > 0) {
-        updatedContact.data[0] = {
-          ...updatedContact.data[0],
-          ...editedContact
-        };
-      }
-      
-      setSelectedContact(updatedContact);
+        
+        // Update the data array with the edited values
+        if (updatedContact.data && updatedContact.data.length > 0) {
+          updatedContact.data[0] = {
+            ...updatedContact.data[0],
+            ...editedContact
+          };
+        }
+        
+        setSelectedContact(updatedContact);
 
         // Exit edit mode
         setIsEditing(false);
@@ -397,7 +385,7 @@ const ContactDetails = ({ accessScore,data,username }) => {
           className="w-5 h-5"
         />
       );
-    } else {
+        } else {
       // For all other field types, use the appropriate input type
       return (
         <input
@@ -458,7 +446,6 @@ const ContactDetails = ({ accessScore,data,username }) => {
   };
 
   useEffect(() => {
-    fetchContacts();
     fetchContactsFields();
   }, []);
 
@@ -469,66 +456,14 @@ const ContactDetails = ({ accessScore,data,username }) => {
     }
   }, [selectedContactId]);
 
-  const fetchContacts = async () => {
-    try {
-      const CACHE_NAME = "crm-cache";
-      const cache = await caches.open(CACHE_NAME);
 
-      // Check if data is present in cache
-      const cachedResponse = await cache.match("/contacts-free");
-      if (cachedResponse) {
-        const data = await cachedResponse.json();
-        setContactList(data);
-        setLoading(false);
-
-        return;
-      }
-
-      const response = await axios.get(
-        `${process.env.REACT_APP_APP_API}/get/contactdetails`
-      );
-      if (response.status === 200) {
-        setContactList(response.data?.data || []);
-
-        const newResponse = new Response(JSON.stringify(response.data?.data), {
-          headers: { "Content-Type": "application/json" },
-        });
-        await cache.put("/contacts-free", newResponse);
-      }
-    } catch (error) {
-      console.error("Error fetching contacts", error);
-    }
-  };
 
   const fetchContactDetails = () => {
     setSelectedContact(data);
+    console.log("Hello data",data);
   };
 
-  const handleCreateContact = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_APP_API}/lead/createContact`,
-        newContact
-      );
-      if (response?.status === 200) {
-        toast.success("Contact Created Successfully!");
-        fetchContacts();
-      }
-    } catch (error) {
-      console.error("Error creating contact:", error);
-      toast.error(error?.response?.data?.error?.data[0]?.message);
-    }
-    setIsCreateModalOpen(false);
-    setNewContact({
-      First_Name: "",
-      Last_Name: "",
-      Email: "",
-      Phone: "",
-      Lead_Source: "External Referral",
-      Description: "",
-    });
-  };
+
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -538,90 +473,8 @@ const ContactDetails = ({ accessScore,data,username }) => {
     });
   };
 
-  // Modified fetchNotes function with proper loading state handling
-  const fetchNotes = async () => {
-    // First, set the active tab to 'notes' to show this tab
-    setActiveTab("notes");
-
-    // If notes are already loaded, don't fetch them again
-    if (dataLoaded.notes) {
-      setIsLoading(false); // Make sure loading is false even when using cached data
-      return;
-    }
-
-    // Set loading state
-    setIsLoading(true);
-
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_APP_API}/related/notes/${"Contacts"}/${
-          selectedContact?.data[0]?.id
-        }`
-      );
-      setNotes(response?.data?.data?.data);
-
-      // Mark notes as loaded
-      setDataLoaded((prev) => ({
-        ...prev,
-        notes: true,
-      }));
-    } catch (error) {
-      console.error("Error fetching notes:", error);
-      // Optionally show an error toast or message
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Fetch the tasks
-
-  const fetchTasks = async () => {
-    // First, set the active tab to 'openActivity' to show this tab
-    setActiveTab('openActivity');
-
-    // If tasks are already loaded, don't fetch them again
-    if (dataLoaded.tasks) {
-      setIsLoading(false);
-      return;
-    }
-
-    // Set loading state
-    setIsLoading(true);
-
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_APP_API}/related/openactivities`,
-        {
-          params:{
-            $se_module:"Contacts",
-            Who_Id: selectedContact?.data[0]?.id,
-            What_Id: null
-          }
-        }
-      );
-      setTasks(response?.data?.data?.data || []);
-
-      // Mark tasks as loaded
-      setDataLoaded(prev => ({
-        ...prev,
-        tasks: true
-      }));
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-      // Optionally show an error toast or message
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleNoteAdded = (newNote) => {
-    // Update notes list when a new note is added
-    // setNotes([newNote, ...notes]);
-    setNotes([newNote, ...(notes || [])]);
-  };
-
-  
-  // Handle tab switching
-  const handleTabSwitch = (tab) => {
+   // Handle tab switching
+   const handleTabSwitch = (tab) => {
     setActiveTab(tab);
 
     // // Reset loading state when switching tabs
@@ -633,7 +486,7 @@ const ContactDetails = ({ accessScore,data,username }) => {
       if (dataLoaded.notes) {
         setIsLoading(false);
       } else {
-        fetchNotes();
+        // fetchNotes();
       }
     }
 
@@ -642,7 +495,7 @@ const ContactDetails = ({ accessScore,data,username }) => {
       if (dataLoaded.tasks) {
         setIsLoading(false);
       } else {
-        fetchTasks();
+        // fetchTasks();
       }
     }
 
@@ -664,38 +517,14 @@ const ContactDetails = ({ accessScore,data,username }) => {
     }
   };
 
+
+
+
   const toggleDetails = () => {
     setShowDetails(!showDetails);
   };
 
-  // Create a new cached version of ShowAttachment
-  const CachedShowAttachment = ({ contactId, onClose }) => {
-    return (
-      <ShowContactAttachement
-        contactId={contactId}
-        onClose={onClose}
-        cachedData={attachments}
-        setCachedData={setAttachments}
-        dataLoaded={dataLoaded.attachments}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-      />
-    );
-  };
-
-    // Create a cached version of TaskDetailsPage
-  const CachedTaskDetailsPage = () => {
-    return (
-      <TaskDetailsContactPage
-        contactId={selectedContactId}
-        cachedData={tasks}
-        setCachedData={setTasks}
-        dataLoaded={dataLoaded.tasks}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-      />
-    );
-  };
+ 
 
 
   return (
@@ -705,8 +534,8 @@ const ContactDetails = ({ accessScore,data,username }) => {
       fields.length <= 0 ? (<DetailsShimmer/>): (
       <div className="flex min-h-screen bg-gray-50 relative">
         <div className="flex-1 flex flex-col">
-          {/* Top Navigation Bar */}
-          <header className="bg-white shadow-sm border-b border-gray-200">
+           {/* Top Navigation Bar */}
+           <header className="bg-white shadow-sm border-b border-gray-200">
             <div className="flex items-center px-2 sm:px-4 py-2">
               {/* Desktop back button (hidden on mobile) */}
               <button
@@ -781,9 +610,9 @@ const ContactDetails = ({ accessScore,data,username }) => {
                 )}
               </div>
             </div>
-          </header>
+          </header>    
 
-          {/* Tabs */}
+             {/* Tabs */}
           <div className="border-b border-gray-200 bg-white">
             <div className="px-3 sm:px-6 py-2">
               <div className="flex space-x-4 sm:space-x-8 overflow-x-auto">
@@ -840,7 +669,7 @@ const ContactDetails = ({ accessScore,data,username }) => {
                 </button>
               </div>
             </div>
-          </div>
+          </div>    
 
           {/* Main Content */}
           <div className="flex-1 p-3 sm:p-6 overflow-y-auto">
@@ -905,106 +734,16 @@ const ContactDetails = ({ accessScore,data,username }) => {
               </div>
             )}
 
-            {activeTab === "notes" && (
-              <div className="space-y-4">
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-base sm:text-lg font-medium text-gray-800">
-                      Notes ({notes?.length || 0})
-                    </h2>
-                    <button
-                      className="text-blue-600 text-sm hover:underline"
-                      onClick={() => setIsAddNoteModalOpen(true)}
-                    >
-                      Add Note
-                    </button>
-                  </div>
-
-                  {isLoading ? (
-                    <div className="text-center text-gray-500 py-6">
-                      <NotesUi />
-                    </div>
-                  ) : !notes || notes.length === 0 ? (
-                    <div className="text-center text-gray-500 py-6">
-                      No notes found for this lead.
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {notes.map((note) => (
-                        <NotesCard key={note.id} note={note} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {activeTab === "attachments" && (
-              <div className="space-y-4">
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-base sm:text-lg font-medium text-gray-800">
-                      Attachments
-                    </h2>
-                    {/* <div className="flex space-x-3">
-                      <button 
-                        className="text-blue-600 text-sm hover:underline" 
-                        onClick={() => {
-                          setShowAttachmentsPage(true);
-                          setShowAddAttachment(false);
-                        }}
-                      >
-                        Show All Attachments
-                      </button>
-                      <button 
-                        className="text-blue-600 text-sm hover:underline" 
-                        onClick={() => {
-                          setShowAddAttachment(true);
-                          setShowAttachmentsPage(false);
-                        }}
-                      >
-                        Add New Attachment
-                      </button>
-                    </div> */}
-                  </div>
-
-                  {showAttachmentsPage ? (
-                    <CachedShowAttachment
-                      contactId={selectedContactId}
-                      onClose={() => setShowAttachmentsPage(false)}
-                    />
-                  ) : showAddAttachment ? (
-                    <AttachFileContactPage
-                      contactId={selectedContactId}
-                      onClose={() => setShowAddAttachment(false)}
-                    />
-                  ) : (
-                    <div className="text-center text-gray-500 py-6">
-                      Click "Show All Attachments" to view files or "Add New
-                      Attachment" to upload files.
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'openActivity' && (
-              <CachedTaskDetailsPage />
-            )}
+            
+          
+            
           </div>
         </div>
 
-        <AddContactNoteModal
-          isOpen={isAddNoteModalOpen}
-          onClose={() => setIsAddNoteModalOpen(false)}
-          contactId={selectedContactId}
-          username={username}
-          onNoteAdded={handleNoteAdded}
-        />
       </div>
       )}
     </>
   );
 };
 
-export default ContactDetails;
+export default DealDetails;
