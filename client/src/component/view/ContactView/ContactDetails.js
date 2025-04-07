@@ -26,6 +26,7 @@ import ShowAttachment from "../../testPages/ShowAttachment";
 import AttachFileContactPage from "./AttachFileContactPage";
 import ShowContactAttachement from "./ShowContactAttachment";
 import TaskDetailsContactPage from "./TaskDetailsContactPage";
+import DetailsShimmer from "../../ui/DetailsShimmer";
 
 const leadSourceColors = {
   "External Referral": "bg-purple-200 text-purple-700",
@@ -693,6 +694,8 @@ const ContactDetails = ({ accessScore,data,username }) => {
   return (
     <>
       <Navbar />
+      {
+      fields.length <= 0 ? (<DetailsShimmer/>): (
       <div className="flex min-h-screen bg-gray-50 relative">
         <div className="flex-1 flex flex-col">
           {/* Top Navigation Bar */}
@@ -992,6 +995,7 @@ const ContactDetails = ({ accessScore,data,username }) => {
           onNoteAdded={handleNoteAdded}
         />
       </div>
+      )}
     </>
   );
 };

@@ -1,4 +1,3 @@
-const axios = require('axios');
 const stream = require("stream");
 const FormData = require("form-data");
 const refreshAccessToken = require('../utils/genaccestoken');
@@ -44,7 +43,7 @@ const totalLead = async (req, res) => {
             if (error.message === "TOKEN_EXPIRED") {
                 try {
                     token = await refreshAccessToken(req, res);
-                    const data = await handleZohoRequest(url, 'get', null, token);
+                    const data = await handleZohoRequest(url, 'post', requestData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
                     console.error("Error after token refresh:", refreshError.message);
@@ -100,7 +99,7 @@ const totalTask = async (req, res) => {
                 try {
                     token = await refreshAccessToken(req, res);
                     console.log(token);
-                    const data = await handleZohoRequest(url, 'get', null, token);
+                    const data = await handleZohoRequest(url, 'post', requestData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
                     console.error("Error after token refresh:", refreshError.message);
@@ -155,7 +154,7 @@ const totalMeeting = async (req, res) => {
             if (error.message === "TOKEN_EXPIRED") {
                 try {
                     token = await refreshAccessToken(req, res);
-                    const data = await handleZohoRequest(url, 'get', null, token);
+                    const data = await handleZohoRequest(url, 'post', requestData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
                     console.error("Error after token refresh:", refreshError.message);
@@ -215,7 +214,7 @@ const totalDeals = async (req, res) => {
             if (error.message === "TOKEN_EXPIRED") {
                 try {
                     token = await refreshAccessToken(req, res);
-                    const data = await handleZohoRequest(url, 'get', null, token);
+                    const data = await handleZohoRequest(url, 'post', requestData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
                     console.error("Error after token refresh:", refreshError.message);
@@ -271,7 +270,7 @@ const totalContacts = async (req, res) => {
             if (error.message === "TOKEN_EXPIRED") {
                 try {
                     token = await refreshAccessToken(req, res);
-                    const data = await handleZohoRequest(url, 'get', null, token);
+                    const data = await handleZohoRequest(url, 'post',requestData, token);
                     return res.status(200).json({ success: true, data,accessScore });
                 } catch (refreshError) {
                     console.error("Error after token refresh:", refreshError.message);
@@ -290,15 +289,76 @@ const totalContacts = async (req, res) => {
 };
 
 
+// const leadDetails = async (req, res) => {
+//     try {
+//         const userId = req.currentUser?.user_id;
+//         // console.log(userId);
+
+//         const accessScore = req.userDetails[0].usermanagement?.Leads;
+//         // if(accesScore < 2){
+//         //     return res.status(403).json({ success: false, message: "Access Not Available" });
+//         // }
+        
+//         if (!userId) {
+//             return res.status(404).json({ message: "User ID not found." });
+//         }
+
+//         const { catalyst } = res.locals;
+//         const zcql = catalyst.zcql();
+//         const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+//         const user = await zcql.executeZCQLQuery(userQuery);
+//         const orgId = user[0]?.usermanagement?.orgid;
+
+//         // console.log(orgId);
+
+//         if (!orgId) {
+//             return res.status(404).json({ message: "Organization ID not found." });
+//         }
+
+//         let token = await getAccessToken(orgId, res);
+//         const url = "https://www.zohoapis.com/crm/v7/coql";
+
+//         const requestData = {
+//             select_query: "SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Record_Status__s,smsmagic4__LeadIdCPY,Lead_Status,Converted__s,Converted_Date_Time,Created_Time FROM Leads WHERE Last_Name != '' ORDER BY Created_Time DESC LIMIT 1000 "
+//             // select_query: "SELECT * FROM Leads LIMIT 200"
+
+//         };
+
+//         //  const requestData = {
+//         //     select_query: "select COUNT(id) from Leads where Last_Name != ''"
+//         // };
+           
+//         try {
+//             const data = await handleZohoRequest(url, 'post', requestData, token);
+//             return res.status(200).json({ success: true, data, accessScore });
+//         } catch (error) {
+//             if (error.message === "TOKEN_EXPIRED") {
+//                 try {
+//                     token = await refreshAccessToken(req, res);
+//                     console.log("Token",token);
+//                     const data = await handleZohoRequest(url, 'get', null, token);
+//                     console.log(data);
+//                     return res.status(200).json({ success: true, data,accessScore });
+//                 } catch (refreshError) {
+//                     console.error("Error after token refresh:", refreshError.message);
+//                     return res.status(500).json({ success: false, message: refreshError.message });
+//                 }
+//             } else {
+//                 throw error;
+//             }
+//         }
+//     } catch (error) {
+//         console.error("Error fetching lead:", error);
+//         if (!res.headersSent) {
+//             return res.status(500).json({ success: false, message: error.message });
+//         }
+//     }
+// };
+
 const leadDetails = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
-        // console.log(userId);
-
-        const accessScore = req.userDetails[0].usermanagement?.Leads;
-        // if(accesScore < 2){
-        //     return res.status(403).json({ success: false, message: "Access Not Available" });
-        // }
+        const accessScore = req.userDetails?.[0]?.usermanagement?.Leads;
         
         if (!userId) {
             return res.status(404).json({ message: "User ID not found." });
@@ -310,8 +370,6 @@ const leadDetails = async (req, res) => {
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
 
-        // console.log(orgId);
-
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
         }
@@ -321,23 +379,20 @@ const leadDetails = async (req, res) => {
 
         const requestData = {
             select_query: "SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Record_Status__s,smsmagic4__LeadIdCPY,Lead_Status,Converted__s,Converted_Date_Time,Created_Time FROM Leads WHERE Last_Name != '' ORDER BY Created_Time DESC LIMIT 1000 "
-            // select_query: "SELECT * FROM Leads LIMIT 200"
-
         };
-
-        //  const requestData = {
-        //     select_query: "select COUNT(id) from Leads where Last_Name != ''"
-        // };
            
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
             return res.status(200).json({ success: true, data, accessScore });
         } catch (error) {
             if (error.message === "TOKEN_EXPIRED") {
+                // Refresh token without ending the response
                 try {
                     token = await refreshAccessToken(req, res);
-                    const data = await handleZohoRequest(url, 'get', null, token);
-                    return res.status(200).json({ success: true, data,accessScore });
+                    console.log(token);
+                    const data = await handleZohoRequest(url, 'post', requestData, token);
+                    console.log("Data",data);
+                    return res.status(200).json({ success: true, data, accessScore });
                 } catch (refreshError) {
                     console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
