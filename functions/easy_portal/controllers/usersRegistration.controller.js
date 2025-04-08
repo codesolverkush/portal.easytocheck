@@ -33,7 +33,7 @@
                 `;
                 
                 const data = await zcql.executeZCQLQuery(selectOrgQuery);
-                console.log(data);
+                // console.log(data);
                 
             //     const insertOrgQuery = `
             //     INSERT INTO Organization (email, password, userId, orgId) 

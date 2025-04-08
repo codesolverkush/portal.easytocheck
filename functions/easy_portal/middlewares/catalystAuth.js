@@ -65,7 +65,7 @@ const hardcodedUser = {
         
         // req.currentUser = currentUser; 
         
-        req.currentUser = hardcodedUser;       
+        req.currentUser = hardcodedUser;        
         next();
         
     } catch (error) {

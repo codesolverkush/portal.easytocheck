@@ -19,7 +19,7 @@ const updateOrgDetails = async (req, res) => {
 const registerNewUser = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
-        console.log("Current User ID:", userId);
+        // console.log("Current User ID:", userId);
         const { catalyst } = res.locals;
         const userManagement = catalyst.userManagement();
         const { email_id, first_name, last_name, org_id, phone_number, country_code } = req.body;
@@ -44,7 +44,7 @@ const registerNewUser = async (req, res) => {
         let allUsers = await userManagement.getAllUsers();
         let userDetails = allUsers.find(user => user.email_id === email_id);
 
-        console.log(userDetails);
+        // console.log(userDetails);
 
         if (!userDetails) {
             return res.status(404).json({
@@ -74,15 +74,15 @@ const registerNewUser = async (req, res) => {
             username: `${first_name} ${last_name}`,
             email: email_id
         };
-        console.log("Row Data to Insert:", rowData);
+        // console.log("Row Data to Insert:", rowData);
 
         // Insert user details into the table
         try {
             const response = await table1.insertRow(rowData);
-            console.log("Inserted Data:", response);
+            // console.log("Inserted Data:", response);
         } catch (insertError) {
             if (insertError?.code === 'DUPLICATE_VALUE') {
-                console.log("Duplicate user found. Fetching existing user ID...");
+                // console.log("Duplicate user found. Fetching existing user ID...");
 
                 // Fetch user ID again by email_id
                 allUsers = await userManagement.getAllUsers();
@@ -90,10 +90,10 @@ const registerNewUser = async (req, res) => {
 
                 if (userDetails) {
                     rowData.userid = userDetails.user_id; // Use existing user_id
-                    console.log("Retrying Insertion with Existing User ID:", rowData);
+                    // console.log("Retrying Insertion with Existing User ID:", rowData);
 
                     const response = await table1.insertRow(rowData);
-                    console.log("Successfully inserted after handling duplicate:", response);
+                    // console.log("Successfully inserted after handling duplicate:", response);
                 } else {
                     return res.status(400).json({
                         success: false,
@@ -143,7 +143,7 @@ const getUserDetails = async (req, res) => {
 const cookiesDetails = async (req,res)=>{
     try {
         const userId = req?.decodedData;
-        console.log(userId);
+        // console.log(userId);
         res.status(200).json({
            data: userId
         })

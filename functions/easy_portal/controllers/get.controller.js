@@ -87,7 +87,7 @@ const totalTask = async (req, res) => {
         const url = "https://www.zohoapis.com/crm/v7/coql";
 
         const requestData = {
-            select_query: "SELECT Subject,Due_Date,Status,Priority,Created_Time FROM Tasks WHERE Subject IS NOT NULL ORDER BY Created_Time DESC LIMIT 1000"
+            select_query: "SELECT Subject,Due_Date,Status,Priority,Created_Time FROM Tasks WHERE Subject != '' ORDER BY Created_Time DESC LIMIT 1000"
         };
 
 
@@ -98,7 +98,7 @@ const totalTask = async (req, res) => {
             if (error.message === "TOKEN_EXPIRED") {
                 try {
                     token = await refreshAccessToken(req, res);
-                    console.log(token);
+                    // console.log(token);
                     const data = await handleZohoRequest(url, 'post', requestData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
@@ -389,9 +389,9 @@ const leadDetails = async (req, res) => {
                 // Refresh token without ending the response
                 try {
                     token = await refreshAccessToken(req, res);
-                    console.log(token);
+                    // console.log(token);
                     const data = await handleZohoRequest(url, 'post', requestData, token);
-                    console.log("Data",data);
+                    // console.log("Data",data);
                     return res.status(200).json({ success: true, data, accessScore });
                 } catch (refreshError) {
                     console.error("Error after token refresh:", refreshError.message);

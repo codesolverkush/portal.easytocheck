@@ -107,7 +107,7 @@ const cacheRetriveForContact = async(req,res)=>{
         // cachePromise.then((entity) => { console.log(entity); });
         return res.status(200).json({ success: true, data });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.send("Error");
     }
 }
@@ -146,7 +146,7 @@ const createContact = async (req, res) => {
 
         try {
             const data = await handleZohoRequest(url, 'post', contactData, token);
-            console.log(data);
+            // console.log(data);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {
@@ -320,7 +320,7 @@ const updateContact = async (req, res) => {
 
         try {
             const data = await handleZohoRequest(url, 'put', contactData, token);
-            console.log(data);
+            // console.log(data);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {

@@ -148,7 +148,7 @@ const createLead = async (req, res) => {
 
         try {
             const data = await handleZohoRequest(url, 'post', leadData, token);
-            console.log(data);
+            // console.log(data);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {
@@ -235,7 +235,7 @@ const cacheRetriveForLead = async(req,res)=>{
         // cachePromise.then((entity) => { console.log(entity); });
         return res.status(200).json({ success: true, data });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.send("Error");
     }
 }
@@ -374,9 +374,9 @@ const attachFile = async (req, res) => {
     }
 
     let token = await getAccessToken(orgId, res);
-    console.log(token);
+    // console.log(token);
     const file = req?.file;
-    console.log(file);
+    // console.log(file);
 
     if (!file) {
         return res.status(400).json({ success: false, message: "No file uploaded." });
@@ -406,7 +406,7 @@ const attachFile = async (req, res) => {
 
         return res.status(200).json({ success: true, data: response.data });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(500).json({
             success: false,
             message: "File upload failed",
@@ -487,14 +487,14 @@ const checkIn = async(req,res)=>{
         }
 
         const checkInData = req.body;
-        console.log(checkInData);
+        // console.log(checkInData);
        
         let token = await getAccessToken(orgId, res);
         const url = 'https://www.zohoapis.com/crm/v7/Events';
 
         try {
             const data = await handleZohoRequest(url, 'post', checkInData, token);
-            console.log(data);
+            // console.log(data);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {

@@ -25,7 +25,7 @@ const getNoteById = async (req, res) => {
         const { leadId } = req.params;
         const { module } = req.params;
 
-        console.log(module);
+        // console.log(module);
 
         // console.log(orgId);
 
@@ -38,7 +38,7 @@ const getNoteById = async (req, res) => {
 
         try {
             const data = await handleZohoRequest(url, 'get', null, token);
-            console.log(data);
+            // console.log(data);
             return res.status(200).json({ success: true, data });
         } catch (error) {
             if (error.message === "TOKEN_EXPIRED") {
@@ -83,7 +83,7 @@ const createNote = async (req, res) => {
 
         const { leadId } = req.params;
         const { module } = req.params;
-        console.log(leadId);
+        // console.log(leadId);
 
         if (!leadId || typeof leadId !== "string") {
             return res.status(400).json({ error: "Invalid Lead ID" });
@@ -185,7 +185,7 @@ const attachFile = async (req, res) => {
 
         return res.status(200).json({ success: true, data: response.data });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(500).json({
             success: false,
             message: "File upload failed",
@@ -228,7 +228,7 @@ const getAttachFile = async (req, res) => {
 
         return res.status(200).json({ success: true, data: response.data });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(500).json({
             success: false,
             message: "Files fetching failed",
@@ -269,7 +269,7 @@ const downloadAttachFile = async (req, res) => {
 
         return res.status(200).json({ success: true, data: response.data });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         return res.status(500).json({
             success: false,
             message: "Files fetching failed",
@@ -303,7 +303,7 @@ const getOpenActivitiesById = async (req, res) => {
 
         const { What_Id, Who_Id, $se_module } = req.query;
 
-        console.log(What_Id, Who_Id, $se_module);
+        // console.log(What_Id, Who_Id, $se_module);
 
         let token = await getAccessToken(orgId, res);
         const url = "https://www.zohoapis.com/crm/v7/coql";
@@ -322,7 +322,7 @@ const getOpenActivitiesById = async (req, res) => {
             select_query: `SELECT Subject, Due_Date, Status, Priority, Created_Time FROM Tasks WHERE ${condition} 
                    ORDER BY Created_Time DESC`
         };
-
+// console.log("request data", requestData);
 
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
@@ -385,7 +385,8 @@ const createOpenActivity = async (req, res) => {
 
 
 
-        console.log(taskData);
+        // console.log(taskData);
+
 
         let token = await getAccessToken(orgId, res);
         const url = 'https://www.zohoapis.com/crm/v7/Tasks';

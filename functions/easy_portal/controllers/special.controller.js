@@ -12,7 +12,7 @@ const getAccessControlDetails = async (req, res) => {
             user: req.userDetails[0]?.usermanagement, // Assuming only one user matches the query
         });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).json({
             success: false,
             message: "Failed to fetch user details",

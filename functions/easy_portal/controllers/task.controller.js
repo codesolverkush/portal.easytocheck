@@ -65,7 +65,7 @@ const cacheRetrive = async(req,res)=>{
         // cachePromise.then((entity) => { console.log(entity); });
         return res.status(200).json({ success: true, data });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.send("Error");
     }
 }
@@ -148,8 +148,8 @@ const createTask = async (req, res) => {
         const userId = req.currentUser?.user_id;
         const taskAccess = req.userDetails[0]?.usermanagement.Tasks;
 
-        console.log(taskAccess);
-        console.log(userId);
+        // console.log(taskAccess);
+        // console.log(userId);
         if (!userId ) {
             return res.status(404).json({ success: false, message: "User ID not found." });
         }

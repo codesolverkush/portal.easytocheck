@@ -73,7 +73,7 @@ const webtabHander = async(req,res)=>{
             })
         }    
        } catch (error) {
-        console.log(error);
+        // console.log(error);
           res.status(500).send({
             message: error
           })
@@ -105,7 +105,7 @@ const removeUser = async(req,res)=>{
             })
         }    
        } catch (error) {
-        console.log(error);
+        // console.log(error);
           res.status(500).send({
             message: error
           })
@@ -118,7 +118,7 @@ const updateUserAccess = async (req, res) => {
 
 
         
-        console.log(userId);
+        // console.log(userId);
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
@@ -146,7 +146,7 @@ const updateUserAccess = async (req, res) => {
             //     // write ksfn
             // }
 
-            console.log(updateResult);
+            // console.log(updateResult);
 
             // Fetch the updated user permissions
             const fetchQuery = `
@@ -155,7 +155,7 @@ const updateUserAccess = async (req, res) => {
             `;
             const fetchResult = await zcql.executeZCQLQuery(fetchQuery);
 
-            console.log(fetchResult);
+            // console.log(fetchResult);
 
             res.status(200).json({
                 success: true,
