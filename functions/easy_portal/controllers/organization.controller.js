@@ -70,7 +70,7 @@ const registerOrganization = async (req, res) => {
             `;
 
             const checkUserResult = await zcql.executeZCQLQuery(checkUserQuery);
-            console.log(checkUserResult);
+            // console.log(checkUserResult);
             if (checkUserResult.length === 0) {
 
                 let rowData = {
@@ -117,12 +117,12 @@ const organizationExists = async(req,res)=>{
         LIMIT 1
     `;
 
-    console.log(checkDomainQuery);
+    // console.log(checkDomainQuery);
 
     const userExist = await zcql.executeZCQLQuery(checkDomainQuery);
 
      
-    console.log(userExist);
+    // console.log(userExist);
 
     if (userExist && userExist.length > 0) {
         const orgId = userExist[0]?.usermanagement?.orgid;
@@ -136,7 +136,7 @@ const organizationExists = async(req,res)=>{
           const orgdata = await await zcql
           .executeZCQLQuery(orgDomainQuery);
 
-          console.log(orgdata);
+        //   console.log(orgdata);
     
             return res.status(208).send({
                 status: true,
@@ -165,7 +165,7 @@ const organizationExists = async(req,res)=>{
     }
 
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).json({
           success: false,
           message: "Internal Server Error!",
@@ -203,7 +203,7 @@ const getOrganizationDetails = async(req,res)=>{
         })
     }    
    } catch (error) {
-    console.log(error);
+    // console.log(error);
       res.status(500).send({
         message: error
       })
@@ -266,7 +266,7 @@ const getOrgDetails = async(req,res)=>{
          })
      }    
     } catch (error) {
-     console.log(error);
+    //  console.log(error);
        res.status(500).send({
          message: error
        })
@@ -278,7 +278,7 @@ const checkAuthorization = async (req, res) => {
 
     const userId = req?.currentUser?.user_id;
     const { orgId } = req.params;
-    console.log(orgId);
+    // console.log(orgId);
 
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql(); 
@@ -392,7 +392,7 @@ const requestRefreshToken = async (req, res) => {
 const makeconnection = async (req, res) => {
     try {
         const { clientid, clientsecret, refreshtoken, authcode, orgId } = req.body;
-        console.log(orgId);
+        // console.log(orgId);
 
         // Check if all required fields are provided
         

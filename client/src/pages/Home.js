@@ -213,8 +213,8 @@ const HomePage = () => {
         }
       
 
-      const dealsResponse = await axios.get(`${process.env.REACT_APP_APP_API}/get/deal`);
-      dealsCount = dealsResponse?.data?.data?.data[0]?.["COUNT(id)"] || 0;
+      const dealsResponse = await axios.get(`${process.env.REACT_APP_APP_API}/get/dealdetails`);
+      dealsCount = dealsResponse?.data?.data?.info?.count || 0;
       await saveToCache('/api/deals', dealsCount);
 
 
@@ -759,6 +759,34 @@ const HomePage = () => {
         <div className="lg:col-span-2 space-y-8">
           {activeTab === "overview" && (
             <>
+              <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 w-full">
+                <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                  <h3 className="text-xl font-semibold text-gray-800">External Analytics</h3>
+                  <select 
+                    className="text-sm border border-gray-300 rounded-lg px-4 py-2 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                  >
+                    <option>View 1</option>
+                    <option>View 2</option>
+                    <option>View 3</option>
+                  </select>
+                </div>
+
+                {/* Zoom Container */}
+                <div className="overflow-hidden w-full flex justify-center items-center">
+                  <div 
+                    className="origin-top-left scale-[0.75] sm:scale-[0.85] md:scale-[0.9] lg:scale-100" 
+                    style={{ width: '1000px', height: '500px' }} // fixed size expected by Zoho
+                  >
+                    <iframe
+                      src="https://crm.zoho.com/crm/specific/ViewChartImage?width=1000&height=500&embedDetails=350870214961ec7506e8e2c2e9504fb60b7c4f880b6b74462f8b6f01c3bf35cca1e5a2fc0cde2a401899f16ff7d79e392f88258fa798e528031e24c2decbcccf557e8c42f10b5cf5b05268e3f89c7fb48656669b303f2f18d5d96570a0977d5e13d47176cf2f04220d9783039a67a94d"
+                      title="External Chart"
+                      className="w-full h-full border-0 rounded-xl shadow"
+                      loading="lazy"
+                      sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                    />
+                  </div>
+                </div>
+              </div>
               <div className="bg-white p-6 rounded-xl shadow-md">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-semibold text-gray-900">Sales Performance</h3>
@@ -807,65 +835,7 @@ const HomePage = () => {
                   />
                 </div>
               </div>
-  
-              <div className="bg-white p-6 rounded-xl shadow-md">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">Lead Acquisition</h3>
-                  <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-200">
-                    <option>Last 6 Months</option>
-                    <option>Last 12 Months</option>
-                    <option>All Time</option>
-                  </select>
-                </div>
-                <div className="h-72">
-                  <Line
-                    data={leadsData}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: {
-                          position: 'top',
-                          labels: {
-                            boxWidth: 12,
-                            usePointStyle: true,
-                            pointStyle: 'circle'
-                          }
-                        },
-                        tooltip: {
-                          backgroundColor: 'rgba(53, 71, 125, 0.8)',
-                          titleColor: 'white',
-                          bodyColor: 'white',
-                          padding: 12,
-                          cornerRadius: 8
-                        }
-                      },
-                      scales: {
-                        x: {
-                          grid: {
-                            display: false
-                          }
-                        },
-                        y: {
-                          grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                          },
-                          beginAtZero: true
-                        }
-                      },
-                      elements: {
-                        line: {
-                          tension: 0.4
-                        },
-                        point: {
-                          radius: 3,
-                          hoverRadius: 6
-                        }
-                      }
-                    }}
-                  />
-                </div>
-              </div>
+
             </>
           )}
   

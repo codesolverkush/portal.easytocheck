@@ -27,6 +27,7 @@ import AttachFileContactPage from "./AttachFileContactPage";
 import ShowContactAttachement from "./ShowContactAttachment";
 import TaskDetailsContactPage from "./TaskDetailsContactPage";
 import DetailsShimmer from "../../ui/DetailsShimmer";
+import AssociatedDealWithContact from "./AssociatedDealWithContact";
 
 const leadSourceColors = {
   "External Referral": "bg-purple-200 text-purple-700",
@@ -170,6 +171,8 @@ const ContactDetails = ({ accessScore,data,username }) => {
 
   const [attachments, setAttachments] = useState([]);
   const [tasks, setTasks] = useState([]);
+
+  const [deals,setDeals] = useState([]);
 
   async function fetchContactsFields() {
     try {
@@ -613,12 +616,44 @@ const ContactDetails = ({ accessScore,data,username }) => {
     }
   };
 
+
+  const fetchAssociatedDeals = async ()=>{
+    setActiveTab('deals');
+
+    // If tasks are already loaded, don't fetch them again
+    if (dataLoaded.deals) {
+      setIsLoading(false);
+      return;
+    }
+
+    // Set loading state
+    setIsLoading(true);
+
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_APP_API}/deal/associateddeal/${selectedContact?.data[0]?.id}`);
+      setDeals(response?.data?.data?.data || []);
+
+      // Mark tasks as loaded
+      setDataLoaded(prev => ({
+        ...prev,
+        deals: true
+      }));
+    } catch (error) {
+      console.error('Error fetching deals:', error);
+      // Optionally show an error toast or message
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   const handleNoteAdded = (newNote) => {
     // Update notes list when a new note is added
     // setNotes([newNote, ...notes]);
     setNotes([newNote, ...(notes || [])]);
   };
 
+
+  console.log('dealdata',deals);
   
   // Handle tab switching
   const handleTabSwitch = (tab) => {
@@ -643,6 +678,14 @@ const ContactDetails = ({ accessScore,data,username }) => {
         setIsLoading(false);
       } else {
         fetchTasks();
+      }
+    }
+
+    if(tab === 'deals'){
+      if(dataLoaded.deals){
+        setIsLoading(false);
+      }else{
+        fetchAssociatedDeals();
       }
     }
 
@@ -697,6 +740,15 @@ const ContactDetails = ({ accessScore,data,username }) => {
     );
   };
 
+  // Create a cached version of associatedeal
+  const CachedDealWithContact = () => {
+    return (
+      <AssociatedDealWithContact
+        deals={deals}
+        loading={isLoading}
+      />
+    );
+  };
 
   return (
     <>
@@ -991,6 +1043,11 @@ const ContactDetails = ({ accessScore,data,username }) => {
             {activeTab === 'openActivity' && (
               <CachedTaskDetailsPage />
             )}
+            {activeTab === 'deals' && (
+              <CachedDealWithContact />
+            )}
+           
+            
           </div>
         </div>
 

@@ -28,7 +28,7 @@ const checkin = async (req, res) => {
 
         try {
             const data = await handleZohoRequest(url, 'post', leadData, token);
-            console.log(data);
+            // console.log(data);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {

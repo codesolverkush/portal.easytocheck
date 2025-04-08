@@ -3,13 +3,13 @@
 // import { useDispatch } from "react-redux";
 // import axios from "axios";
 // import toast from "react-hot-toast";
-// import { 
-//   MdSearch, 
-//   MdMenu, 
-//   MdClose, 
-//   MdAssignment, 
-//   MdEvent, 
-//   MdBusiness, 
+// import {
+//   MdSearch,
+//   MdMenu,
+//   MdClose,
+//   MdAssignment,
+//   MdEvent,
+//   MdBusiness,
 //   MdLeaderboard,
 //   MdEmail,
 //   MdAttachment,
@@ -88,9 +88,9 @@
 //       }
 
 //       if (
-//         profileRef.current && 
-//         !profileRef.current.contains(event.target) && 
-//         profileButtonRef.current && 
+//         profileRef.current &&
+//         !profileRef.current.contains(event.target) &&
+//         profileButtonRef.current &&
 //         !profileButtonRef.current.contains(event.target)
 //       ) {
 //         setIsProfileOpen(false);
@@ -106,7 +106,7 @@
 
 //     document.addEventListener("mousedown", handleClickOutside);
 //     document.addEventListener("keydown", handleEscape);
-    
+
 //     return () => {
 //       document.removeEventListener("mousedown", handleClickOutside);
 //       document.removeEventListener("keydown", handleEscape);
@@ -120,14 +120,14 @@
 //       const response = await axios.get(`${process.env.REACT_APP_APP_API}/users/logout`);
 //       if (response?.status === 200) {
 //         try {
-//           await caches.delete(CACHE_NAME);     
-//           await caches.delete("dashboard-cache");     
+//           await caches.delete(CACHE_NAME);
+//           await caches.delete("dashboard-cache");
 //           // Also remove the user cookie on logout
 //           Cookies.remove("user");
 //         } catch (cacheError) {
 //           console.error("Error clearing cache", cacheError);
 //         }
-        
+
 //         toast.success("Logout Successfully!");
 //         dispatch(userNotExists());
 //         navigate("/app/signup");
@@ -155,7 +155,7 @@
 //               >
 //                 <MdMenu className="text-gray-600 text-2xl" />
 //               </button>
-              
+
 //               <Link to="/app/dashboard" className="flex items-center">
 //                 <span className="text-xl font-semibold text-gray-800">ETC Portal</span>
 //               </Link>
@@ -179,7 +179,7 @@
 //                 />
 //                 <MdSearch className="absolute left-3 top-2.5 text-gray-400 text-lg" />
 //               </div>
-              
+
 //               <button
 //                 ref={profileButtonRef}
 //                 onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -243,41 +243,41 @@
 //       </div>
 
 //       {/* User Profile Modal with animations */}
-//       <div 
+//       <div
 //         className={`fixed inset-0 z-50 flex items-center justify-center md:justify-end md:items-start md:pt-20 overflow-y-auto transition-opacity duration-300 ${
 //           isProfileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
 //         }`}
-//         aria-labelledby="modal-title" 
-//         role="dialog" 
+//         aria-labelledby="modal-title"
+//         role="dialog"
 //         aria-modal="true"
 //       >
 //         {/* Background overlay with blur effect */}
-//         <div 
+//         <div
 //           className={`fixed inset-0 bg-gray-500 bg-opacity-25 backdrop-blur-sm transition-opacity ${
 //             isProfileOpen ? 'opacity-100' : 'opacity-0'
-//           }`} 
+//           }`}
 //           aria-hidden="true"
 //         ></div>
 
 //         {/* Profile card */}
-//         <div 
+//         <div
 //           ref={profileRef}
 //           className={`relative w-full max-w-sm mx-4 md:mr-8 md:ml-0 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all duration-300 ${
-//             isProfileOpen 
-//               ? 'translate-y-0 opacity-100 scale-100' 
+//             isProfileOpen
+//               ? 'translate-y-0 opacity-100 scale-100'
 //               : 'translate-y-4 md:translate-y-0 md:translate-x-4 opacity-0 scale-95'
 //           }`}
 //         >
 //           {/* Profile Header */}
 //           <div className="relative bg-gradient-to-r from-blue-600 to-indigo-700 px-4 pt-5 pb-16 sm:p-6 sm:pb-16">
-//             <button 
+//             <button
 //               onClick={() => setIsProfileOpen(false)}
 //               className="absolute top-3 right-3 rounded-full p-1.5 text-white hover:bg-white/20 transition-colors"
 //               aria-label="Close profile"
 //             >
 //               <FaTimes className="h-4 w-4" />
 //             </button>
-            
+
 //             <div className="flex flex-col items-center">
 //               {loading ? (
 //                 <>
@@ -288,9 +288,9 @@
 //               ) : (
 //                 <>
 //                   {userData?.profileImage ? (
-//                     <img 
-//                       src={userData.profileImage} 
-//                       alt="Profile" 
+//                     <img
+//                       src={userData.profileImage}
+//                       alt="Profile"
 //                       className="w-24 h-24 object-cover rounded-full ring-4 ring-white/30 shadow-lg animate-fadeIn"
 //                     />
 //                   ) : (
@@ -313,7 +313,7 @@
 //                   <Shimmer className="h-5 w-24" />
 //                 ) : (
 //                   <span className="flex items-center text-sm font-semibold text-indigo-700">
-//                     <FaCrown className="mr-1 text-yellow-500" /> 
+//                     <FaCrown className="mr-1 text-yellow-500" />
 //                     {userData?.plan || "PREMIUM"}
 //                   </span>
 //                 )}
@@ -441,27 +441,31 @@
 
 // export default Navbar;
 
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { 
-  MdSearch, 
-  MdMenu, 
-  MdClose, 
-  MdAssignment, 
-  MdEvent, 
-  MdBusiness, 
+import {
+  MdSearch,
+  MdMenu,
+  MdClose,
+  MdAssignment,
+  MdEvent,
+  MdBusiness,
   MdLeaderboard,
   MdEmail,
   MdAttachment,
   MdHistory,
   MdNote,
   MdList,
-  MdFilterList
+  MdFilterList,
+  MdTask,
+  MdCalendarMonth,
+  MdContacts,
+  MdHandshake,
+  MdOutlineAttachment,
+  MdInventory,
 } from "react-icons/md";
 import { AiOutlineUser, AiOutlineWhatsApp } from "react-icons/ai";
 import { FaTimes, FaUserCircle, FaCrown, FaChevronRight } from "react-icons/fa";
@@ -469,8 +473,7 @@ import { userNotExists } from "../../redux/reducers/auth";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
 
-const Navbar = ({accessData}) => {
-  
+const Navbar = ({ accessData }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef(null);
@@ -519,7 +522,7 @@ const Navbar = ({accessData}) => {
             email: user.email_id || "Not provided",
             plan: user.subscription_plan || "PREMIUM",
             isActive: user.is_active !== undefined ? user.is_active : true,
-            profileImage: user.profile_image || null
+            profileImage: user.profile_image || null,
           });
         }
         setLoading(false);
@@ -529,14 +532,17 @@ const Navbar = ({accessData}) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest('.sidebar') && !event.target.closest('.menu-button')) {
+      if (
+        !event.target.closest(".sidebar") &&
+        !event.target.closest(".menu-button")
+      ) {
         setIsSidebarOpen(false);
       }
 
       if (
-        profileRef.current && 
-        !profileRef.current.contains(event.target) && 
-        profileButtonRef.current && 
+        profileRef.current &&
+        !profileRef.current.contains(event.target) &&
+        profileButtonRef.current &&
         !profileButtonRef.current.contains(event.target)
       ) {
         setIsProfileOpen(false);
@@ -544,7 +550,7 @@ const Navbar = ({accessData}) => {
     };
 
     const handleEscape = (event) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         setIsProfileOpen(false);
         setIsSidebarOpen(false);
       }
@@ -552,7 +558,7 @@ const Navbar = ({accessData}) => {
 
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEscape);
-    
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
@@ -563,17 +569,19 @@ const Navbar = ({accessData}) => {
   const logoutHandler = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(`${process.env.REACT_APP_APP_API}/users/logout`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_APP_API}/users/logout`
+      );
       if (response?.status === 200) {
         try {
-          await caches.delete(CACHE_NAME);     
-          await caches.delete("dashboard-cache");     
+          await caches.delete(CACHE_NAME);
+          await caches.delete("dashboard-cache");
           // Also remove the user cookie on logout
           Cookies.remove("user");
         } catch (cacheError) {
           console.error("Error clearing cache", cacheError);
         }
-        
+
         toast.success("Logout Successfully!");
         dispatch(userNotExists());
         navigate("/app/signup");
@@ -586,7 +594,9 @@ const Navbar = ({accessData}) => {
 
   // Shimmer effect component
   const Shimmer = ({ className }) => (
-    <div className={`animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded ${className}`}></div>
+    <div
+      className={`animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded ${className}`}
+    ></div>
   );
 
   return (
@@ -602,19 +612,43 @@ const Navbar = ({accessData}) => {
               >
                 <MdMenu className="text-gray-600 text-2xl" />
               </button>
-              
+
               <Link to="/app/dashboard" className="flex items-center">
-                <span className="text-xl font-semibold text-gray-800">ETC Portal</span>
+                <span className="text-xl font-semibold text-gray-800">
+                  ETC Portal
+                </span>
               </Link>
             </div>
 
             <div className="hidden md:flex items-center space-x-6">
-              <NavLink to="/app/leadview" icon={<MdLeaderboard />} text="Leads" state={{ leadAccessScore: accessData?.Leads || 4 }} />
-              <NavLink to="/app/taskView" icon={<MdAssignment />} text="Tasks" />
-              <NavLink to="/app/contactview" icon={<MdAssignment />} text="Contacts" />
-              <NavLink to="/app/meetingView" icon={<MdEvent />} text="Meetings" />
-              <NavLink to="/app/orgRegister" icon={<MdBusiness />} text="Org Register" />
-              <NavLink to="/app/orgProfile" icon={<MdBusiness />} text="Org Profile" />
+              <NavLink
+                to="/app/leadview"
+                icon={<MdLeaderboard />}
+                text="Leads"
+                state={{ leadAccessScore: accessData?.Leads || 4 }}
+              />
+              <NavLink
+                to="/app/taskView"
+                icon={<MdAssignment />}
+                text="Tasks"
+              />
+              <NavLink
+                to="/app/contactview"
+                icon={<MdContacts />}
+                text="Contacts"
+              />
+              <NavLink to="/app/dealView" icon={<MdHandshake />} text="Deals" />
+              <NavLink
+                to="/app/meetingView"
+                icon={<MdEvent />}
+                text="Meetings"
+              />
+              {/* <NavLink to="/app/orgRegister" icon={<MdBusiness />} text="Org Register" /> */}
+              <NavLink
+                to="/app/orgProfile"
+                icon={<MdBusiness />}
+                text="Org Profile"
+              />
             </div>
 
             <div className="flex items-center space-x-4">
@@ -626,7 +660,7 @@ const Navbar = ({accessData}) => {
                 />
                 <MdSearch className="absolute left-3 top-2.5 text-gray-400 text-lg" />
               </div>
-              
+
               <button
                 ref={profileButtonRef}
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -644,8 +678,16 @@ const Navbar = ({accessData}) => {
       <div className="h-16"></div>
 
       {/* Sidebar for mobile - Increased z-index to ensure it appears above other content */}
-      <div className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 md:hidden ${isSidebarOpen ? 'opacity-100 z-50' : 'opacity-0 pointer-events-none'}`}>
-        <div className={`sidebar fixed inset-y-0 left-0 w-3/4 max-w-xs bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div
+        className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 md:hidden ${
+          isSidebarOpen ? "opacity-100 z-50" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <div
+          className={`sidebar fixed inset-y-0 left-0 w-3/4 max-w-xs bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
           <div className="flex flex-col h-full">
             <div className="p-4 border-b">
               <div className="relative">
@@ -660,19 +702,50 @@ const Navbar = ({accessData}) => {
 
             <div className="flex-1 overflow-y-auto">
               <div className="py-2">
-                <SidebarLink to="/app/leadview" icon={<MdLeaderboard />} text="Leads" />
-                <SidebarLink to="/app/taskView" icon={<MdLeaderboard />} text="Tasks" />
-                <SidebarLink to="/app/meetingView" icon={<MdLeaderboard />} text="Meetings" />
-                <SidebarLink to="/app/contactview" icon={<MdLeaderboard />} text="Contacts" />
-                <SidebarLink to="/app/orgRegister" icon={<MdNote />} text="OrgRegister" />
-                <SidebarLink to="/app/orgProfile" icon={<MdHistory />} text="Org Profile"/>
-                <SidebarLink to="#" icon={<MdAttachment />} text="Attachments" />
-                <SidebarLink to="#" icon={<MdBusiness />} text="Products" />
+                <SidebarLink
+                  to="/app/leadview"
+                  icon={<MdLeaderboard />}
+                  text="Leads"
+                />
+                <SidebarLink
+                  to="/app/taskView"
+                  icon={<MdTask />}
+                  text="Tasks"
+                />
+                <SidebarLink
+                  to="/app/meetingView"
+                  icon={<MdCalendarMonth />}
+                  text="Meetings"
+                />
+                <SidebarLink
+                  to="/app/contactview"
+                  icon={<MdContacts />}
+                  text="Contacts"
+                />
+                <SidebarLink
+                  to="/app/dealView"
+                  icon={<MdHandshake />}
+                  text="Deals"
+                />
+                {/* <SidebarLink to="/app/orgRegister" icon={<MdNote />} text="OrgRegister" /> */}
+                <SidebarLink
+                  to="/app/orgProfile"
+                  icon={<MdBusiness />}
+                  text="Org Profile"
+                />
+                <SidebarLink
+                  to="#"
+                  icon={<MdOutlineAttachment />}
+                  text="Attachments"
+                />
+                <SidebarLink to="#" icon={<MdInventory />} text="Products" />
                 <SidebarLink to="#" icon={<MdEmail />} text="Emails" />
               </div>
 
               <div className="border-t px-4 py-2">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">Links</h3>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">
+                  Links
+                </h3>
                 <div className="space-y-2">
                   <LinkItem icon={<AiOutlineWhatsApp />} text="whatsapp" />
                   <LinkItem icon={<MdEmail />} text="email" />
@@ -693,41 +766,41 @@ const Navbar = ({accessData}) => {
       </div>
 
       {/* User Profile Modal with animations - Increased z-index to be above the fixed navbar */}
-      <div 
+      <div
         className={`fixed inset-0 z-50 flex items-center justify-center md:justify-end md:items-start md:pt-20 overflow-y-auto transition-opacity duration-300 ${
-          isProfileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          isProfileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
-        aria-labelledby="modal-title" 
-        role="dialog" 
+        aria-labelledby="modal-title"
+        role="dialog"
         aria-modal="true"
       >
         {/* Background overlay with blur effect */}
-        <div 
+        <div
           className={`fixed inset-0 bg-gray-500 bg-opacity-25 backdrop-blur-sm transition-opacity ${
-            isProfileOpen ? 'opacity-100' : 'opacity-0'
-          }`} 
+            isProfileOpen ? "opacity-100" : "opacity-0"
+          }`}
           aria-hidden="true"
         ></div>
 
         {/* Profile card */}
-        <div 
+        <div
           ref={profileRef}
           className={`relative w-full max-w-sm mx-4 md:mr-8 md:ml-0 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all duration-300 ${
-            isProfileOpen 
-              ? 'translate-y-0 opacity-100 scale-100' 
-              : 'translate-y-4 md:translate-y-0 md:translate-x-4 opacity-0 scale-95'
+            isProfileOpen
+              ? "translate-y-0 opacity-100 scale-100"
+              : "translate-y-4 md:translate-y-0 md:translate-x-4 opacity-0 scale-95"
           }`}
         >
           {/* Profile Header */}
           <div className="relative bg-gradient-to-r from-blue-600 to-indigo-700 px-4 pt-5 pb-16 sm:p-6 sm:pb-16">
-            <button 
+            <button
               onClick={() => setIsProfileOpen(false)}
               className="absolute top-3 right-3 rounded-full p-1.5 text-white hover:bg-white/20 transition-colors"
               aria-label="Close profile"
             >
               <FaTimes className="h-4 w-4" />
             </button>
-            
+
             <div className="flex flex-col items-center">
               {loading ? (
                 <>
@@ -738,9 +811,9 @@ const Navbar = ({accessData}) => {
               ) : (
                 <>
                   {userData?.profileImage ? (
-                    <img 
-                      src={userData.profileImage} 
-                      alt="Profile" 
+                    <img
+                      src={userData.profileImage}
+                      alt="Profile"
                       className="w-24 h-24 object-cover rounded-full ring-4 ring-white/30 shadow-lg animate-fadeIn"
                     />
                   ) : (
@@ -748,8 +821,12 @@ const Navbar = ({accessData}) => {
                       <FaUserCircle className="h-16 w-16 text-white" />
                     </div>
                   )}
-                  <h2 className="mt-3 text-xl font-bold text-white animate-slideUp">{userData?.name || "User Name"}</h2>
-                  <p className="text-sm text-white/80 animate-slideUp delay-75">User ID: {userData?.userId || "xxxxxxxx"}</p>
+                  <h2 className="mt-3 text-xl font-bold text-white animate-slideUp">
+                    {userData?.name || "User Name"}
+                  </h2>
+                  <p className="text-sm text-white/80 animate-slideUp delay-75">
+                    User ID: {userData?.userId || "xxxxxxxx"}
+                  </p>
                 </>
               )}
             </div>
@@ -763,7 +840,7 @@ const Navbar = ({accessData}) => {
                   <Shimmer className="h-5 w-24" />
                 ) : (
                   <span className="flex items-center text-sm font-semibold text-indigo-700">
-                    <FaCrown className="mr-1 text-yellow-500" /> 
+                    <FaCrown className="mr-1 text-yellow-500" />
                     {userData?.plan || "PREMIUM"}
                   </span>
                 )}
@@ -788,13 +865,19 @@ const Navbar = ({accessData}) => {
             ) : (
               <>
                 <div className="mb-6 animate-fadeIn delay-100">
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">Account Details</h3>
-                  <p className="text-sm text-gray-500">{userData?.email || "user@example.com"}</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">
+                    Account Details
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {userData?.email || "user@example.com"}
+                  </p>
                 </div>
 
                 <div className="bg-gray-50 rounded-lg p-4 mb-4 flex justify-between items-center animate-slideUp delay-150">
                   <div>
-                    <span className="font-medium text-gray-900">Subscription</span>
+                    <span className="font-medium text-gray-900">
+                      Subscription
+                    </span>
                     <p className="text-sm text-gray-500">
                       {userData?.isActive ? "Active" : "Inactive"}
                     </p>
@@ -805,12 +888,15 @@ const Navbar = ({accessData}) => {
                 </div>
 
                 <button className="text-indigo-600 hover:text-indigo-700 text-sm font-medium flex items-center transition hover:translate-x-1 animate-fadeIn delay-200">
-                  Manage Subscription <FaChevronRight className="ml-1 w-3 h-3" />
+                  Manage Subscription{" "}
+                  <FaChevronRight className="ml-1 w-3 h-3" />
                 </button>
 
                 {/* Help & Support */}
                 <div className="mt-6 border-t border-gray-200 pt-4 animate-fadeIn delay-300">
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">Need Help?</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">
+                    Need Help?
+                  </h3>
                   {/* Support items have been commented out in the original code */}
                 </div>
 
