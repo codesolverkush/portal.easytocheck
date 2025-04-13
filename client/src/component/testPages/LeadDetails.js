@@ -257,7 +257,7 @@ const AddReasonModal = ({
       if (response?.status === 200) {
         try {
           const updateResponse = await axios.put(
-            `${process.env.REACT_APP_APP_API}/lead/updatelead`,
+            `${process.env.REACT_APP_APP_API}/update/updatemoduledata/Leads`,
             {
               id: leadId, // Added missing Lead_ID parameter
               Lead_Status: buttonName,
@@ -463,7 +463,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
 
       // If no cached data, fetch from API
       const response = await axios.get(
-        `${process.env.REACT_APP_APP_API}/lead/getLead`
+        `${process.env.REACT_APP_APP_API}/gets/getfields/Leads`
       );
 
       const fieldData = response?.data?.data?.fields || [];
@@ -539,7 +539,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
     setIsSaving(true);
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_APP_API}/lead/updatelead`,
+        `${process.env.REACT_APP_APP_API}/update/updatemoduledata/Leads`,
         {
           id: leadId,
           ...editedLead,

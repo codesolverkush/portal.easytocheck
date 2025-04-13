@@ -119,7 +119,7 @@ const refreshAccessToken = async (req, res) => {
         }
 
         const checkDomainQuery = ` 
-            SELECT orgid
+            SELECT orgid,domain
             FROM usermanagement
             WHERE userid = '${userId}' 
             LIMIT 1
@@ -127,6 +127,7 @@ const refreshAccessToken = async (req, res) => {
 
         const user = await zcql.executeZCQLQuery(checkDomainQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         if (!orgId) {
             throw new Error("No organization ID found for the user");
@@ -146,7 +147,7 @@ const refreshAccessToken = async (req, res) => {
 
         const { clientid, clientsecret, refreshtoken, ROWID } = existingData[0].Connections;
 
-        const url = `https://accounts.zoho.com/oauth/v2/token`;
+        const url = `https://accounts.zoho.${domain}/oauth/v2/token`;
 
         const params = new URLSearchParams();
         params.append('refresh_token', refreshtoken);

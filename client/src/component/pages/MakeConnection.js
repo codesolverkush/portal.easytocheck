@@ -8,6 +8,7 @@ const MakeConnection = () => {
   const navigate = useNavigate();
   
   const orgId = location.state?.orgId;
+  const domain = location.state?.domain;
 
   const [clientId, setClientId] = useState('');
   const [clientSecret, setClientSecret] = useState('');
@@ -33,12 +34,12 @@ const MakeConnection = () => {
     try {
       // Prepare the authorization URL with correct scope for creating leads in Zoho CRM
       // const redirectUri = encodeURIComponent('https://easyportal-704392036.development.catalystserverless.com/app');
-      // const redirectUri = encodeURIComponent('http://localhost:3000/app');
-      const redirectUri = encodeURIComponent("https://portal.easytocheck.com")
+      const redirectUri = encodeURIComponent('http://localhost:3000/app');
+      // const redirectUri = encodeURIComponent("https://portal.easytocheck.com")
       const scope = encodeURIComponent('ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoCRM.coql.READ');
       
       // Create the authorization URL
-      const authUrl = `https://accounts.zoho.com/oauth/v2/auth?response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${redirectUri}&access_type=offline`;
+      const authUrl = `https://accounts.zoho.${domain}/oauth/v2/auth?response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${redirectUri}&access_type=offline`;
       
       // Open popup window
       const width = 600;

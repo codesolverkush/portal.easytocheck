@@ -1,8 +1,7 @@
 // Task related api...
 
 const refreshAccessToken = require("../utils/genaccestoken");
-const { getAccessToken, handleZohoRequest } = require("./lead.controller");
-
+const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
 
 const getMeetingById = async (req,res)=>{
     try {
@@ -15,16 +14,17 @@ const getMeetingById = async (req,res)=>{
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ success: false, message: "Organization ID not found." });
         }
 
         let token = await getAccessToken(orgId, res);
-        const url = `https://www.zohoapis.com/crm/v7/Events/${meetingId}`;
+        const url = `https://www.zohoapis.${domain}/crm/v7/Events/${meetingId}`;
 
         try {
             const data = await handleZohoRequest(url, 'get', null, token);

@@ -251,7 +251,7 @@ const MeetingView = () => {
     try {
       setIsSubmitting(true);
       const response = await axios.post(
-        `${process.env.REACT_APP_APP_API}/lead/createMeeting`,
+        `${process.env.REACT_APP_APP_API}/create/createdata/Events`,
         newMeeting
       );
       if (response?.status === 200) {

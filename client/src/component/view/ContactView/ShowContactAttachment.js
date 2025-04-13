@@ -160,55 +160,6 @@ const ShowContactAttachement = ({ contactId, cachedData, setCachedData, dataLoad
   }, [contactId, setCachedData, cachedData]);
   
 
-  // useEffect(() => {
-  //   const fetchAttachments = async () => {
-
-  //     if (cachedData?.length > 0) {
-  //       // Use cached data if available, but enhance with leadId
-  //       const enhancedCache = cachedData.map(attachment => ({
-  //         ...attachment,
-  //         leadId: leadId
-  //       }));
-  //       setAttachments(enhancedCache);
-  //       return;
-  //     }
-  
-  //     setIsLoading(true);
-  //     setError(null);
-      
-  //     try {
-  //       const response = await axios.get(`${process.env.REACT_APP_APP_API}/related/getattach/${leadId}`, {
-  //         withCredentials: true // Ensure credentials are sent
-  //       });
-  //       console.log(response);
-        
-  //       if (response?.data?.success && response?.data?.data?.data) {
-  //         const fetchedAttachments = response.data.data.data;
-          
-  //         // Add leadId to each attachment for download functionality
-  //         const attachmentsWithLeadId = fetchedAttachments.map(attachment => ({
-  //           ...attachment,
-  //           leadId: leadId
-  //         }));
-          
-  //         setAttachments(attachmentsWithLeadId);
-  //         if (setCachedData) setCachedData(attachmentsWithLeadId);
-  //       } else {
-  //         setAttachments([]);
-  //         if (setCachedData) setCachedData([]);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching attachments:', error);
-  //       setError('Failed to fetch attachments. Please try again.');
-  //       setAttachments([]);
-  //       if (setCachedData) setCachedData([]);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-  
-  //   fetchAttachments();
-  // }, [leadId, setCachedData, cachedData]);
   
   const filteredAttachments = attachments.filter(attachment => {
     if (filter === 'all') return true;
@@ -406,7 +357,7 @@ const ShowContactAttachement = ({ contactId, cachedData, setCachedData, dataLoad
           <div className="text-center text-gray-500 py-8">
             <p className="mb-4">
               {attachments.length === 0 
-                ? "No attachments found for this lead." 
+                ? "No attachments found for this contact." 
                 : `No ${filter !== 'all' ? filter : ''} attachments found.`}
             </p>
             <button 

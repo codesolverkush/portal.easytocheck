@@ -179,7 +179,7 @@ const DealDetails = ({ accessScore, data, username }) => {
 
       // If no cached data, fetch from API
       const response = await axios.get(
-        `${process.env.REACT_APP_APP_API}/deal/dealfields`
+        `${process.env.REACT_APP_APP_API}/gets/getfields/Deals`
       );
 
       const fieldData = response?.data?.data?.fields || [];
@@ -285,7 +285,7 @@ const DealDetails = ({ accessScore, data, username }) => {
     setIsSaving(true);
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_APP_API}/deal/updatedeal`,
+        `${process.env.REACT_APP_APP_API}/update/updatemoduledata/Deals`,
         {
           id: selectedDeal?.data[0]?.id,
           ...editedDeal,
@@ -311,12 +311,12 @@ const DealDetails = ({ accessScore, data, username }) => {
 
         toast.success("Deal updated successfully!");
       } else {
-        toast.error("Failed to update lead. Please try again.");
+        toast.error("Failed to update deal. Please try again.");
       }
     } catch (error) {
       console.error("Error updating Deal:", error);
       toast.error(
-        error?.response?.data?.error?.data[0]?.message || "Something went wrong"
+        error?.response?.data?.error?.data[0]?.message || error?.response?.data?.message || "Something went wrong"
       );
     } finally {
       setIsSaving(false);
@@ -864,7 +864,7 @@ const DealDetails = ({ accessScore, data, username }) => {
                   {/* Display a message when details are hidden */}
                   {!showDetails && (
                     <div className="p-6 text-center text-gray-500">
-                      Details are hidden. Click "Show Details" to view lead
+                      Details are hidden. Click "Show Details" to view deal
                       information.
                     </div>
                   )}

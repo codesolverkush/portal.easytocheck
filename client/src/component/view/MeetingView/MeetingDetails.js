@@ -142,8 +142,8 @@ const MeetingCardView = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_APP_API}/lead/updatemeeting`,
-        editingMeeting
+        `${process.env.REACT_APP_APP_API}/update/updatemoduledata/Events`,
+        {id: initialMeetingId,...editingMeeting}
       );
       if (response?.status === 200) {
         toast.success("Meeting Updated Successfully!");

@@ -104,7 +104,7 @@ const DealProfile = () => {
         try {
             let response;
             if (dealId) {
-                response = await axios.get(`${process.env.REACT_APP_APP_API}/deal/getdealbyid/${dealId}`);
+                response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Deals/${dealId}`);
                 console.log("hello",response);
 
                 if(response.status === 200){

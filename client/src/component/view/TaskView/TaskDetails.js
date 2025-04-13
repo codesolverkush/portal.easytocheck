@@ -91,7 +91,7 @@ const [editingTask, setEditingTask] = useState({
         return;
       }
 
-      const response = await axios.get(`${process.env.REACT_APP_APP_API}/lead/gettaskdetails`);
+      const response = await axios.get(`${process.env.REACT_APP_APP_API}/get/task`);
       console.log(response);
       if (response.status === 200) {
         setTaskList(response.data?.data || []);
@@ -106,7 +106,7 @@ const [editingTask, setEditingTask] = useState({
   const fetchTaskDetails = async (taskId) => {
     setLoading(true);
     try {
-      const response = await axios.get(`${process.env.REACT_APP_APP_API}/lead/getrecordbyid/${taskId}`);
+      const response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Tasks/${taskId}`);
       setSelectedTask(response?.data?.data);
     } catch (error) {
       console.error("Error fetching task details", error);
@@ -119,7 +119,7 @@ const [editingTask, setEditingTask] = useState({
     e.preventDefault();
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_APP_API}/lead/createTask`,
+        `${process.env.REACT_APP_APP_API}/create/createdata/Tasks`,
         newTask
       );
       if (response?.status === 200) {
@@ -176,7 +176,7 @@ const handleEditTask = async (e) => {
   e.preventDefault();
   try {
     const response = await axios.put(
-      `${process.env.REACT_APP_APP_API}/lead/updatetask`,
+      `${process.env.REACT_APP_APP_API}/update/updatemoduledata/Tasks`,
       editingTask
     );
     if (response?.status === 200) {

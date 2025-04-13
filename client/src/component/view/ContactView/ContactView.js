@@ -683,7 +683,7 @@ const ContactView = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_APP_API}/lead/createContact`,
+        `${process.env.REACT_APP_APP_API}/create/createdata/Contacts`,
         newContact
       );
       if (response?.status === 200) {

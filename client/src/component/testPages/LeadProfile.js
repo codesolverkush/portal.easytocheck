@@ -23,7 +23,7 @@ const LeadProfile = () => {
         try {
             let response;
             if (leadId) {
-                response = await axios.get(`${process.env.REACT_APP_APP_API}/lead/getleadbyid/${leadId}`);
+                response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Leads/${leadId}`);
                 if(response.status === 200){
                   setUsername(response?.data?.username || "Username");
                 }

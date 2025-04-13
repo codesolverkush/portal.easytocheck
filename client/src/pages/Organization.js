@@ -35,11 +35,18 @@ const Organization = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // const crmDomains = [
+  //   { value: 'https://www.zohoapis.com', label: 'zoho.com' },
+  //   { value: 'https://www.zohoapis.in', label: 'zoho.in' },
+  //   { value: 'https://www.zohoapis.cn', label: 'zoho.cn' },
+  //   { value: 'https://www.zohoapis.co.au', label: 'zoho.co.au' }
+  // ];
+
   const crmDomains = [
-    { value: 'https://www.zohoapis.com', label: 'zoho.com' },
-    { value: 'https://www.zohoapis.in', label: 'zoho.in' },
-    { value: 'https://www.zohoapis.cn', label: 'zoho.cn' },
-    { value: 'https://www.zohoapis.co.au', label: 'zoho.co.au' }
+    { value: 'com', label: 'zoho.com' },
+    { value: 'in', label: 'zoho.in' },
+    { value: 'cn', label: 'zoho.cn' },
+    { value: 'co.au', label: 'zoho.co.au' }
   ];
 
   const handleInputChange = (field, value) => {
