@@ -75,7 +75,10 @@ const registerOrganization = async (req, res) => {
 
                 let rowData = {
                     userid: userId,
-                    orgid: orgId
+                    orgid: orgId,
+                    username: req.currentUser?.first_name + req.currentUser?.last_name,
+                    email: req.currentUser?.email_id,
+                    domain: crmdomain
                 };
                 
                 await table1.insertRow(rowData);
@@ -210,6 +213,7 @@ const getOrganizationDetails = async(req,res)=>{
    }
 }
 
+
 const getOrgDetails = async(req,res)=>{
     try {
  
@@ -317,8 +321,9 @@ const checkAuthorization = async (req, res) => {
 const requestRefreshToken = async (req, res) => {
     try {
       const { clientId, clientSecret, authCode } = req.body;
-      let {orgId} = req.body;
+    //   let {orgId} = req.body;
       const userId = req?.currentUser?.user_id;
+      console.log(req.userDetails);
 
     //  Initialized the catalyst instance...
 
@@ -327,16 +332,27 @@ const requestRefreshToken = async (req, res) => {
 
     //   Updating the orgid, if we get the orgid as undefined...
 
-      if(userId && orgId === undefined){
-        const checkDomainQuery = ` 
-        SELECT orgid FROM usermanagement
-        WHERE userid = '${userId}' 
-        LIMIT 1
-    `;
-        const exitingOrgId = await zcql.executeZCQLQuery(checkDomainQuery);      
-        orgId = exitingOrgId[0].usermanagement?.orgid;
-      }
+    //   if(userId && orgId === undefined){
+    //     const checkDomainQuery = ` 
+    //     SELECT orgid FROM usermanagement
+    //     WHERE userid = '${userId}' 
+    //     LIMIT 1
+    // `;
+    //     const exitingOrgId = await zcql.executeZCQLQuery(checkDomainQuery);      
+    //     orgId = exitingOrgId[0].usermanagement?.orgid;
+    //   }
+
+    const checkDomainQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = ${userId} LIMIT 1`;
+    const exitingOrgId = await zcql.executeZCQLQuery(checkDomainQuery);
+
+    // if(exitingOrgId[0]){
+    //     orgId = exitingOrgId[0]?.usermanagement?.orgid;
+        
+    // }
     
+    const orgId = exitingOrgId[0]?.usermanagement?.orgid;
+    const domain = exitingOrgId[0]?.usermanagement?.domain;
+
     // Validate input
     
     if (!clientId || !clientSecret || !authCode || !orgId) {
@@ -351,7 +367,7 @@ const requestRefreshToken = async (req, res) => {
       // Make a request to Zoho's token endpoint
     
       const tokenResponse = await axios.post(
-        `https://accounts.zoho.com/oauth/v2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${authCode}&grant_type=authorization_code&redirect_uri=https://portal.easytocheck.com`,
+        `https://accounts.zoho.${domain}/oauth/v2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${authCode}&grant_type=authorization_code&redirect_uri=http://localhost:3000/app`,
         null, null
       );
       

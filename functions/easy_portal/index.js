@@ -13,6 +13,9 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const registrationRouter = require('./routes/usersRegistration.routes');
 const specialRouter = require('./routes/special.routes');
+const getsRouter = require('./routes/gets.routes');
+const createRouter = require('./routes/create.routes');
+const updateRouter = require('./routes/update.routes');
 const cors = require('cors');
 
 
@@ -25,7 +28,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors());
 
-const allowedOrigins = ['http://localhost:3000','https://etcportal-873555691.development.catalystserverless.com','https://portal.easytocheck.com'];
+
+
+const allowedOrigins = ['http://localhost:3000','https://easyportal-704392036.development.catalystserverless.com','https://portal.easytocheck.com'];
 // const allowedOrigins = ['http://localhost:3000'];
 
 app.use(cors({
@@ -38,10 +43,6 @@ app.use(cors({
 app.use((req, res, next) => { 
     const catalyst = catalystSDK.initialize(req);
     res.locals.catalyst = catalyst;
-
-    // Remove X-Frame-Options (if it exists) and use Content-Security-Policy
-    res.removeHeader('X-Frame-Options');
-    res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://crm.zoho.com;");
     
     next();
 });
@@ -58,6 +59,9 @@ app.use('/related',relateListRouter);
 app.use('/admin',adminRouter);
 app.use('/special',specialRouter);
 app.use('/deal',dealRouter);
+app.use('/gets',getsRouter);
+app.use('/create',createRouter);
+app.use('/update',updateRouter);
 
 
 

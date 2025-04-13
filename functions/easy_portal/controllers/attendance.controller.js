@@ -2,7 +2,7 @@ const axios = require('axios');
 const stream = require("stream");
 const FormData = require("form-data");
 const refreshAccessToken = require('../utils/genaccestoken');
-const { getAccessToken, handleZohoRequest } = require("./lead.controller");
+const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
 
 
 const checkin = async (req, res) => {
@@ -14,9 +14,10 @@ const checkin = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ success: false, message: "Organization ID not found." });
@@ -24,7 +25,7 @@ const checkin = async (req, res) => {
 
         const leadData = { data: [req.body] };
         let token = await getAccessToken(orgId, res);
-        const url = 'https://www.zohoapis.com/crm/v7/Attendance';
+        const url = `https://www.zohoapis.${domain}/crm/v7/Attendance`;
 
         try {
             const data = await handleZohoRequest(url, 'post', leadData, token);
@@ -74,9 +75,10 @@ const checkOut = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ success: false, message: "Organization ID not found." });
@@ -88,7 +90,7 @@ const checkOut = async (req, res) => {
         }
 
         let token = await getAccessToken(orgId, res);
-        const searchUrl = `https://www.zohoapis.com/crm/v7/Attendance/search?criteria=(EMP_Id:equals:${empId})`;
+        const searchUrl = `https://www.zohoapis.${domain}/crm/v7/Attendance/search?criteria=(EMP_Id:equals:${empId})`;
 
         try {
             // Search for the record with the given EMP_Id
@@ -99,7 +101,7 @@ const checkOut = async (req, res) => {
             }
 
             const recordId = record.id;
-            const updateUrl = `https://www.zohoapis.com/crm/v7/Attendance/${recordId}`;
+            const updateUrl = `https://www.zohoapis.${domain}/crm/v7/Attendance/${recordId}`;
 
             // Update the record to check out
             const updateData = {
@@ -131,7 +133,7 @@ const checkOut = async (req, res) => {
                     }
 
                     const recordId = record.id;
-                    const updateUrl = `https://www.zohoapis.com/crm/v7/Attendance/${recordId}`;
+                    const updateUrl = `https://www.zohoapis.${domain}/crm/v7/Attendance/${recordId}`;
 
                     // Update the record to check out
                     const updateData = {

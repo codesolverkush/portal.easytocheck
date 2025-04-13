@@ -1,6 +1,6 @@
 const express = require("express");
 const catalystAuth = require("../middlewares/catalystAuth");
-const accessControl = require("../middlewares/accesscontrol.middeware");
+const { accessControl } = require("../middlewares/accesscontrol.middeware");
 const { getAccessControlDetails } = require("../controllers/special.controller");
 const router = express.Router();
 

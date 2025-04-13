@@ -104,7 +104,7 @@ const ContactProfile = () => {
         try {
             let response;
             if (contactId) {
-                response = await axios.get(`${process.env.REACT_APP_APP_API}/lead/getcontactbyid/${contactId}`);
+                response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Contacts/${contactId}`);
                 console.log("hello",response);
 
                 if(response.status === 200){

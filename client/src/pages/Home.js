@@ -41,6 +41,9 @@ const HomePage = () => {
   const [accessData, setAccessData] = useState({});
   // Connection variable
   const [isUnauthorizedModalOpen, setIsUnauthorizedModalOpen] = useState(false);
+  const [showFeaturePopup, setShowFeaturePopup] = useState(false);
+
+
 
   const navigate = useNavigate();
 
@@ -391,100 +394,107 @@ const HomePage = () => {
     }
   };
 
-  const handleCheckIn = async () => {
-    try {
-      const currentDateTime = DateTime.now().toFormat("yyyy-MM-dd'T'HH:mm:ss");
-      const date = DateTime.now().toFormat("yyyy-MM-dd");
+  // const handleCheckIn = async () => {
+  //   try {
+  //     const currentDateTime = DateTime.now().toFormat("yyyy-MM-dd'T'HH:mm:ss");
+  //     const date = DateTime.now().toFormat("yyyy-MM-dd");
 
-      // Get user's location
-      const position = await getLocation();
-      if (!position) return;
+  //     // Get user's location
+  //     const position = await getLocation();
+  //     if (!position) return;
 
-      const { latitude, longitude } = position.coords;
-      const Check_in_Address = `${latitude},${longitude}`;
+  //     const { latitude, longitude } = position.coords;
+  //     const Check_in_Address = `${latitude},${longitude}`;
 
-      // Get user details from cookies
-      const user = getUserDetails();
-      if (!user) return;
+  //     // Get user details from cookies
+  //     const user = getUserDetails();
+  //     if (!user) return;
 
-      const { user_id, first_name, last_name } = user;
+  //     const { user_id, first_name, last_name } = user;
 
-      const requestBody = {
-        Name: `${first_name} ${last_name}/${date}`,
-        EMP_Id: `${user_id}/${date}`,
-        First_Check_in: currentDateTime,
-        Check_in_Address: Check_in_Address,
-      };
+  //     const requestBody = {
+  //       Name: `${first_name} ${last_name}/${date}`,
+  //       EMP_Id: `${user_id}/${date}`,
+  //       First_Check_in: currentDateTime,
+  //       Check_in_Address: Check_in_Address,
+  //     };
 
-      // Send the POST request
-      const response = await axios.post(
-        `${process.env.REACT_APP_APP_API}/attendance/checkin`,
-        requestBody,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+  //     // Send the POST request
+  //     const response = await axios.post(
+  //       `${process.env.REACT_APP_APP_API}/attendance/checkin`,
+  //       requestBody,
+  //       {
+  //         headers: { "Content-Type": "application/json" },
+  //       }
+  //     );
 
-      if (response.data.success) {
-        toast.success("Check-in successful!");
-      } else {
-        toast.error(response.data.message || "Check-in failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error during check-in:", error);
-      toast.error(
-        error?.response?.data?.message || "An error occurred during check-in. Please try again."
-      );
-    }
+  //     if (response.data.success) {
+  //       toast.success("Check-in successful!");
+  //     } else {
+  //       toast.error(response.data.message || "Check-in failed. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during check-in:", error);
+  //     toast.error(
+  //       error?.response?.data?.message || "An error occurred during check-in. Please try again."
+  //     );
+  //   }
+  // };
+
+  // const handleCheckOut = async () => {
+  //   try {
+  //     const currentDateTime = DateTime.now().toFormat("yyyy-MM-dd'T'HH:mm:ss");
+  //     const date = DateTime.now().toFormat("yyyy-MM-dd");
+
+  //     // Get user's location
+  //     const position = await getLocation();
+  //     if (!position) return;
+
+  //     const { latitude, longitude } = position.coords;
+  //     const Check_out_Address = `${latitude},${longitude}`;
+
+  //     // Get user details from cookies
+  //     const user = getUserDetails();
+  //     if (!user) return;
+
+  //     const { user_id, first_name, last_name } = user;
+
+  //     const requestBody = {
+  //       Name: `${first_name} ${last_name}/${date}`,
+  //       EMP_Id: `${user_id}/${date}`,
+  //       Last_Check_out: currentDateTime,
+  //       Check_out_Address: Check_out_Address,
+  //     };
+
+  //     // Send the POST request
+  //     const response = await axios.post(
+  //       `${process.env.REACT_APP_APP_API}/attendance/checkOut`,
+  //       requestBody,
+  //       {
+  //         headers: { "Content-Type": "application/json" },
+  //       }
+  //     );
+
+  //     if (response.data.success) {
+  //       toast.success("Check-out successful!");
+  //     } else {
+  //       toast.error(response.data.message || "Check-out failed. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during check-out:", error);
+  //     toast.error(
+  //       error?.response?.data?.message || "An error occurred during check-out. Please try again."
+  //     );
+  //   }
+  // };
+
+// Add this function
+  const handleShowpop = () => {
+    setShowFeaturePopup(true);
+    setTimeout(() => {
+      setShowFeaturePopup(false);
+    }, 3000);
   };
-
-  const handleCheckOut = async () => {
-    try {
-      const currentDateTime = DateTime.now().toFormat("yyyy-MM-dd'T'HH:mm:ss");
-      const date = DateTime.now().toFormat("yyyy-MM-dd");
-
-      // Get user's location
-      const position = await getLocation();
-      if (!position) return;
-
-      const { latitude, longitude } = position.coords;
-      const Check_out_Address = `${latitude},${longitude}`;
-
-      // Get user details from cookies
-      const user = getUserDetails();
-      if (!user) return;
-
-      const { user_id, first_name, last_name } = user;
-
-      const requestBody = {
-        Name: `${first_name} ${last_name}/${date}`,
-        EMP_Id: `${user_id}/${date}`,
-        Last_Check_out: currentDateTime,
-        Check_out_Address: Check_out_Address,
-      };
-
-      // Send the POST request
-      const response = await axios.post(
-        `${process.env.REACT_APP_APP_API}/attendance/checkOut`,
-        requestBody,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (response.data.success) {
-        toast.success("Check-out successful!");
-      } else {
-        toast.error(response.data.message || "Check-out failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error during check-out:", error);
-      toast.error(
-        error?.response?.data?.message || "An error occurred during check-out. Please try again."
-      );
-    }
-  };
-
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
@@ -502,7 +512,8 @@ const HomePage = () => {
               <h1 className="text-3xl font-bold text-white mb-3 text-center">Welcome to Your Command Center</h1>
               <p className="text-indigo-100 mb-6 text-center text-lg">Track, manage, and optimize your sales pipeline efficiently.</p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-8">             
+
                 <Link
                   to="/app/first"
                   title={accessData?.Leads < 2 ? "You do not have enough access to create a lead" : ""}
@@ -554,7 +565,7 @@ const HomePage = () => {
                 </Link>
 
                 <button
-                  onClick={handleCheckIn}
+                  onClick={handleShowpop}
                   className="flex flex-col items-center p-3 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-all duration-200"
                 >
                   <UserCheck className="h-6 w-6 text-white mb-2" />
@@ -562,7 +573,7 @@ const HomePage = () => {
                 </button>
 
                 <button
-                  onClick={handleCheckOut}
+                  onClick={handleShowpop}
                   className="flex flex-col items-center p-3 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-all duration-200"
                 >
                   <LogOut className="h-6 w-6 text-white mb-2" />
@@ -1007,6 +1018,26 @@ const HomePage = () => {
           onClose={() => setIsUnauthorizedModalOpen(false)}
           onConnect={handleConnectOrganization}
         />
+        {showFeaturePopup && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 transition-opacity">
+            <div className="bg-white rounded-xl shadow-2xl p-6 transform transition-all duration-300 ease-in-out scale-100 max-w-md w-full animate-bounce-in">
+              <div className="text-center">
+                <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mb-4">
+                  <svg className="h-10 w-10 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Feature Coming Soon!</h3>
+                <p className="text-gray-500 mb-4">We're working hard to bring you this exciting new feature. Stay tuned!</p>
+                <div className="mt-2">
+                  <div className="h-1 w-full bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-indigo-500 rounded-full animate-progress-shrink" style={{animationDuration: '3s'}}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
   );
 };
