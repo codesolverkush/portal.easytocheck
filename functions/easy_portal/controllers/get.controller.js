@@ -1,7 +1,7 @@
 const stream = require("stream");
 const FormData = require("form-data");
 const refreshAccessToken = require('../utils/genaccestoken');
-const { getAccessToken, handleZohoRequest } = require("./lead.controller");
+const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
 
 // THIS IS NOT IN USED
 const totalLead = async (req, res) => {
@@ -15,9 +15,10 @@ const totalLead = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         // console.log(orgId);
 
@@ -26,7 +27,7 @@ const totalLead = async (req, res) => {
         }
 
         let token = await getAccessToken(orgId, res);
-        const url = "https://www.zohoapis.com/crm/v7/coql";
+        const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         // const requestData = {
         //     select_query: "SELECT Last_Name, First_Name, Email FROM Leads WHERE Last_Name != '' LIMIT 1000"
@@ -73,9 +74,10 @@ const totalTask = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         // console.log(orgId);
 
@@ -84,7 +86,7 @@ const totalTask = async (req, res) => {
         }
 
         let token = await getAccessToken(orgId, res);
-        const url = "https://www.zohoapis.com/crm/v7/coql";
+        const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
             select_query: "SELECT Subject,Due_Date,Status,Priority,Created_Time FROM Tasks WHERE Subject != '' ORDER BY Created_Time DESC LIMIT 1000"
@@ -110,7 +112,7 @@ const totalTask = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching lead:", error);
+        console.error("Error fetching task:", error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -129,9 +131,10 @@ const totalMeeting = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         // console.log(orgId);
 
@@ -140,7 +143,7 @@ const totalMeeting = async (req, res) => {
         }
 
         let token = await getAccessToken(orgId, res);
-        const url = "https://www.zohoapis.com/crm/v7/coql";
+        const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
             select_query: "SELECT id, Event_Title, Start_DateTime, End_DateTime, Owner, Created_Time FROM Events WHERE Event_Title != '' ORDER BY Created_Time DESC LIMIT 1000"
@@ -188,9 +191,10 @@ const totalDeals = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         // console.log(orgId);
 
@@ -199,7 +203,7 @@ const totalDeals = async (req, res) => {
         }
 
         let token = await getAccessToken(orgId, res);
-        const url = "https://www.zohoapis.com/crm/v7/coql";
+        const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         // const requestData = {
         //     select_query: `SELECT id FROM Deals WHERE Created_Time > '${startDate}' LIMIT 1000`
@@ -244,9 +248,10 @@ const totalContacts = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         // console.log(orgId);
 
@@ -255,7 +260,7 @@ const totalContacts = async (req, res) => {
         }
 
         let token = await getAccessToken(orgId, res);
-        const url = "https://www.zohoapis.com/crm/v7/coql";
+        const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         // const requestData = {
         //     select_query: `SELECT id FROM Deals WHERE Created_Time > '${startDate}' LIMIT 1000`
@@ -281,79 +286,12 @@ const totalContacts = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching Deals:", error.message);
+        console.error("Error fetching Contacts:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
     }
 };
-
-
-// const leadDetails = async (req, res) => {
-//     try {
-//         const userId = req.currentUser?.user_id;
-//         // console.log(userId);
-
-//         const accessScore = req.userDetails[0].usermanagement?.Leads;
-//         // if(accesScore < 2){
-//         //     return res.status(403).json({ success: false, message: "Access Not Available" });
-//         // }
-        
-//         if (!userId) {
-//             return res.status(404).json({ message: "User ID not found." });
-//         }
-
-//         const { catalyst } = res.locals;
-//         const zcql = catalyst.zcql();
-//         const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
-//         const user = await zcql.executeZCQLQuery(userQuery);
-//         const orgId = user[0]?.usermanagement?.orgid;
-
-//         // console.log(orgId);
-
-//         if (!orgId) {
-//             return res.status(404).json({ message: "Organization ID not found." });
-//         }
-
-//         let token = await getAccessToken(orgId, res);
-//         const url = "https://www.zohoapis.com/crm/v7/coql";
-
-//         const requestData = {
-//             select_query: "SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Record_Status__s,smsmagic4__LeadIdCPY,Lead_Status,Converted__s,Converted_Date_Time,Created_Time FROM Leads WHERE Last_Name != '' ORDER BY Created_Time DESC LIMIT 1000 "
-//             // select_query: "SELECT * FROM Leads LIMIT 200"
-
-//         };
-
-//         //  const requestData = {
-//         //     select_query: "select COUNT(id) from Leads where Last_Name != ''"
-//         // };
-           
-//         try {
-//             const data = await handleZohoRequest(url, 'post', requestData, token);
-//             return res.status(200).json({ success: true, data, accessScore });
-//         } catch (error) {
-//             if (error.message === "TOKEN_EXPIRED") {
-//                 try {
-//                     token = await refreshAccessToken(req, res);
-//                     console.log("Token",token);
-//                     const data = await handleZohoRequest(url, 'get', null, token);
-//                     console.log(data);
-//                     return res.status(200).json({ success: true, data,accessScore });
-//                 } catch (refreshError) {
-//                     console.error("Error after token refresh:", refreshError.message);
-//                     return res.status(500).json({ success: false, message: refreshError.message });
-//                 }
-//             } else {
-//                 throw error;
-//             }
-//         }
-//     } catch (error) {
-//         console.error("Error fetching lead:", error);
-//         if (!res.headersSent) {
-//             return res.status(500).json({ success: false, message: error.message });
-//         }
-//     }
-// };
 
 const leadDetails = async (req, res) => {
     try {
@@ -366,19 +304,20 @@ const leadDetails = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
         }
 
         let token = await getAccessToken(orgId, res);
-        const url = "https://www.zohoapis.com/crm/v7/coql";
+        const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: "SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Record_Status__s,smsmagic4__LeadIdCPY,Lead_Status,Converted__s,Converted_Date_Time,Created_Time FROM Leads WHERE Last_Name != '' ORDER BY Created_Time DESC LIMIT 1000 "
+            select_query: "SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Lead_Status,Created_Time FROM Leads WHERE Last_Name != '' ORDER BY Created_Time DESC LIMIT 1000 "
         };
            
         try {
@@ -425,9 +364,12 @@ const dealDetails = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
+
+        console.log(orgId,domain);
 
         // console.log(orgId);
 
@@ -436,7 +378,7 @@ const dealDetails = async (req, res) => {
         }
 
         let token = await getAccessToken(orgId, res);
-        const url = "https://www.zohoapis.com/crm/v7/coql";
+        const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
             select_query: "SELECT id,Deal_Name,Closing_Date,Contact_Name,Account_Name,Stage,Pipeline,Created_Time FROM Deals WHERE Deal_Name != '' ORDER BY Created_Time DESC LIMIT 2000 "
@@ -466,7 +408,7 @@ const dealDetails = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching lead:", error);
+        // console.error("Error fetching Deals:", error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }

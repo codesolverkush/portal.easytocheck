@@ -190,7 +190,7 @@ const ContactDetails = ({ accessScore,data,username }) => {
 
       // If no cached data, fetch from API
       const response = await axios.get(
-        `${process.env.REACT_APP_APP_API}/lead/contactfield`
+        `${process.env.REACT_APP_APP_API}/gets/getfields/Contacts`
       );
 
       const fieldData = response?.data?.data?.fields || [];
@@ -268,7 +268,7 @@ const ContactDetails = ({ accessScore,data,username }) => {
     setIsSaving(true);
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_APP_API}/lead/updatecontact`,
+        `${process.env.REACT_APP_APP_API}/update/updatemoduledata/Contacts`,
         {
           id: selectedContact?.data[0]?.id,
           ...editedContact,
@@ -302,7 +302,7 @@ const ContactDetails = ({ accessScore,data,username }) => {
     } catch (error) {
       console.error("Error updating lead:", error);
       toast.error(
-        error?.response?.data?.error?.data[0]?.message || "Something went wrong"
+        error?.response?.data?.error?.data[0]?.message || error?.response?.data?.message || "Something went wrong"
       );
     } finally {
       setIsSaving(false);

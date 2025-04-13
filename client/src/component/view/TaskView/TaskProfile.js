@@ -26,7 +26,7 @@ const TaskProfile = () => {
         try {
             let response;
             if (taskId) {
-                response = await axios.get(`${process.env.REACT_APP_APP_API}/lead/getrecordbyid/${taskId}`);
+                response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Tasks/${taskId}`);
             }
             setData(response?.data?.data); // store the fetched data in state
         } catch (err) {

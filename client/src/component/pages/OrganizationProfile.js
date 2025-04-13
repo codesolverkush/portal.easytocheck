@@ -13,6 +13,7 @@ const OrganizationProfile = () => {
     const orgId = location.state?.orgId;
 
     const [profileData, setProfileData] = useState(null);
+    const [domain,setDomain] = useState("in");
     const [loading, setLoading] = useState(true);
     const [control, setControl] = useState(false);
     const [error, setError] = useState(null);
@@ -48,6 +49,7 @@ const OrganizationProfile = () => {
                     const active = organization?.isactive;
                     dispatch(setLicenseStatus(active));   
                     setProfileData(organization);
+                    setDomain(organization?.crmdomain);
 
                     const cache = await caches.open(CACHE_NAME);
 
@@ -180,7 +182,10 @@ const OrganizationProfile = () => {
                                     ) : (
                                         <Link 
                                             to="/app/connection" 
-                                            state={{ orgId: orgId || profileData.ROWID }}
+                                            state={{ 
+                                                orgId: orgId || profileData.ROWID,
+                                                domain: domain
+                                              }}
                                             className="bg-white text-indigo-700 rounded-lg px-4 py-2 font-medium hover:bg-indigo-50 transition duration-300"
                                         >
                                             Make Connection

@@ -33,7 +33,7 @@ const webtabHander = async(req,res)=>{
             const orgDetails = await zcql
             .executeZCQLQuery(selectFindQuery);
                
-   
+
             if (!orgDetails || orgDetails.length === 0) {
                return res.status(404).json({
                    success: false,
@@ -83,19 +83,77 @@ const webtabHander = async(req,res)=>{
 const removeUser = async(req,res)=>{
     try {
         const userId = req.currentUser?.user_id;
+        const emailId = req.currentUser?.email_id;
         const {catalyst} = res.locals;
         const zcql = catalyst.zcql();
         const {id} = req?.params;
         
         if(userId && id){
-            const deleteQuery = `
-             DELETE FROM usermanagement WHERE userid = '${id}'
+            // First, get the organization ID for the user being removed
+            const userQuery = `
+                SELECT orgid,domain FROM usermanagement WHERE userid = '${id}'
             `;
-           await zcql.executeZCQLQuery(deleteQuery);
+            const userResult = await zcql.executeZCQLQuery(userQuery);
+            
+            if (!userResult || userResult.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: "User not found!"
+                });
+            }
+            
+            const orgId = userResult[0]?.usermanagement?.orgid;
+            
+            // Get current license information
+            const licenseQuery = `
+                SELECT activeLicense ,superadminEmail FROM Organization WHERE ROWID = '${orgId}'
+                
+            `;
+            const licenseResult = await zcql.executeZCQLQuery(licenseQuery);
+            
+            if (!licenseResult || licenseResult.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Organization not found!"
+                });
+            }
+            if((licenseResult[0]?.Organization?.superadminEmail === emailId) && (userId === id)){
+                return res.status(400).json({
+                    success: false,
+                    message: "You are superadmin!"
+                })
+            }
+            
+            let activeLicense = licenseResult[0]?.Organization?.activeLicense;
+            
+            // Check if active license count is already 0
+            if (activeLicense <= 0) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Cannot remove user. Active license count is already at 0."
+                });
+            }
+            
+            // Delete the user
+            const deleteQuery = `
+                DELETE FROM usermanagement WHERE userid = '${id}'
+            `;
+            await zcql.executeZCQLQuery(deleteQuery);
+            
+            // Decrease active license count
+            activeLicense = parseInt(activeLicense) - 1;
+            
+            // Update the organization's active license count
+            const updateLicenseQuery = `
+                UPDATE Organization 
+                SET activeLicense = ${activeLicense}
+                WHERE ROWID = '${orgId}'
+            `;
+            await zcql.executeZCQLQuery(updateLicenseQuery);
 
            return res.status(200).send({
             success: true,
-            message: "User Delete Successfully!"
+            message: "User Deleted Successfully!"
            })
             
         }else{

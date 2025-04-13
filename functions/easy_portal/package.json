@@ -1,10 +1,11 @@
 {
 	"name": "easy_portal",
 	"version": "1.0.0",
+	"description": "Easy Portal API",
 	"main": "index.js",
 	"author": "cat1@easytocheck.com",
 	"dependencies": {
-		"axios": "^1.7.9",
+		"axios": "^1.4.0",
 		"cluster": "^0.7.7",
 		"compression": "^1.8.0",
 		"cookie-parser": "^1.4.7",
@@ -13,11 +14,16 @@
 		"express": "^4.21.2",
 		"express-rate-limit": "^7.5.0",
 		"helmet": "^8.1.0",
-		"jsonwebtoken": "^9.0.2",
+		"ioredis": "^5.3.2",
+		"jsonwebtoken": "^9.0.0",
 		"morgan": "^1.10.0",
 		"multer": "^1.4.5-lts.1",
 		"node-cache": "^5.1.2",
 		"winston": "^3.17.0",
 		"zcatalyst-sdk-node": "latest"
-	}
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"license": "ISC"
 }

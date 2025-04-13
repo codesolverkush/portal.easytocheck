@@ -237,7 +237,7 @@ const TaskView = () => {
         toast.success("Task Created Successfully!");
       }
     } catch (error) {
-      console.error("Error creating lead:", error);
+      console.error("Error creating contact:", error);
       toast.error(error?.response?.data?.error?.data[0]?.message);
     }
 

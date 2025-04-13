@@ -2,10 +2,9 @@ const axios = require('axios');
 const stream = require("stream");
 const FormData = require("form-data");
 const refreshAccessToken = require('../utils/genaccestoken');
-const { getAccessToken, handleZohoRequest } = require("./lead.controller");
+const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
 
-
-// Notes for the leads
+// Notes api
 
 const getNoteById = async (req, res) => {
     try {
@@ -18,9 +17,10 @@ const getNoteById = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         const { leadId } = req.params;
         const { module } = req.params;
@@ -34,7 +34,7 @@ const getNoteById = async (req, res) => {
         }
 
         let token = await getAccessToken(orgId, res);
-        const url = `https://www.zohoapis.com/crm/v7/${module}/${leadId}/Notes?fields=Note_Content,Note_Title,Created_Time,Parent_Id`;
+        const url = `https://www.zohoapis.${domain}/crm/v7/${module}/${leadId}/Notes?fields=Note_Content,Note_Title,Created_Time,Parent_Id`;
 
         try {
             const data = await handleZohoRequest(url, 'get', null, token);
@@ -55,7 +55,7 @@ const getNoteById = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching lead:", error);
+        console.error("Error fetching note:", error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -71,9 +71,10 @@ const createNote = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
 
 
@@ -100,7 +101,7 @@ const createNote = async (req, res) => {
         };
 
         let token = await getAccessToken(orgId, res);
-        const url = `https://www.zohoapis.com/crm/v7/${module}/${leadId}/Notes`;
+        const url = `https://www.zohoapis.${domain}/crm/v7/${module}/${leadId}/Notes`;
 
         try {
             const data = await handleZohoRequest(url, 'post', leadData, token);
@@ -119,19 +120,20 @@ const createNote = async (req, res) => {
                     return res.status(500).json({ success: false, error: refreshError.response ? refreshError.response.data : refreshError.message });
                 }
             }
-            console.error("Error creating lead:", error.message);
+            console.error("Error creating note:", error.message);
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
 
     } catch (error) {
-        console.error("Error creating lead:", error.message);
+        console.error("Error creating note:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
     }
 };
 
-// Attachments for the lead
+
+// Attachments api
 
 const attachFile = async (req, res) => {
     const userId = req.currentUser?.user_id;
@@ -141,9 +143,10 @@ const attachFile = async (req, res) => {
 
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql();
-    const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+    const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
     const user = await zcql.executeZCQLQuery(userQuery);
     const orgId = user[0]?.usermanagement?.orgid;
+    const domain = user[0]?.usermanagement?.domain;
 
     if (!orgId) {
         return res.status(404).json({ success: false, message: "Organization ID not found." });
@@ -172,7 +175,7 @@ const attachFile = async (req, res) => {
         contentType: file.mimetype
     });
 
-    const url = `https://www.zohoapis.com/crm/v7/${module}/${leadId}/Attachments`;
+    const url = `https://www.zohoapis.${domain}/crm/v7/${module}/${leadId}/Attachments`;
 
     try {
         const response = await axios.post(url, fileData, {
@@ -203,9 +206,10 @@ const getAttachFile = async (req, res) => {
 
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql();
-    const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+    const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
     const user = await zcql.executeZCQLQuery(userQuery);
     const orgId = user[0]?.usermanagement?.orgid;
+    const domain = user[0]?.usermanagement?.domain;
 
     if (!orgId) {
         return res.status(404).json({ success: false, message: "Organization ID not found." });
@@ -216,7 +220,7 @@ const getAttachFile = async (req, res) => {
 
     let token = await getAccessToken(orgId, res);
 
-    const url = `https://www.zohoapis.com/crm/v7/${module}/${leadId}/Attachments?fields=id,File_Name,Created_Time`;
+    const url = `https://www.zohoapis.${domain}/crm/v7/${module}/${leadId}/Attachments?fields=id,File_Name,Created_Time`;
 
     try {
         const response = await axios.get(url, {
@@ -245,9 +249,10 @@ const downloadAttachFile = async (req, res) => {
 
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql();
-    const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+    const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
     const user = await zcql.executeZCQLQuery(userQuery);
     const orgId = user[0]?.usermanagement?.orgid;
+    const domain = user[0]?.usermanagement?.domain;
 
     if (!orgId) {
         return res.status(404).json({ success: false, message: "Organization ID not found." });
@@ -257,7 +262,7 @@ const downloadAttachFile = async (req, res) => {
 
     let token = await getAccessToken(orgId, res);
 
-    const url = `https://www.zohoapis.com/crm/v7/Leads/${leadId}/Attachments/${attachementId}`;
+    const url = `https://www.zohoapis.${domain}/crm/v7/Leads/${leadId}/Attachments/${attachementId}`;
 
     try {
         const response = await axios.get(url, {
@@ -279,7 +284,7 @@ const downloadAttachFile = async (req, res) => {
 };
 
 
-// Activities for the particular lead
+// Activities api
 
 
 
@@ -293,9 +298,10 @@ const getOpenActivitiesById = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
@@ -306,7 +312,7 @@ const getOpenActivitiesById = async (req, res) => {
         // console.log(What_Id, Who_Id, $se_module);
 
         let token = await getAccessToken(orgId, res);
-        const url = "https://www.zohoapis.com/crm/v7/coql";
+        const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
 
 
@@ -342,7 +348,7 @@ const getOpenActivitiesById = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching lead:", error);
+        console.error("Error fetching task:", error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -360,9 +366,10 @@ const createOpenActivity = async (req, res) => {
 
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ success: false, message: "Organization ID not found." });
@@ -389,7 +396,7 @@ const createOpenActivity = async (req, res) => {
 
 
         let token = await getAccessToken(orgId, res);
-        const url = 'https://www.zohoapis.com/crm/v7/Tasks';
+        const url = `https://www.zohoapis.${domain}/crm/v7/Tasks`;
 
         try {
             const data = await handleZohoRequest(url, 'post', taskData, token);

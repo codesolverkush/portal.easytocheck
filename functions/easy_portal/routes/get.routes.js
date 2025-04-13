@@ -1,7 +1,7 @@
 const express = require('express');
 const { totalLead,totalTask,totalMeeting, totalDeals, leadDetails, totalContacts,dealDetails } = require('../controllers/get.controller');
 const catalystAuth = require('../middlewares/catalystAuth');
-const accessControl = require('../middlewares/accesscontrol.middeware');
+const { accessControl } = require('../middlewares/accesscontrol.middeware');
 const router = express.Router();
 
 

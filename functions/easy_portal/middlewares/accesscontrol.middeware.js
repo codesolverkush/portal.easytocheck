@@ -34,4 +34,5 @@ const accessControl = async (req, res, next) => {
     }
 };
 
-module.exports = accessControl;
+module.exports = {accessControl};
+

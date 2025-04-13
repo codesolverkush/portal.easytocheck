@@ -96,7 +96,7 @@ export default function CreateDealForm() {
       });
 
       const response = await axios.post(
-        `${process.env.REACT_APP_APP_API}/deal/createDeal`,
+        `${process.env.REACT_APP_APP_API}/create/createdata/Deals`,
         formattedData
       );
       if (response?.status === 200) {

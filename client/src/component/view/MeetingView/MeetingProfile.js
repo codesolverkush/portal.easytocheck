@@ -117,7 +117,7 @@ const MeetingProfile = () => {
   const fetchMeetingDetails = async (id) => {
     setLoading(true);
     try {
-      const response = await axios.get(`${process.env.REACT_APP_APP_API}/lead/getmeetingbyid/${id}`);
+      const response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Events/${id}`);
       if (response?.data?.data) {
         setMeeting(response.data.data);
       } else {
@@ -150,8 +150,8 @@ const MeetingProfile = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_APP_API}/lead/updatemeeting`,
-        editingMeeting
+        `${process.env.REACT_APP_APP_API}/update/updatemoduledata/Events`,
+       {id: meetingId, ...editingMeeting}
       );
       
       if (response?.status === 200) {
