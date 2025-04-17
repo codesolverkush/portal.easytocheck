@@ -110,38 +110,7 @@ const TaskDetailsPage = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
     Priority: "Medium"
   });
 
-  // Sample data for demonstration or fallback
-  // const sampleTasks = [
-  //   {
-  //     id: 1,
-  //     Subject: 'Follow up call',
-  //     Description: 'Call to discuss product demo and pricing options',
-  //     Status: 'Pending',
-  //     Due_Date: '2025-03-15',
-  //     Priority: 'High',
-  //     assigned_to: 'Avinash'
-  //   },
-  //   {
-  //     id: 2,
-  //     Subject: 'Send proposal',
-  //     Description: 'Email detailed proposal with custom pricing',
-  //     Status: 'Overdue',
-  //     Due_Date: '2025-03-08',
-  //     Priority: 'Medium',
-  //     assigned_to: 'Avinash'
-  //   },
-  //   {
-  //     id: 3,
-  //     Subject: 'Schedule demo',
-  //     Description: 'Arrange product demonstration with technical team',
-  //     Status: 'Completed',
-  //     Due_Date: '2025-03-20',
-  //     Priority: 'Normal',
-  //     assigned_to: 'Avinash'
-  //   }
-  // ];
-
-  
+   
   useEffect(() => {
     const fetchTasks = async () => {
       if (cachedData !== undefined) return; // Prevent unnecessary API calls if data is already cached
@@ -204,7 +173,6 @@ const TaskDetailsPage = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
         `${process.env.REACT_APP_APP_API}/related/createTask`,
         taskPayload
       );
-      console.log(response?.data?.data?.data[0]?.details.id);
       if (response?.status === 200) {
         toast.success("Task Created Successfully!");
           const newTaskAdded = {

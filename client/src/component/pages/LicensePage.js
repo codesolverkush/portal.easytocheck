@@ -38,9 +38,6 @@ const LicenseExpiredPage = () => {
           setShowPaymentModal(false);
           // You would typically redirect to dashboard or refresh the page here
         }, 3000);
-        
-        // You would typically call your backend API here to verify payment
-        console.log(`Payment ID: ${response.razorpay_payment_id}`);
       },
       modal: {
         ondismiss: function() {

@@ -22,8 +22,6 @@ export default function AttachFilePage() {
       const fileData = new FormData();
       fileData.append("file", selectedFile);
 
-      console.log("Uploading file:", selectedFile);
-
       const response = await axios.post(
         `${process.env.REACT_APP_APP_API}/lead/attach`,
          fileData,
@@ -32,15 +30,12 @@ export default function AttachFilePage() {
         }
       );
 
-      console.log(response);
-
       if (response?.data?.success) {
         toast.success("File Attached Successfully!");
       } else {
         toast.error(response?.data?.message || "File Upload Failed!");
       }
     } catch (error) {
-      console.error("Error uploading file:", error);
       toast.error("Failed to upload file!");
     } finally {
       setLoading(false);

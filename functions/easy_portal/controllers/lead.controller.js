@@ -6,12 +6,11 @@ const { validateUserAndGetOrgId, handleValidationResponse, executeZohoRequest } 
 const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
 
 
-
+// Lead controller 
 const getLead = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
-        // console.log(userId);
-        
+                
         if (!userId) {
             return res.status(404).json({ message: "User ID not found." });
         }
@@ -23,13 +22,11 @@ const getLead = async (req, res) => {
         const orgId = user[0]?.usermanagement?.orgid;
         const domain = user[0]?.usermanagement?.domain;
 
-        // console.log(orgId);
-
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
         }
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req,res);
         const url = `https://www.zohoapis.${domain}/crm/v7/settings/fields?module=Leads`;
 
         try {
@@ -42,7 +39,6 @@ const getLead = async (req, res) => {
                     const data = await handleZohoRequest(url, 'get', null, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
             } else {
@@ -50,14 +46,164 @@ const getLead = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching lead:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
     }
 };
 
+const searchRecords = async (req, res) => {
+    try {
+        const userId = req.currentUser?.user_id;
+                        
+        if (!userId) {
+            return res.status(404).json({ message: "User ID not found." });
+        }
 
+        const { catalyst } = res.locals;
+        const zcql = catalyst.zcql();
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const user = await zcql.executeZCQLQuery(userQuery);
+        const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
+        const { email, phone,company } = req.query;
+
+        if (!orgId) {
+            return res.status(404).json({ message: "Organization ID not found." });
+        }
+
+        let token = await getAccessToken(orgId,req, res);
+        const contactSearchurl = `https://www.zohoapis.${domain}/crm/v3/Contacts/search?criteria=${encodeURIComponent(`(Email:equals:${email})or(Mobile:equals:${phone})`)}`;
+        const accountSearchurl = `https://www.zohoapis.${domain}/crm/v3/Accounts/search?criteria=${encodeURIComponent(`(Account_Name:equals:${company})`)}`;
+    
+           
+        try {
+            const contactdata = await handleZohoRequest(contactSearchurl, 'get', null, token);
+            const accountData = await handleZohoRequest(accountSearchurl, 'get', null, token);
+            const data = {"Contact" : contactdata, "Account" : accountData};
+            return res.status(200).json({ success: true, data});
+        } catch (error) {
+            console.log(error)
+            if (error.message === "TOKEN_EXPIRED") {
+                try {
+                    token = await refreshAccessToken(req, res);
+                    const contactdata = await handleZohoRequest(contactSearchurl, 'get', null, token);
+                    const accountData = await handleZohoRequest(accountSearchurl, 'get', null, token);
+                    const data = {"Contact" : contactdata, "Account" : accountData};
+                    return res.status(200).json({ success: true, data});
+                } catch (refreshError) {
+                    return res.status(500).json({ success: false, message: refreshError.message });
+                }
+            } else {
+                throw error;
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        if (!res.headersSent) {
+            return res.status(500).json({ success: false, message: error.message });
+        }
+    }
+};
+
+const convertLead = async (req,res)=>{
+ 
+
+    try {
+        const userId = req.currentUser?.user_id;
+                        
+        if (!userId) {
+            return res.status(404).json({ message: "User ID not found." });
+        }
+
+        const accessScore = req.userDetails[0].usermanagement?.Leads;
+    
+        if(accessScore < 3){
+            return res.status(403).json({success: false, message: `Insufficient access rights to convert a Lead`});
+        }
+
+        const { catalyst } = res.locals;
+        const zcql = catalyst.zcql();
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const user = await zcql.executeZCQLQuery(userQuery);
+        const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
+        const { leadId,accountId,contactId,deal_name,closing_date,amount} = req.body;       
+     
+    
+    
+        // Create the main map (object in JavaScript)
+            const mp = {};
+            mp.overwrite = true;
+            mp.notify_lead_owner = true;
+            mp.notify_new_entity_owner = true;
+    
+            // Create account and contact maps
+            const accountMap = {};
+            accountMap.id = accountId || null;
+    
+            const contactMap = {};
+            contactMap.id = contactId || null;
+    
+            // Add account and contact maps to main map
+            mp.Accounts = accountMap;
+            mp.Contacts = contactMap;
+    
+            // Create deal map
+            const dealMap = {};
+            dealMap.Deal_Name = deal_name;
+            dealMap.Closing_Date = closing_date;
+            dealMap.Amount = amount
+            dealMap.Pipeline = "Standard (Standard)";
+    
+            // Add deal map to main map
+            mp.Deals = dealMap;
+    
+            // Create list and add main map to it
+            const list = [];
+            list.push(mp);
+    
+            // Create response map and add list to it
+            const responseMap = {};
+            responseMap.data = list;
+
+            console.log(responseMap)
+    
+
+        if (!orgId) {
+            return res.status(404).json({ message: "Organization ID not found." });
+        }
+
+        let token = await getAccessToken(orgId,req, res);
+        const url = `https://www.zohoapis.${domain}/crm/v7/Leads/${leadId}/actions/convert`
+   
+           
+        try {
+            const data = await handleZohoRequest(url, 'get', responseMap, token);
+            return res.status(200).json({ success: true, data});
+        } catch (error) {
+            console.log(error)
+            if (error.message === "TOKEN_EXPIRED") {
+                try {
+                    token = await refreshAccessToken(req, res);
+                    const data = await handleZohoRequest(url, 'get', null, token);
+                    return res.status(200).json({ success: true, data});
+                } catch (refreshError) {
+                    return res.status(500).json({ success: false, message: refreshError.message });
+                }
+            } else {
+                throw error;
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        if (!res.headersSent) {
+            return res.status(500).json({ success: false, message: error.message });
+        }
+    }
+    
+ 
+}
 
 // Create the meeting for the check in...
 
@@ -81,14 +227,12 @@ const checkIn = async(req,res)=>{
         }
 
         const checkInData = req.body;
-        // console.log(checkInData);
        
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req,res);
         const url = `https://www.zohoapis.${domain}/crm/v7/Events`;
 
         try {
             const data = await handleZohoRequest(url, 'post', checkInData, token);
-            // console.log(data);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {
@@ -99,16 +243,13 @@ const checkIn = async(req,res)=>{
                     const data = await handleZohoRequest(url, 'post', checkInData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, error: refreshError.response ? refreshError.response.data : refreshError.message });
                 }
             }
-            console.error("Error creating Meeting:", error.message);
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
 
     } catch (error) {
-        console.error("Error creating Meeting", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
@@ -118,5 +259,5 @@ const checkIn = async(req,res)=>{
 
 
 
-module.exports = { getLead,checkIn };
+module.exports = { getLead,checkIn,convertLead,searchRecords };
 

@@ -35,12 +35,11 @@ const updateData = async (req, res) => {
         const moduleData = { data: [req.body] };
         
        
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/${module}`;
 
         try {
-            const data = await executeZohoRequest(url, 'put', moduleData, token, req, res);            // console.log(data);
-            // console.log(data);
+            const data = await executeZohoRequest(url, 'put', moduleData, token, req, res); 
             return res.status(200).json({ success: true, data });
 
         } catch (error) {
@@ -48,7 +47,6 @@ const updateData = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(`Error updating ${module}:`, error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }

@@ -651,9 +651,6 @@ const ContactDetails = ({ accessScore,data,username }) => {
     // setNotes([newNote, ...notes]);
     setNotes([newNote, ...(notes || [])]);
   };
-
-
-  console.log('dealdata',deals);
   
   // Handle tab switching
   const handleTabSwitch = (tab) => {

@@ -45,7 +45,6 @@ export default function CreateLeadForm() {
       
       processFieldData(fieldData);
     } catch (error) {
-      console.error("Error fetching CRM fields:", error);
       toast.error(error?.response?.data?.message || "Failed to load form fields!");
     } finally {
       setLoading(false);
@@ -101,11 +100,10 @@ export default function CreateLeadForm() {
           const cache = await caches.open(CACHE_NAME);
           await cache.delete("/leads");
         } catch (cacheError) {
-          console.error("Error clearing leads cache", cacheError);
+          toast.error("Something went wrong!");
         }
       }
     } catch (error) {
-      console.error("Error creating lead:", error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       navigate("/app/leadview");

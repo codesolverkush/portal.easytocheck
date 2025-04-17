@@ -142,6 +142,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
+import toast from "react-hot-toast";
 
 // Secret key for encryption and decryption.
 // In a real-world application, store this securely and avoid exposing it in client-side code.
@@ -158,7 +159,7 @@ const decryptData = (ciphertext) => {
     const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     return decryptedData;
   } catch (error) {
-    console.error("Error decrypting data:", error);
+    toast.error("Error decrypting data:");
     return null;
   }
 };

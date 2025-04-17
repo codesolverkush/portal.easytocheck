@@ -8,7 +8,6 @@ const tokenHandler = async (e)=>{
     try {
 
     const response = await axios.get(`${process.env.REACT_APP_APP_API}/test/token-check`);
-    console.log(response);
     if(response.status === 200){
         toast.success('Cookies Data!');
       }

@@ -21,11 +21,6 @@ import Navbar from "../../common/Navbar";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import NotesUi from "../../ui/NotesUi";
-// import AddContactNoteModal from "./AddContactNoteModal";
-// import ShowAttachment from "../../testPages/ShowAttachment";
-// import AttachFileContactPage from "./AttachFileContactPage";
-// import ShowContactAttachement from "./ShowContactAttachment";
-// import TaskDetailsContactPage from "./TaskDetailsContactPage";
 import DetailsShimmer from "../../ui/DetailsShimmer";
 import DealStageBar from "../../common/DealStageBar";
 import AddDealNoteModal from "./AddDealNoteModal";
@@ -118,7 +113,6 @@ const DealDetails = ({ accessScore, data, username }) => {
   const initialDealId = location?.state?.dealId;
 
   const [selectedDealId, setSelectedDealId] = useState(initialDealId);
-  console.log(selectedDealId);
   const [dealList, setDealList] = useState([]);
   const [selectedDeal, setSelectedDeal] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -134,8 +128,6 @@ const DealDetails = ({ accessScore, data, username }) => {
 
   const [fields, setFields] = useState([]);
   const [formData, setFormData] = useState({});
-
-  //   console.log(fields);
 
   // Edit variable
 
@@ -172,7 +164,6 @@ const DealDetails = ({ accessScore, data, username }) => {
 
       if (cachedResponse) {
         const data = await cachedResponse.json();
-        console.log(data);
         processFieldData(data);
         return;
       }
@@ -279,7 +270,6 @@ const DealDetails = ({ accessScore, data, username }) => {
     }
     setIsEditing(!isEditing);
   };
-  console.log("Hello ji", selectedDeal?.data[0]?.id);
   // Function to save edited lead data
   const saveLead = async () => {
     setIsSaving(true);
@@ -492,7 +482,6 @@ const DealDetails = ({ accessScore, data, username }) => {
 
   const fetchDealDetails = () => {
     setSelectedDeal(data);
-    console.log("Hello data", data);
   };
 
   const formatDate = (dateString) => {

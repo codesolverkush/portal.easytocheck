@@ -24,12 +24,11 @@ const checkin = async (req, res) => {
         }
 
         const leadData = { data: [req.body] };
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/Attendance`;
 
         try {
             const data = await handleZohoRequest(url, 'post', leadData, token);
-            // console.log(data);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {
@@ -40,7 +39,6 @@ const checkin = async (req, res) => {
                     const data = await handleZohoRequest(url, 'post', leadData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, error: refreshError.response ? refreshError.response.data : refreshError.message });
                 }
             }
@@ -55,11 +53,9 @@ const checkin = async (req, res) => {
                 });
             }
 
-            console.error("Error creating lead:", error.message);
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
     } catch (error) {
-        console.error("Error creating lead:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
@@ -89,7 +85,7 @@ const checkOut = async (req, res) => {
             return res.status(400).json({ success: false, message: "EMP_Id is required." });
         }
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req, res);
         const searchUrl = `https://www.zohoapis.${domain}/crm/v7/Attendance/search?criteria=(EMP_Id:equals:${empId})`;
 
         try {
@@ -151,16 +147,13 @@ const checkOut = async (req, res) => {
                     return res.status(200).json({ success: true, data: updateResponse });
 
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, error: refreshError.response ? refreshError.response.data : refreshError.message });
                 }
             }
 
-            console.error("Error during checkout process:", error.message);
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
     } catch (error) {
-        console.error("Error during checkout:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }

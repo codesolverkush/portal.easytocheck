@@ -24,7 +24,6 @@ const UserSignup = () => {
     try {
 
     const response = await axios.post(`${process.env.REACT_APP_APP_API}/users/signup`,newUser);
-    console.log(response);
     if(response.status === 200){
       const data = response.data;
       setUser(data.user);

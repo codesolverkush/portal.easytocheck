@@ -33,6 +33,7 @@ import AttachFilePage from "./AttachFilePage";
 import NotesUi from "../ui/NotesUi";
 import ShimmerPage from "../ui/ContactFormShimmer";
 import DetailsShimmer from "../ui/DetailsShimmer";
+import ConvertLead from "../forms/ConvertLead";
 
 const statusColors = {
   Contacted: "bg-green-200 text-green-700",
@@ -274,6 +275,7 @@ const AddReasonModal = ({
           console.error("Error updating lead:", error);
           toast.error(
             error?.response?.data?.error?.data[0]?.message ||
+              error?.response?.data?.message ||
               "Something went wrong"
           );
         }
@@ -409,6 +411,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
 
   const [showAttachmentsPage, setShowAttachmentsPage] = useState(true);
   const [showAddAttachment, setShowAddAttachment] = useState(false);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
 
   // Button name variable
 
@@ -421,6 +424,8 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
   });
 
   const [attachments, setAttachments] = useState([]);
+  // for conversion of lead
+  const [contact, setContacts] = useState([]);
 
   useEffect(() => {
     fetchCRMFields();
@@ -572,6 +577,83 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
       setIsSaving(false);
     }
   };
+
+  // Function to save edited lead data
+  // const convertLeadHandler = async () => {
+  //   setIsSaving(true);
+  //    // Example values (replace these with actual state or props if needed)
+  //   const email = lead.Email || 'test@example.com';
+  //   const phone = lead.Phone || '9876543210';
+  //   try {
+
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_APP_API}/lead/searchrecords`,
+  //       {
+  //         params: {
+  //           email,
+  //           phone,
+  //         },
+  //       }
+
+  //     );
+  //     console.log("leadres",response);
+  //     if(response.success){
+  //       setContacts(response?.data?.data?.data[0]);
+  //       setIsSupportOpen(true);
+  //     }
+  //     else {
+  //       toast.error("Failed to update lead. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating lead:", error);
+  //     toast.error(
+  //       error?.response?.data?.error?.data[0]?.message || "Something went wrong"
+  //     );
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
+
+  // Function to handle lead conversion
+  const convertLeadHandler = async () => {
+    setIsSaving(true); // Start loading state
+    // Example values (replace these with actual state or props if needed)
+    const email = lead.Email || "test@example.com";
+    const phone = lead.Phone || "9876543210";
+    const company = lead.Company ;
+
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_APP_API}/lead/searchrecords`,
+        {
+          params: {
+            email,
+            phone,
+            company
+          },
+        }
+      );
+
+      if (response.data.success) {
+        // Set contacts data correctly
+        setContacts(response.data.data);
+        // Open the support popup
+        setIsSupportOpen(true);
+      } else {
+        toast.error("Failed to find matching records. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error searching lead records:", error);
+      toast.error(
+        error?.response?.data?.error?.data?.[0]?.message ||
+          error?.response?.data?.message ||
+          "Something went wrong"
+      );
+    } finally {
+      setIsSaving(false); // End loading state
+    }
+  };
+
 
   // Toggle details visibility
   const toggleDetails = () => {
@@ -969,19 +1051,62 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
                       </button>
                     </>
                   ) : (
-                    <button
-                      className={`border border-gray-300 px-2 sm:px-4 py-1 sm:py-2 rounded-md text-sm sm:text-base
+                    <div className="flex gap-10">
+                      <button
+                        className={`border border-gray-300 px-2 sm:px-4 py-1 sm:py-2 rounded-md text-sm sm:text-base
+  ${accessScore < 3 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"}`}
+                        onClick={() => {
+                          convertLeadHandler(); // Just call this function directly
+                        }}
+                        disabled={accessScore < 3 || isSaving} // Disable when loading or insufficient access
+                      >
+                        {isSaving ? (
+                          <span className="flex items-center">
+                            <svg
+                              className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-700"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                            Converting...
+                          </span>
+                        ) : (
+                          <span className="hidden sm:inline">Convert Lead</span>
+                        )}
+                        <Edit
+                          className={`w-4 h-4 ${
+                            isSaving ? "hidden" : "inline sm:hidden"
+                          }`}
+                        />
+                      </button>
+                      <button
+                        className={`border border-gray-300 px-2 sm:px-4 py-1 sm:py-2 rounded-md text-sm sm:text-base
                       ${
                         accessScore < 3
                           ? "opacity-50 cursor-not-allowed"
                           : "hover:bg-gray-50"
                       }`}
-                      onClick={toggleEditMode}
-                      disabled={accessScore < 3} // Disable button if accessScore is less than 3
-                    >
-                      <span className="hidden sm:inline">Edit</span>
-                      <Edit className="w-4 h-4 inline sm:hidden" />
-                    </button>
+                        onClick={toggleEditMode}
+                        disabled={accessScore < 3} // Disable button if accessScore is less than 3
+                      >
+                        <span className="hidden sm:inline">Edit</span>
+                        <Edit className="w-4 h-4 inline sm:hidden" />
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -1235,6 +1360,13 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
           />
         </div>
       )}
+
+      <ConvertLead
+        isOpen={isSupportOpen}
+        setIsOpen={setIsSupportOpen}
+        data={contact}
+        leadId={leadId}
+      />
     </>
   );
 };

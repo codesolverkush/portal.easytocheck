@@ -816,7 +816,6 @@ const DealView = () => {
       const cachedResponse = await cache.match("/deals");
       if (cachedResponse) {
         const data = await cachedResponse.json();
-        console.log(data);
         setDeals(data);
         setAccessScore(data?.accessScore);
         setLoading(false);      
@@ -825,20 +824,15 @@ const DealView = () => {
 
       // If no cached data, fetch from API
       const response = await axios.get(`${process.env.REACT_APP_APP_API}/get/dealdetails`);
-      console.log(response);
       if (response.status === 200) {
         const data = response.data || [];
         setDeals(data);
         setAccessScore(response?.data?.accessScore);
-
-        console.log(data);
-
         // Store the fetched data in Cache Storage
         const newResponse = new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
         await cache.put("/deals", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching deals", error);
       if (error.response && error.response.data && error.response.data.code === "ORG_NOT_AUTHORIZED") {
         setError({ code: "ORG_NOT_AUTHORIZED" });
         // Optional: You can add a timeout before redirecting to show the error page
@@ -867,7 +861,6 @@ const DealView = () => {
     try {
       // Fetch the latest deal details from the API
       const response = await axios.get(`${process.env.REACT_APP_APP_API}/get/dealdetails`);
-      console.log(response);
       if (response.status === 200) {
         const data = response.data || [];
         setDeals(data);
@@ -880,7 +873,7 @@ const DealView = () => {
 
       }
     } catch (error) {
-      console.error("Error fetching deals", error);
+     toast.error("Error fetching deals!");
     } finally {
       setLoading(false);
     }
@@ -979,7 +972,7 @@ const DealView = () => {
     setSelectedDeal(null);
   };
 
-  console.log(deals);
+
 
 
   // Get filtered deals once

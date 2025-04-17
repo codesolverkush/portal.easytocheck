@@ -6,7 +6,6 @@ const AddDealNoteModal = ({ isOpen, onClose, dealId, username, onNoteAdded }) =>
 
 
     const [noteContent, setNoteContent] = useState('');
-    console.log(noteContent);
     const [isSubmitting, setIsSubmitting] = useState(false);
     
   
@@ -30,8 +29,7 @@ const AddDealNoteModal = ({ isOpen, onClose, dealId, username, onNoteAdded }) =>
             Note_Title: noteTitle,
             Note_Content: noteContent
           }
-          console.log(newNote);
-  
+          
           onNoteAdded(newNote);
         }
   

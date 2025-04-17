@@ -131,12 +131,10 @@ const UserLogin = () => {
         
         if (response.status === 200) {
           const data = response.data;
-          console.log(data);
           setUser(data.user);
           dispatch(userExists(data.user));
          
           const response2 = await axios.get(`${process.env.REACT_APP_APP_API}/org/checkHandler`);
-          console.log(response2);
           if (response2.status === 200) {
             navigate("/app/orgregister");
             toast.success("Please register your organization!");

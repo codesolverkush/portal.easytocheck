@@ -55,7 +55,6 @@ const TaskCard = ({ task }) => {
         year: 'numeric'
       });
     } catch (error) {
-      console.error('Invalid date format:', dateString);
       return 'Invalid date';
     }
   };
@@ -134,7 +133,6 @@ const TaskDetailsDealPage = ({ dealId, cachedData, setCachedData, dataLoaded }) 
           if (setCachedData) setCachedData(fetchedTasks);
         }
       } catch (error) {
-        console.error('Error fetching tasks:', error);
         setTasks([]); // If API fails, treat it as no data (to prevent infinite calls)
         if (setCachedData) setCachedData([]);
       } finally {
@@ -208,8 +206,7 @@ const TaskDetailsDealPage = ({ dealId, cachedData, setCachedData, dataLoaded }) 
         });
       }
     } catch (error) {
-      console.error("Error creating task:", error);
-      toast.error(error?.response?.data?.error?.data[0]?.message);
+      toast.error(error?.response?.data?.error?.data[0]?.message || "Error creating task!");
     }
   };
   

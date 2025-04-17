@@ -85,7 +85,6 @@ const AddNoteModal = ({ isOpen, onClose, leadId, username, onNoteAdded }) => {
           Note_Title: noteTitle,
           Note_Content: noteContent
         }
-        console.log(newNote);
   
         onNoteAdded(newNote);
       }
@@ -451,7 +450,6 @@ const LeadInformationPage = ({ data, leadId, username,accessScore }) => {
       const CACHE_NAME = "crm-cache";
       const cache = await caches.open(CACHE_NAME);
       const cachedResponse = await cache.match("/lead-form-fields");
-      console.log(cachedResponse);
       
       if (cachedResponse) {
         const fieldData = await cachedResponse.json();
@@ -464,7 +462,6 @@ const LeadInformationPage = ({ data, leadId, username,accessScore }) => {
         `${process.env.REACT_APP_APP_API}/lead/getLead`
       );
 
-      console.log(response);
   
       const fieldData = response?.data?.data?.fields || [];
       extractDropdownOptions(fieldData);
@@ -1384,7 +1381,6 @@ export default LeadInformationPage;
 //           Note_Title: noteTitle,
 //           Note_Content: noteContent
 //         }
-//         console.log(newNote);
   
 //         onNoteAdded(newNote);
 //       }
@@ -1588,7 +1584,6 @@ export default LeadInformationPage;
 
 // const LeadInformationPage = ({ data, leadId, username,accessScore }) => {
 //   const lead = data?.data[0]; // Take the first lead from the array
-//   console.log(lead);
 
 
 //   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -1695,7 +1690,6 @@ export default LeadInformationPage;
 //       const CACHE_NAME = "crm-cache";
 //       const cache = await caches.open(CACHE_NAME);
 //       const cachedResponse = await cache.match("/lead-form-fields");
-//       console.log(cachedResponse);
       
 //       if (cachedResponse) {
 //         const fieldData = await cachedResponse.json();
@@ -1708,7 +1702,6 @@ export default LeadInformationPage;
 //         `${process.env.REACT_APP_APP_API}/lead/getLead`
 //       );
 
-//       console.log(response);
   
 //       const fieldData = response?.data?.data?.fields || [];
 //       extractDropdownOptions(fieldData);

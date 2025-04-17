@@ -60,7 +60,6 @@ const validateUserAndGetOrgId = async (req, res) => {
         orgId
       };
     } catch (error) {
-      console.error("Error in validateUserAndGetOrgId:", error.message);
       return {
         valid: false,
         status: 500,
@@ -115,7 +114,6 @@ const validateUserAndGetOrgId = async (req, res) => {
             data: result
           };
         } catch (refreshError) {
-          console.error("Error after token refresh:", refreshError.message);
           throw {
             success: false,
             status: 500,
@@ -124,7 +122,6 @@ const validateUserAndGetOrgId = async (req, res) => {
         }
       }
       
-      console.error(`Error in Zoho request:`, error);
       throw {
         success: false,
         status: 500,

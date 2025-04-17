@@ -25,7 +25,6 @@ const CreateContactForm = ({ isOpen, onClose, onContactCreated }) => {
         handleClose();
       }
     } catch (error) {
-      console.error("Error creating:", error);
       toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };

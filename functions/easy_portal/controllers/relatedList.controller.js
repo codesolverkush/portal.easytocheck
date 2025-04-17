@@ -9,8 +9,7 @@ const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
 const getNoteById = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
-        // console.log(userId);
-
+   
         if (!userId) {
             return res.status(404).json({ message: "User ID not found." });
         }
@@ -25,20 +24,15 @@ const getNoteById = async (req, res) => {
         const { leadId } = req.params;
         const { module } = req.params;
 
-        // console.log(module);
-
-        // console.log(orgId);
-
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
         }
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req,res);
         const url = `https://www.zohoapis.${domain}/crm/v7/${module}/${leadId}/Notes?fields=Note_Content,Note_Title,Created_Time,Parent_Id`;
 
         try {
             const data = await handleZohoRequest(url, 'get', null, token);
-            // console.log(data);
             return res.status(200).json({ success: true, data });
         } catch (error) {
             if (error.message === "TOKEN_EXPIRED") {
@@ -47,7 +41,6 @@ const getNoteById = async (req, res) => {
                     const data = await handleZohoRequest(url, 'get', null, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
             } else {
@@ -55,7 +48,6 @@ const getNoteById = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching note:", error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -84,7 +76,7 @@ const createNote = async (req, res) => {
 
         const { leadId } = req.params;
         const { module } = req.params;
-        // console.log(leadId);
+       
 
         if (!leadId || typeof leadId !== "string") {
             return res.status(400).json({ error: "Invalid Lead ID" });
@@ -100,12 +92,11 @@ const createNote = async (req, res) => {
             ]
         };
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req,res);
         const url = `https://www.zohoapis.${domain}/crm/v7/${module}/${leadId}/Notes`;
 
         try {
             const data = await handleZohoRequest(url, 'post', leadData, token);
-            // console.log(data);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {
@@ -116,16 +107,13 @@ const createNote = async (req, res) => {
                     const data = await handleZohoRequest(url, 'post', leadData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, error: refreshError.response ? refreshError.response.data : refreshError.message });
                 }
             }
-            console.error("Error creating note:", error.message);
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
 
     } catch (error) {
-        console.error("Error creating note:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
@@ -155,11 +143,9 @@ const attachFile = async (req, res) => {
     const { leadId } = req.params;
     const { module } = req.params;
 
-    let token = await getAccessToken(orgId, res);
-    // console.log(token);
+    let token = await getAccessToken(orgId,req,res);
     const file = req?.file;
-    // console.log(file);
-
+    
     if (!file) {
         return res.status(400).json({ success: false, message: "No file uploaded." });
     }
@@ -188,7 +174,6 @@ const attachFile = async (req, res) => {
 
         return res.status(200).json({ success: true, data: response.data });
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
             success: false,
             message: "File upload failed",
@@ -218,7 +203,7 @@ const getAttachFile = async (req, res) => {
     const { leadId } = req.params;
     const { module } = req.params;
 
-    let token = await getAccessToken(orgId, res);
+    let token = await getAccessToken(orgId,req,res);
 
     const url = `https://www.zohoapis.${domain}/crm/v7/${module}/${leadId}/Attachments?fields=id,File_Name,Created_Time`;
 
@@ -232,7 +217,6 @@ const getAttachFile = async (req, res) => {
 
         return res.status(200).json({ success: true, data: response.data });
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
             success: false,
             message: "Files fetching failed",
@@ -260,7 +244,7 @@ const downloadAttachFile = async (req, res) => {
 
     const { leadId, attachementId } = req.params;
 
-    let token = await getAccessToken(orgId, res);
+    let token = await getAccessToken(orgId,req,res);
 
     const url = `https://www.zohoapis.${domain}/crm/v7/Leads/${leadId}/Attachments/${attachementId}`;
 
@@ -274,7 +258,6 @@ const downloadAttachFile = async (req, res) => {
 
         return res.status(200).json({ success: true, data: response.data });
     } catch (error) {
-        // console.log(error);
         return res.status(500).json({
             success: false,
             message: "Files fetching failed",
@@ -309,9 +292,7 @@ const getOpenActivitiesById = async (req, res) => {
 
         const { What_Id, Who_Id, $se_module } = req.query;
 
-        // console.log(What_Id, Who_Id, $se_module);
-
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req,res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
 
@@ -328,7 +309,6 @@ const getOpenActivitiesById = async (req, res) => {
             select_query: `SELECT Subject, Due_Date, Status, Priority, Created_Time FROM Tasks WHERE ${condition} 
                    ORDER BY Created_Time DESC`
         };
-// console.log("request data", requestData);
 
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
@@ -340,7 +320,6 @@ const getOpenActivitiesById = async (req, res) => {
                     const data = await handleZohoRequest(url, 'post', requestData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
             } else {
@@ -348,7 +327,6 @@ const getOpenActivitiesById = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching task:", error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -390,12 +368,7 @@ const createOpenActivity = async (req, res) => {
             ]
         };
 
-
-
-        // console.log(taskData);
-
-
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req,res);
         const url = `https://www.zohoapis.${domain}/crm/v7/Tasks`;
 
         try {
@@ -410,16 +383,13 @@ const createOpenActivity = async (req, res) => {
                     const data = await handleZohoRequest(url, 'post', taskData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, error: refreshError.response ? refreshError.response.data : refreshError.message });
                 }
             }
-            console.error("Error creating task:", error.message);
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
 
     } catch (error) {
-        console.error("Error creating task:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }

@@ -23,8 +23,6 @@ const  AttachFileDealPage = ({dealId}) => {
       const fileData = new FormData();
       fileData.append("file", selectedFile);
 
-      console.log("Uploading file:", selectedFile);
-
       const response = await axios.post(
         `${process.env.REACT_APP_APP_API}/related/attach/Deals/${dealId}`,
          fileData,
@@ -32,8 +30,6 @@ const  AttachFileDealPage = ({dealId}) => {
           withCredentials: true, // Ensures cookies (e.g., auth tokens) are sent
         }
       );
-
-      console.log(response);
 
       if (response?.data?.success) {
         toast.success("File Attached Successfully!");

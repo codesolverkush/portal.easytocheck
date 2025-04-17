@@ -53,7 +53,6 @@ const TaskView = () => {
     Priority: "Medium"
   });
 
-  console.log(task);
 
   const navigate = useNavigate();
 
@@ -67,12 +66,10 @@ const TaskView = () => {
 
       // Check if data is present in cache
       const cachedResponse = await cache.match("/tasks");
-      console.log(cachedResponse);
       if (cachedResponse) {
         const data = await cachedResponse.json();
         setTask(data);
         setLoading(false);
-        console.log("Data loaded from Cache Storage!");
         return;
       }
 
@@ -86,7 +83,6 @@ const TaskView = () => {
         const newResponse = new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
         // FIXED: Changed "/task" to "/tasks" to maintain consistency
         await cache.put("/tasks", newResponse);
-        console.log("Data fetched from API and cached!");
       }
     } catch (error) {
       console.error("Error fetching tasks", error);
@@ -112,7 +108,6 @@ const TaskView = () => {
         const cache = await caches.open(CACHE_NAME);
         const newResponse = new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
         await cache.put("/tasks", newResponse);
-        console.log("Cache updated with new data!");
       }
     } catch (error) {
       console.error("Error fetching tasks", error);

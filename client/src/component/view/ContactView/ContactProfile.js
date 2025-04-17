@@ -4,6 +4,7 @@ import axios from 'axios'
 import Navbar from '../../common/Navbar';
 import ContactDetails from './ContactDetails';
 import ShimmerPage from '../../ui/ContactFormShimmer';
+import toast from 'react-hot-toast';
 // import TaskDetails from './TaskDetails';
 
 
@@ -105,8 +106,7 @@ const ContactProfile = () => {
             let response;
             if (contactId) {
                 response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Contacts/${contactId}`);
-                console.log("hello",response);
-
+               
                 if(response.status === 200){
                   setData(response?.data?.data || null); // store the fetched data in state
                   setUsername(response?.data?.username ||  "Username");
@@ -114,7 +114,7 @@ const ContactProfile = () => {
             }
             
         } catch (err) {
-           console.log(err);
+          toast.error("Contact id can't exist!");
         }
     };
 

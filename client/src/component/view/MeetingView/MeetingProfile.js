@@ -124,7 +124,6 @@ const MeetingProfile = () => {
         toast.error("No meeting data found");
       }
     } catch (error) {
-      console.error("Error fetching meeting details:", error);
       toast.error(error?.response?.data?.message || "Failed to load meeting details");
     } finally {
       setLoading(false);
@@ -160,7 +159,6 @@ const MeetingProfile = () => {
         setIsEditModalOpen(false);
       }
     } catch (error) {
-      console.error("Error updating meeting:", error);
       toast.error(error?.response?.data?.message || "Error updating meeting");
     }
   };

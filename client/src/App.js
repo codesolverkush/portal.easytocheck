@@ -41,6 +41,7 @@ const Webtab = lazy(() => import('./pages/Webtab.js'));
 const CreateDealForm = lazy(() => import('./component/forms/CreateDealForm.js'));
 const DealView = lazy(() => import('./component/view/DealView/DealView.js'));
 const DealProfile = lazy(()=> import('./component/view/DealView/DealProfile.js'));
+const AboutUs = lazy(()=> import('./component/landingComponent/AboutUs.js'));
 
 // Enhanced Loader Component
 const EnhancedLoader = () => {
@@ -98,6 +99,10 @@ function App() {
           <Route
             path="/app/signup"
             element={user ? <Navigate to="/app/home" replace /> : <LandingPage />}
+          />
+          <Route
+            path="/app/about-us"
+            element={<AboutUs/>}
           />
 
           {/* License-exempt Protected Routes */}

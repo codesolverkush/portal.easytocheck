@@ -6,6 +6,7 @@ import { IoMdClose, IoMdMail, IoMdCalendar } from "react-icons/io";
 import Navbar from "../common/Navbar";
 import { setLicenseStatus } from "../../redux/reducers/auth";
 import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
 
 const OrganizationProfile = () => {
     const location = useLocation();
@@ -41,7 +42,6 @@ const OrganizationProfile = () => {
                     
                 } else {
                     response = await axios.post(`${process.env.REACT_APP_APP_API}/org/getdetails`);
-                    console.log(response);
                 }
                 
                 if (response.data?.data?.length > 0) {
@@ -82,7 +82,7 @@ const OrganizationProfile = () => {
             const authResponse = await axios.get(`${process.env.REACT_APP_APP_API}/org/check-authorization/${orgId}`);
             setIsAuthorized(authResponse.data.authorized);
         } catch (error) {
-            console.error("Authorization check failed", error);
+          toast.error("Authorization check failed!");
         } finally {
             setAuthLoading(false);
         }

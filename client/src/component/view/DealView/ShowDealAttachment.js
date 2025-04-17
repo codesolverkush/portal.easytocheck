@@ -6,10 +6,8 @@ import axios from 'axios';
 import EnhancedTaskLoading from '../../ui/EnhancedTaskLoading';
 
 const AttachmentCard = ({ attachment }) => {
-    console.log(attachment);
   const handleDownload = async (attachmentId, fileName) => {
     try {
-        console.log(attachmentId);
       const response = await axios.get(`${process.env.REACT_APP_APP_API}/related/downloadattach/Deals/${attachment.dealId}/${attachmentId}`, {
         responseType: 'blob',
         withCredentials: true // Ensure credentials are sent with request
@@ -24,8 +22,7 @@ const AttachmentCard = ({ attachment }) => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error('Error downloading attachment:', err);
-      toast.error('Failed to download the attachment. Please try again.');
+        toast.error('Failed to download the attachment. Please try again.');
     }
   };
 
@@ -37,8 +34,7 @@ const AttachmentCard = ({ attachment }) => {
         year: 'numeric'
       });
     } catch (error) {
-      console.error('Invalid date format:', dateString);
-      return 'Invalid date';
+       return 'Invalid date';
     }
   };
 
@@ -147,7 +143,6 @@ const ShowDealAttachement = ({ dealId, cachedData, setCachedData, dataLoaded }) 
           if (setCachedData) setCachedData([]);
         }
       } catch (error) {
-        console.error("Error fetching attachments:", error);
         setError("Failed to fetch attachments. Please try again.");
         setAttachments([]);
         if (setCachedData) setCachedData([]);
@@ -223,7 +218,6 @@ const ShowDealAttachement = ({ dealId, cachedData, setCachedData, dataLoaded }) 
         toast.error(response?.data?.message || "File Upload Failed!");
       }
     } catch (error) {
-      console.error("Error uploading file:", error);
       toast.error("Failed to upload file!");
     } finally {
       setUploadLoading(false);
@@ -264,7 +258,6 @@ const ShowDealAttachement = ({ dealId, cachedData, setCachedData, dataLoaded }) 
         if (setCachedData) setCachedData([]);
       }
     } catch (error) {
-      console.error('Error refreshing attachments:', error);
       setError('Failed to refresh attachments. Please try again.');
     } finally {
       setIsLoading(false);

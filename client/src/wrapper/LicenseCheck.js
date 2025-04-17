@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import Loader from '../component/common/Loader';
 import { clearOrgCookies, setLicenseStatus } from '../redux/reducers/auth';
+import toast from 'react-hot-toast';
 
 const REFRESH_INTERVAL = 60 * 60 * 1000; // 60 minutes in milliseconds
 
@@ -21,7 +22,6 @@ const LicenseCheck = ({ children }) => {
     try {
       setLoading(true);
       const response = await axios.post(`${process.env.REACT_APP_APP_API}/org/getdetails`);
-      console.log('License check response:', response);
       
       if (response.data?.data?.length > 0) {
         const organization = response.data.data[0].Organization;
@@ -30,17 +30,15 @@ const LicenseCheck = ({ children }) => {
         setOrganizationExists(true);
       } else {
         // Organization not found
-        console.log('Organization not found, clearing cookies');
         dispatch(setLicenseStatus(false));
         dispatch(clearOrgCookies());
         setOrganizationExists(false);
       }
     } catch (error) {
-      console.error('Error fetching license details:', error);
+      // toast.error('Error fetching license details');
       
       // Check if the error is specifically about organization not found (404)
       if (error.response && error.response.status === 404) {
-        console.log('404 error - Organization not found, clearing cookies');
         setOrganizationExists(false);
         // dispatch(setLicenseStatus(false));
         dispatch(clearOrgCookies());

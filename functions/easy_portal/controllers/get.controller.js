@@ -7,8 +7,7 @@ const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
 const totalLead = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
-        // console.log(userId);
-        
+              
         if (!userId) {
             return res.status(404).json({ message: "User ID not found." });
         }
@@ -20,13 +19,13 @@ const totalLead = async (req, res) => {
         const orgId = user[0]?.usermanagement?.orgid;
         const domain = user[0]?.usermanagement?.domain;
 
-        // console.log(orgId);
+       
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
         }
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         // const requestData = {
@@ -47,7 +46,6 @@ const totalLead = async (req, res) => {
                     const data = await handleZohoRequest(url, 'post', requestData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
             } else {
@@ -55,7 +53,6 @@ const totalLead = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching lead:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -66,8 +63,7 @@ const totalLead = async (req, res) => {
 const totalTask = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
-        // console.log(userId);
-        
+               
         if (!userId) {
             return res.status(404).json({ message: "User ID not found." });
         }
@@ -79,13 +75,11 @@ const totalTask = async (req, res) => {
         const orgId = user[0]?.usermanagement?.orgid;
         const domain = user[0]?.usermanagement?.domain;
 
-        // console.log(orgId);
-
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
         }
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
@@ -100,11 +94,9 @@ const totalTask = async (req, res) => {
             if (error.message === "TOKEN_EXPIRED") {
                 try {
                     token = await refreshAccessToken(req, res);
-                    // console.log(token);
                     const data = await handleZohoRequest(url, 'post', requestData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
             } else {
@@ -112,7 +104,6 @@ const totalTask = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching task:", error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -123,8 +114,7 @@ const totalTask = async (req, res) => {
 const totalMeeting = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
-        // console.log(userId);
-        
+              
         if (!userId) {
             return res.status(404).json({ message: "User ID not found." });
         }
@@ -136,13 +126,12 @@ const totalMeeting = async (req, res) => {
         const orgId = user[0]?.usermanagement?.orgid;
         const domain = user[0]?.usermanagement?.domain;
 
-        // console.log(orgId);
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
         }
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
@@ -160,7 +149,6 @@ const totalMeeting = async (req, res) => {
                     const data = await handleZohoRequest(url, 'post', requestData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
             } else {
@@ -168,7 +156,6 @@ const totalMeeting = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching meeting:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -180,10 +167,8 @@ const totalDeals = async (req, res) => {
     // const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     
     // const startDate = `${startOfMonth.toISOString().split('T')[0]}T00:00:00-07:00`;
-    // console.log(startDate);
     try {
         const userId = req.currentUser?.user_id;
-        // console.log(userId);
         
         if (!userId) {
             return res.status(404).json({ message: "User ID not found." });
@@ -196,13 +181,11 @@ const totalDeals = async (req, res) => {
         const orgId = user[0]?.usermanagement?.orgid;
         const domain = user[0]?.usermanagement?.domain;
 
-        // console.log(orgId);
-
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
         }
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         // const requestData = {
@@ -221,7 +204,6 @@ const totalDeals = async (req, res) => {
                     const data = await handleZohoRequest(url, 'post', requestData, token);
                     return res.status(200).json({ success: true, data });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
             } else {
@@ -229,7 +211,6 @@ const totalDeals = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching Deals:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -253,13 +234,12 @@ const totalContacts = async (req, res) => {
         const orgId = user[0]?.usermanagement?.orgid;
         const domain = user[0]?.usermanagement?.domain;
 
-        // console.log(orgId);
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
         }
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         // const requestData = {
@@ -278,7 +258,6 @@ const totalContacts = async (req, res) => {
                     const data = await handleZohoRequest(url, 'post',requestData, token);
                     return res.status(200).json({ success: true, data,accessScore });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
             } else {
@@ -286,7 +265,6 @@ const totalContacts = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching Contacts:", error.message);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -313,7 +291,7 @@ const leadDetails = async (req, res) => {
             return res.status(404).json({ message: "Organization ID not found." });
         }
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
@@ -328,12 +306,11 @@ const leadDetails = async (req, res) => {
                 // Refresh token without ending the response
                 try {
                     token = await refreshAccessToken(req, res);
-                    // console.log(token);
+                   
                     const data = await handleZohoRequest(url, 'post', requestData, token);
-                    // console.log("Data",data);
+                
                     return res.status(200).json({ success: true, data, accessScore });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
             } else {
@@ -341,7 +318,6 @@ const leadDetails = async (req, res) => {
             }
         }
     } catch (error) {
-        console.error("Error fetching lead:", error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -351,8 +327,7 @@ const leadDetails = async (req, res) => {
 const dealDetails = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
-        // console.log(userId);
-
+        
         const accessScore = req.userDetails[0].usermanagement?.Leads;
         // if(accesScore < 2){
         //     return res.status(403).json({ success: false, message: "Access Not Available" });
@@ -369,15 +344,11 @@ const dealDetails = async (req, res) => {
         const orgId = user[0]?.usermanagement?.orgid;
         const domain = user[0]?.usermanagement?.domain;
 
-        console.log(orgId,domain);
-
-        // console.log(orgId);
-
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
         }
 
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
@@ -394,13 +365,13 @@ const dealDetails = async (req, res) => {
             const data = await handleZohoRequest(url, 'post', requestData, token);
             return res.status(200).json({ success: true, data, accessScore });
         } catch (error) {
+            // console.log(error)
             if (error.message === "TOKEN_EXPIRED") {
                 try {
                     token = await refreshAccessToken(req, res);
                     const data = await handleZohoRequest(url, 'get', null, token);
                     return res.status(200).json({ success: true, data,accessScore });
                 } catch (refreshError) {
-                    console.error("Error after token refresh:", refreshError.message);
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
             } else {
@@ -408,7 +379,7 @@ const dealDetails = async (req, res) => {
             }
         }
     } catch (error) {
-        // console.error("Error fetching Deals:", error);
+        console.log(error)
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }

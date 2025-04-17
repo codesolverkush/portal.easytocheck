@@ -92,14 +92,13 @@ const [editingTask, setEditingTask] = useState({
       }
 
       const response = await axios.get(`${process.env.REACT_APP_APP_API}/get/task`);
-      console.log(response);
       if (response.status === 200) {
         setTaskList(response.data?.data || []);
         const newResponse = new Response(JSON.stringify(response.data?.data), { headers: { "Content-Type": "application/json" } });
         await cache.put("/tasks-free", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching tasks", error);
+     toast.error("Something went wrong!");
     }
   };
 
@@ -109,7 +108,7 @@ const [editingTask, setEditingTask] = useState({
       const response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Tasks/${taskId}`);
       setSelectedTask(response?.data?.data);
     } catch (error) {
-      console.error("Error fetching task details", error);
+      toast.error("Error fetching task details");
     } finally {
       setLoading(false);
     }
@@ -127,8 +126,7 @@ const [editingTask, setEditingTask] = useState({
         fetchTasks();
       }
     } catch (error) {
-      console.error("Error creating task:", error);
-      toast.error(error?.response?.data?.error?.data[0]?.message);
+      toast.error(error?.response?.data?.error?.data[0]?.message || "Error creating task!");
     }
     setIsCreateModalOpen(false);
     setNewTask({
@@ -185,7 +183,6 @@ const handleEditTask = async (e) => {
       fetchTaskDetails(editingTask.id);
     }
   } catch (error) {
-    console.error("Error updating task:", error);
     toast.error(error?.response?.data?.message || "Error updating task");
   }
   setIsEditModalOpen(false);

@@ -1,10 +1,9 @@
 const NodeCache = require("node-cache");
-const cache = new NodeCache({ stdTTL: 300 }); // cache expires in 5 mins
+const cache = new NodeCache({ stdTTL: 3600 }); // cache expires in 1 hour
 
 const getOrgDetails = async (userId, zcql) => {
   const cached = cache.get(userId);
   if (cached) {
-    console.log("You get cached!")
     return cached;
   }
 

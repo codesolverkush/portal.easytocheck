@@ -34,8 +34,8 @@ const MakeConnection = () => {
     try {
       // Prepare the authorization URL with correct scope for creating leads in Zoho CRM
       // const redirectUri = encodeURIComponent('https://easyportal-704392036.development.catalystserverless.com/app');
-      const redirectUri = encodeURIComponent('http://localhost:3000/app');
-      // const redirectUri = encodeURIComponent("https://portal.easytocheck.com")
+      // const redirectUri = encodeURIComponent('http://localhost:3000/app');
+      const redirectUri = encodeURIComponent("https://portal.easytocheck.com")
       const scope = encodeURIComponent('ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoCRM.coql.READ');
       
       // Create the authorization URL
@@ -83,7 +83,6 @@ const MakeConnection = () => {
         }
       }, 500);
     } catch (error) {
-      console.error(error);
       toast.error('Failed to start authentication process');
       setIsAuthenticating(false);
     }
@@ -107,7 +106,6 @@ const MakeConnection = () => {
         navigate('/app/orgProfile', { state: { orgId } });
       }
     } catch (error) {
-      console.error(error);
       const message = error?.response?.data?.message || "Failed to connect to Zoho";
       toast.error(message);
     } finally {

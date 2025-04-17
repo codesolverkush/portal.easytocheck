@@ -5,12 +5,10 @@ const registerOrganization = async (req, res) => {
         const userId = req?.currentUser?.user_id;
 
         const { domain, orgName, street, city, state, country, zip, displayname, crmdomain, isactive, activationdate, activationEndDate, superadminEmail } = req.body;
-        // console.log(req.body);
 
         const { catalyst } = res.locals;
         const table1 = catalyst.datastore().table('usermanagement')
         const zcql = catalyst.zcql();  
-
         if (userId) {
            
             // if user already registered organization...
@@ -70,7 +68,6 @@ const registerOrganization = async (req, res) => {
             `;
 
             const checkUserResult = await zcql.executeZCQLQuery(checkUserQuery);
-            // console.log(checkUserResult);
             if (checkUserResult.length === 0) {
 
                 let rowData = {
@@ -120,12 +117,8 @@ const organizationExists = async(req,res)=>{
         LIMIT 1
     `;
 
-    // console.log(checkDomainQuery);
 
     const userExist = await zcql.executeZCQLQuery(checkDomainQuery);
-
-     
-    // console.log(userExist);
 
     if (userExist && userExist.length > 0) {
         const orgId = userExist[0]?.usermanagement?.orgid;
@@ -138,8 +131,6 @@ const organizationExists = async(req,res)=>{
           `
           const orgdata = await await zcql
           .executeZCQLQuery(orgDomainQuery);
-
-        //   console.log(orgdata);
     
             return res.status(208).send({
                 status: true,
@@ -168,7 +159,6 @@ const organizationExists = async(req,res)=>{
     }
 
     } catch (error) {
-        // console.log(error);
         res.status(500).json({
           success: false,
           message: "Internal Server Error!",
@@ -206,7 +196,6 @@ const getOrganizationDetails = async(req,res)=>{
         })
     }    
    } catch (error) {
-    // console.log(error);
       res.status(500).send({
         message: error
       })
@@ -220,10 +209,6 @@ const getOrgDetails = async(req,res)=>{
      const userId = req.currentUser?.user_id;
      const {catalyst} = res.locals;
      const zcql = catalyst.zcql();
-
-
-    //  console.log("Catalyst Instance:", catalyst);
-    //  console.log("ZCQL Instance:", zcql);
      
      if(userId){
          const orgQuery = `
@@ -231,9 +216,7 @@ const getOrgDetails = async(req,res)=>{
          `;
          const orgDetail = await zcql.executeZCQLQuery(orgQuery);
          const orgId = orgDetail[0]?.usermanagement?.orgid;
-        //  console.log(orgId)
-
-
+        
          if (!orgId) {
             return res.status(404).json({
                 success: false,
@@ -270,7 +253,6 @@ const getOrgDetails = async(req,res)=>{
          })
      }    
     } catch (error) {
-    //  console.log(error);
        res.status(500).send({
          message: error
        })
@@ -282,13 +264,10 @@ const checkAuthorization = async (req, res) => {
 
     const userId = req?.currentUser?.user_id;
     const { orgId } = req.params;
-    // console.log(orgId);
-
+   
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql(); 
 
-    // console.log(orgId);
-    // console.log(userId);
     try {
         if(userId){
 
@@ -323,7 +302,7 @@ const requestRefreshToken = async (req, res) => {
       const { clientId, clientSecret, authCode } = req.body;
     //   let {orgId} = req.body;
       const userId = req?.currentUser?.user_id;
-      console.log(req.userDetails);
+     
 
     //  Initialized the catalyst instance...
 
@@ -367,7 +346,7 @@ const requestRefreshToken = async (req, res) => {
       // Make a request to Zoho's token endpoint
     
       const tokenResponse = await axios.post(
-        `https://accounts.zoho.${domain}/oauth/v2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${authCode}&grant_type=authorization_code&redirect_uri=http://localhost:3000/app`,
+        `https://accounts.zoho.${domain}/oauth/v2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${authCode}&grant_type=authorization_code&redirect_uri=https://portal.easytocheck.com`,
         null, null
       );
       
@@ -393,7 +372,6 @@ const requestRefreshToken = async (req, res) => {
       });
     
     } catch (error) {
-      console.error("Error requesting refresh token:", error);
       const errorMessage = error.response?.data?.message || "Failed to generate tokens";
       return res.status(500).json({ 
         message: errorMessage, 
@@ -408,8 +386,7 @@ const requestRefreshToken = async (req, res) => {
 const makeconnection = async (req, res) => {
     try {
         const { clientid, clientsecret, refreshtoken, authcode, orgId } = req.body;
-        // console.log(orgId);
-
+       
         // Check if all required fields are provided
         
         if (!clientid || !clientsecret || !refreshtoken || !authcode || !orgId) {
@@ -443,7 +420,6 @@ const makeconnection = async (req, res) => {
         return res.status(200).json({ message: "Connection established successfully." });
 
     } catch (error) {
-        console.error("Error creating connection:", error);
         return res.status(500).json({ message: "Internal Server Error", error: error});
     }
 }

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import axios from 'axios'
 import Navbar from '../../common/Navbar';
 import TaskDetails from './TaskDetails';
+import toast from 'react-hot-toast';
 
 
 const Shimmer = () => {
@@ -30,7 +31,7 @@ const TaskProfile = () => {
             }
             setData(response?.data?.data); // store the fetched data in state
         } catch (err) {
-           console.log(err);
+          toast.error("You can't fetch this task details!")
         }
     };
 

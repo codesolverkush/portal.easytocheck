@@ -3,7 +3,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const  AttachFileContactPage = ({contactId}) => {
-    console.log("contactid",contactId);
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -23,8 +22,6 @@ const  AttachFileContactPage = ({contactId}) => {
       const fileData = new FormData();
       fileData.append("file", selectedFile);
 
-      console.log("Uploading file:", selectedFile);
-
       const response = await axios.post(
         `${process.env.REACT_APP_APP_API}/related/attach/Contacts/${contactId}`,
          fileData,
@@ -32,9 +29,7 @@ const  AttachFileContactPage = ({contactId}) => {
           withCredentials: true, // Ensures cookies (e.g., auth tokens) are sent
         }
       );
-
-      console.log(response);
-
+      
       if (response?.data?.success) {
         toast.success("File Attached Successfully!");
       } else {

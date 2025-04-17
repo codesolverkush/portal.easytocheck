@@ -39,7 +39,7 @@ const createNewData = async (req, res) => {
 
         const moduleData = { data: [req.body] };
               
-        let token = await getAccessToken(orgId, res);
+        let token = await getAccessToken(orgId,req,res);
         const url = `https://www.zohoapis.${domain}/crm/v7/${module}`;
 
         try {
@@ -54,7 +54,6 @@ const createNewData = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(`Error creating ${module}:`, error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }

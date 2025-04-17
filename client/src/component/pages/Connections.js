@@ -32,7 +32,6 @@ const Connections = () => {
     if (redirectUrl) {
       window.location.href = redirectUrl;
     }
-    // console.log(redirectUrl);
     toast.success('You are redirecting...')
     // if(response.status === 200){
     //   const data = response.data;

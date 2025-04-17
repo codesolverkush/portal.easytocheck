@@ -7,6 +7,7 @@ import UserContext from './context/UserContext';
 import { BrowserRouter, HashRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import SupportPopupProvider from './wrapper/PopupProvider';
 
 // This is the ID of the div in your index.html file
 
@@ -17,6 +18,7 @@ const root = createRoot(rootElement);
 root.render(
 
     <UserContext>
+    <SupportPopupProvider>
      <Provider store={store}>
         <HashRouter>
         {/* <div onContextMenu={(e)=>e.preventDefault()}> */}
@@ -24,6 +26,7 @@ root.render(
         {/* </div> */}
         </HashRouter>
      </Provider>
+    </SupportPopupProvider>
       </UserContext>,
  
 );

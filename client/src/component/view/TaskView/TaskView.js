@@ -99,7 +99,6 @@ const TaskView = () => {
 
       }
     } catch (error) {
-      console.error("Error fetching tasks", error);
       if (error.response && error.response.data && error.response.data.code === "ORG_NOT_AUTHORIZED") {
         setError({ code: "ORG_NOT_AUTHORIZED" });
         // Optional: You can add a timeout before redirecting to show the error page
@@ -139,7 +138,7 @@ const TaskView = () => {
 
       }
     } catch (error) {
-      console.error("Error fetching tasks", error);
+      toast.error("Error fetching task!");
     } finally {
       setLoading(false);
     }
@@ -266,8 +265,7 @@ const TaskView = () => {
         toast.success("Task Created Successfully!");
       }
     } catch (error) {
-      console.error("Error creating task:", error);
-      toast.error(error?.response?.data?.error?.data[0]?.message);
+      toast.error(error?.response?.data?.error?.data[0]?.message || "Error creating task!");
     } finally {
       setIsSubmitting(false);
       setIsCreateModalOpen(false);

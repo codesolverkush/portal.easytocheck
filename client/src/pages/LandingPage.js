@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import {
   AlertCircle,
   BarChart2,
@@ -10,12 +12,53 @@ import {
   Phone,
   Globe,
   ChevronDown,
+  Twitter,
+  Instagram,
+  Linkedin,
+  Facebook,
 } from "lucide-react";
 import Navbar2 from "./Navbar2";
+import { FaFacebook, FaHeadphones } from "react-icons/fa";
+import IconZ from "../component/ui/Icons";
+import { openSupportPopup } from "../utils/supportTrigger";
+import supportLogo from '../images/support1.png'
 
 const LandingPage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [billingCycle, setBillingCycle] = useState("monthly");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [images, setImages] = useState({});
+
+  // Form refs for auto-filling
+  const nameInputRef = useRef(null);
+  const emailInputRef = useRef(null);
+  const messageInputRef = useRef(null);
+
+  console.log(images);
+
+  const yearlyDiscount = 0.2; // 20% discount for yearly billing
+
+  const plan = {
+    name: "Professional Plus",
+    monthlyPrice: 500,
+    features: [
+      "Complete Pre Sales Access",
+      "Admin Control",
+      "Record Supervision available",
+      "Easy connect with Zoho CRM",
+      "Advanced Dashboard",
+      "Multiple Session available",
+      "Priority 24/7 Support*",
+      "Custom Branding Options*",
+      "Admin Portal",
+    ],
+  };
+
+  // Calculate yearly price with discount
+  const yearlyPrice = Math.round(plan.monthlyPrice * 12 * (1 - yearlyDiscount));
+  // Calculate monthly equivalent price as a whole number
+  const monthlyEquivalent = Math.floor(yearlyPrice / 12);
 
   // Handle scroll effect for navbar
   useEffect(() => {
@@ -26,16 +69,79 @@ const LandingPage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const fetchImages = async()=>{
-    
-  }
+  //  Fetching the image
 
-  useEffect(()=>{
-    fetchImages()
-  })
+  // useEffect(() => {
+  //   const fetchMetaData = async () => {
+  //     try {
+  //       const cache = await caches.open("meta-data");
 
-  const openNewWindow = (url) => {
-    window.open(url, "_blank");
+  //       // Check if data is present in cache
+  //       const cachedResponse = await cache.match("/images");
+  //       if (cachedResponse) {
+  //         const data = await cachedResponse.json();
+  //         console.log(data);
+  //         setImages(data);
+  //         return;
+  //       }
+
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_APP_API}/getmetadata/images`
+  //       );
+
+  //       if (response.status === 200) {
+  //         setImages(response?.data?.data[0]?.etcadminlogs);
+  //         const newResponse = new Response(
+  //           JSON.stringify(response?.data?.data[0]?.etcadminlogs),
+  //           { headers: { "Content-Type": "application/json" } }
+  //         );
+  //         await cache.put("/images", newResponse);
+  //       }
+  //     } catch (error) {
+  //       // Silently redirect to signup without showing error
+  //       // 
+        
+  //     }
+  //   };
+
+  //   fetchMetaData();
+  // }, [setImages]);
+
+  useEffect(() => {
+    const fetchMetaData = async () => {
+      try {
+        const cache = await caches.open("meta-data");
+        const cacheKey = `${process.env.REACT_APP_APP_API}/getmetadata/images`;
+  
+        const cachedResponse = await cache.match(cacheKey);
+        if (cachedResponse) {
+          const data = await cachedResponse.json();
+          setImages(data);
+          return;
+        }
+  
+        const response = await axios.get(cacheKey);
+  
+        if (response.status === 200) {
+          const metaData = response?.data?.data[0]?.etcadminlogs;
+          setImages(metaData);
+          const newResponse = new Response(JSON.stringify(metaData), {
+            headers: { "Content-Type": "application/json" },
+          });
+          await cache.put(cacheKey, newResponse);
+        }
+      } catch (error) {
+        console.error("Metadata Fetch Error:", error);
+        // Optionally redirect or show fallback
+      }
+    };
+  
+    fetchMetaData();
+  }, []);
+  
+
+  const openSameWindow = (url) => {
+    window.open(url, "_self");
   };
 
   const features = [
@@ -64,6 +170,39 @@ const LandingPage = () => {
     },
   ];
 
+  // Function to handle scrolling and auto-fill contact form
+  const scrollToDemo = (sectionId, event, autoFill = false) => {
+    event.preventDefault();
+
+    // Close mobile menu if open
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+
+    const section = document.getElementById(sectionId);
+
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+
+      // Update URL without page reload
+      window.history.pushState({}, "", `#${sectionId}`);
+
+      // If autoFill is true, fill the form with dummy data
+      if (autoFill && sectionId === "contact-form") {
+        setTimeout(() => {
+          if (nameInputRef.current) nameInputRef.current.value = "";
+          if (emailInputRef.current) emailInputRef.current.value = "";
+          if (messageInputRef.current)
+            messageInputRef.current.value =
+              "I'd like to schedule a demo to learn more about your portal. Please contact me at your earliest convenience.";
+        }, 800); // Slight delay to ensure smooth scrolling completes
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
@@ -87,29 +226,32 @@ const LandingPage = () => {
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-8 md:gap-12">
             <div className="w-full lg:w-1/2 text-center lg:text-left lg:pr-12 sm:mb-10 mb-10">
               <div className="inline-block px-4 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium mb-4 md:mb-6">
-                Modern CRM for Growing Businesses
+                Easy Portal for Light Users
               </div>
 
               <h2 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
-                Transform Your Business with Our
+                Transform Your Business with Our{" "}
                 <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                   Smart Portal
                 </span>
               </h2>
               <p className="mt-6 text-xl text-gray-600 max-w-3xl mx-auto">
-                Streamline your workflow, boost productivity, and grow your
-                business with our intelligent customer relationship management
-                solution.
+                Assign Light Users or Field Agents to their respective Leads,
+                Contacts, and all Pre-Sales module records. Enable one-tap
+                connection with your Zoho CRM.
               </p>
 
               <div className="mt-6 md:mt-10 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
                 <button
-                  onClick={() => openNewWindow(`/__catalyst/auth/signup`)}
+                  onClick={() => openSameWindow(`/__catalyst/auth/signup`)}
                   className="px-8 py-3.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-md flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
                   Start Free Trial <ArrowRight size={20} />
                 </button>
-                <button className="px-8 py-3.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
+                <button
+                  onClick={(e) => scrollToDemo("contact-form", e, true)}
+                  className="px-8 py-3.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
+                >
                   <Phone size={20} /> Schedule Demo
                 </button>
               </div>
@@ -193,12 +335,12 @@ const LandingPage = () => {
                   {feature.title}
                 </h4>
                 <p className="mt-3 text-gray-600">{feature.description}</p>
-                <a
-                  href="#"
+                <Link
+                  to="#"
                   className="mt-4 inline-flex items-center text-indigo-600 hover:text-indigo-800"
                 >
                   Learn more <ArrowRight size={16} className="ml-1" />
-                </a>
+                </Link>
               </div>
             ))}
           </div>
@@ -236,7 +378,7 @@ const LandingPage = () => {
                 </div>
                 <div className="bg-indigo-50 p-6 flex items-center justify-center">
                   <img
-                    src="https://sellingsignals.com/wp-content/uploads/2022/01/Example-open-pipe-dashboard-from-Salesforce-Essentials.png"
+                    src={images?.image2}
                     alt="Dashboard Preview"
                     className="rounded-lg shadow-lg max-w-full"
                   />
@@ -247,84 +389,6 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <div className="inline-block px-4 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium mb-6">
-              Our Impact
-            </div>
-            <h3 className="text-4xl font-bold text-gray-900">
-              Trusted by businesses worldwide
-            </h3>
-            <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
-              See the numbers that define our success and the impact we've made
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div className="bg-gray-50 p-10 rounded-2xl shadow-sm">
-              <div className="inline-block p-4 bg-indigo-100 rounded-2xl mb-6">
-                <Users size={32} className="text-indigo-600" />
-              </div>
-              <div className="text-5xl font-bold text-indigo-600">10k+</div>
-              <div className="mt-3 text-xl text-gray-600">Active Users</div>
-              <p className="mt-3 text-gray-500 text-sm">
-                Across 50+ countries globally
-              </p>
-            </div>
-            <div className="bg-gray-50 p-10 rounded-2xl shadow-sm">
-              <div className="inline-block p-4 bg-green-100 rounded-2xl mb-6">
-                <CheckCircle size={32} className="text-green-600" />
-              </div>
-              <div className="text-5xl font-bold text-green-600">98%</div>
-              <div className="mt-3 text-xl text-gray-600">
-                Customer Satisfaction
-              </div>
-              <p className="mt-3 text-gray-500 text-sm">
-                Based on over 5,000 reviews
-              </p>
-            </div>
-            <div className="bg-gray-50 p-10 rounded-2xl shadow-sm">
-              <div className="inline-block p-4 bg-purple-100 rounded-2xl mb-6">
-                <Phone size={32} className="text-purple-600" />
-              </div>
-              <div className="text-5xl font-bold text-purple-600">24/7</div>
-              <div className="mt-3 text-xl text-gray-600">Customer Support</div>
-              <p className="mt-3 text-gray-500 text-sm">
-                Always available to help you
-              </p>
-            </div>
-          </div>
-
-          {/* Social proof */}
-          <div className="mt-20 bg-indigo-50 rounded-2xl p-10 text-center">
-            <div className="flex justify-center space-x-6 mb-8">
-              {[...Array(5)].map((_, i) => (
-                <div
-                  key={i}
-                  className="w-20 h-10 bg-white rounded-md shadow-sm flex items-center justify-center"
-                >
-                  <div className="w-12 h-6 bg-gray-200 rounded"></div>
-                </div>
-              ))}
-            </div>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto italic">
-              "Implementing this CRM has transformed how we manage our customer
-              relationships. Our sales team productivity increased by 35% in
-              just three months."
-            </p>
-            <div className="mt-6">
-              <div className="font-semibold text-gray-900">Sarah Johnson</div>
-              <div className="text-sm text-gray-500">
-                VP of Sales, TechCorp Inc.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Pricing Section */}
       <div id="pricing" className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
@@ -335,124 +399,103 @@ const LandingPage = () => {
               Simple, Transparent Pricing
             </h3>
             <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
-              No hidden fees. Choose the plan that works best for you.
+              All features included. No hidden fees.
             </p>
           </div>
 
           <div className="flex justify-center mb-10">
             <div className="bg-white p-1 rounded-lg shadow-sm inline-flex items-center">
-              <button className="px-4 py-2 bg-indigo-600 text-white rounded-md">
+              <button
+                className={`px-4 py-2 ${
+                  billingCycle === "monthly"
+                    ? "bg-indigo-600 text-white"
+                    : "text-gray-700"
+                } rounded-md`}
+                onClick={() => setBillingCycle("monthly")}
+              >
                 Monthly
               </button>
-              <button className="px-4 py-2 text-gray-700">Yearly</button>
+              <button
+                className={`px-4 py-2 ${
+                  billingCycle === "yearly"
+                    ? "bg-indigo-600 text-white"
+                    : "text-gray-700"
+                } rounded-md`}
+                onClick={() => setBillingCycle("yearly")}
+              >
+                Yearly
+              </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Starter",
-                price: "29",
-                features: [
-                  "5 Team Members",
-                  "1GB Storage",
-                  "Email Integration",
-                  "Basic Analytics",
-                  "Mobile App Access",
-                ],
-              },
-              {
-                name: "Professional",
-                price: "99",
-                popular: true,
-                features: [
-                  "20 Team Members",
-                  "10GB Storage",
-                  "Email Integration",
-                  "API Access",
-                  "Advanced Analytics",
-                  "Mobile App Access",
-                  "Priority Support",
-                ],
-              },
-              {
-                name: "Enterprise",
-                price: "299",
-                features: [
-                  "Unlimited Team Members",
-                  "Unlimited Storage",
-                  "Email Integration",
-                  "API Access",
-                  "Custom Solutions",
-                  "Dedicated Support Manager",
-                  "Advanced Security Features",
-                  "Custom Integrations",
-                ],
-              },
-            ].map((plan, index) => (
-              <div
-                key={index}
-                className={`bg-white rounded-2xl shadow-lg overflow-hidden border ${
-                  plan.popular
-                    ? "border-indigo-600 ring-2 ring-indigo-600 ring-opacity-20"
-                    : "border-gray-100"
-                }`}
-              >
-                {plan.popular && (
-                  <div className="bg-indigo-600 text-white text-sm font-medium py-2 text-center">
-                    Most Popular
+          <div className="max-w-md mx-auto">
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-indigo-600 ring-2 ring-indigo-600 ring-opacity-20">
+              <div className="bg-indigo-600 text-white text-sm font-medium py-2 text-center">
+                Most Popular
+              </div>
+              <div className="p-8">
+                <h4 className="text-2xl font-semibold text-gray-900">
+                  {plan.name}
+                </h4>
+                <div className="mt-4 flex items-baseline">
+                  {billingCycle === "monthly" ? (
+                    <>
+                      <div className="text-5xl font-bold text-gray-900">
+                        {plan.monthlyPrice}
+                      </div>
+                      <div className="ml-1 text-xl font-normal text-gray-500">
+                        /month
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-5xl font-bold text-gray-900">
+                        {monthlyEquivalent}
+                      </div>
+                      <div className="ml-1 text-xl font-normal text-gray-500">
+                        /month
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {billingCycle === "monthly" ? (
+                  <p className="mt-2 text-gray-500">Billed monthly</p>
+                ) : (
+                  <div className="mt-2">
+                    <p className="text-gray-500">
+                      Billed annually ({yearlyPrice})
+                    </p>
+                    <p className="text-green-600 font-medium">
+                      Save {Math.round(plan.monthlyPrice * 12 - yearlyPrice)}{" "}
+                      with annual billing
+                    </p>
                   </div>
                 )}
-                <div className="p-8">
-                  <h4 className="text-2xl font-semibold text-gray-900">
-                    {plan.name}
-                  </h4>
-                  <div className="mt-4 flex items-baseline">
-                    <div className="text-5xl font-bold text-gray-900">
-                      ${plan.price}
-                    </div>
-                    <div className="ml-1 text-xl font-normal text-gray-500">
-                      /month
-                    </div>
-                  </div>
-                  <p className="mt-2 text-gray-500">Billed monthly</p>
 
-                  <ul className="mt-8 space-y-4">
-                    {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-start">
-                        <CheckCircle
-                          size={20}
-                          className="flex-shrink-0 text-indigo-600 mt-0.5"
-                        />
-                        <span className="ml-3 text-gray-600">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                <ul className="mt-8 space-y-4">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-start">
+                      <CheckCircle
+                        size={20}
+                        className="flex-shrink-0 text-indigo-600 mt-0.5"
+                      />
+                      <span className="ml-3 text-gray-600">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
 
-                  <button
-                    className={`mt-8 w-full px-6 py-3.5 rounded-lg transition-colors ${
-                      plan.popular
-                        ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-md"
-                        : "bg-white text-indigo-600 border border-indigo-600 hover:bg-indigo-50"
-                    }`}
-                  >
-                    Get Started
-                  </button>
-                </div>
+                <button className="mt-8 w-full px-6 py-3.5 rounded-lg transition-colors bg-indigo-600 text-white hover:bg-indigo-700 shadow-md">
+                  Get Started Now
+                </button>
+
+                {billingCycle === "yearly" && (
+                  <p className="mt-4 text-center text-sm text-indigo-600 font-medium">
+                    30-day money-back guarantee
+                  </p>
+                )}
               </div>
-            ))}
-          </div>
-
-          <div className="mt-16 text-center">
-            <p className="text-gray-600">
-              Need a custom solution for your enterprise?
-            </p>
-            <a
-              href="#contact"
-              className="mt-2 inline-flex items-center text-indigo-600 font-medium hover:text-indigo-800"
-            >
-              Contact our sales team <ArrowRight size={16} className="ml-1" />
-            </a>
+            </div>
           </div>
         </div>
       </div>
@@ -482,12 +525,12 @@ const LandingPage = () => {
                     <p className="mt-1 text-gray-600">
                       Our friendly team is here to help.
                     </p>
-                    <a
-                      href="mailto:support@crmsystem.com"
+                    <Link
+                      to="mailto:zoho@easytocheck.com"
                       className="mt-2 inline-block text-indigo-600 hover:text-indigo-800"
                     >
-                      support@crmsystem.com
-                    </a>
+                      zoho@easytocheck.com
+                    </Link>
                   </div>
                 </div>
 
@@ -502,12 +545,19 @@ const LandingPage = () => {
                     <p className="mt-1 text-gray-600">
                       Mon-Fri from 8am to 5pm.
                     </p>
-                    <a
-                      href="tel:+15555555555"
+                    <Link
+                      to="tel:+919899277932"
                       className="mt-2 inline-block text-indigo-600 hover:text-indigo-800"
                     >
-                      +1 (555) 555-5555
-                    </a>
+                      +91 9899277932
+                    </Link>
+                    <br />
+                    <Link
+                      to="tel:+918789711238"
+                      className="mt-2 inline-block text-indigo-600 hover:text-indigo-800"
+                    >
+                      +91 8789711238
+                    </Link>
                   </div>
                 </div>
 
@@ -523,16 +573,19 @@ const LandingPage = () => {
                       Come say hello at our office.
                     </p>
                     <p className="mt-2 text-gray-600">
-                      100 Main Street
+                      C312, Tower C, Noida One IT Park, Sec 62
                       <br />
-                      San Francisco, CA 94111
+                      Noida (National Capital Region), India, 201309
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-md">
+            <div
+              id="contact-form"
+              className="bg-gray-50 rounded-2xl p-8 shadow-md"
+            >
               <h4 className="text-xl font-semibold text-gray-900 mb-6">
                 Send us a message
               </h4>
@@ -547,6 +600,7 @@ const LandingPage = () => {
                   <input
                     type="text"
                     id="name"
+                    ref={nameInputRef}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Your full name"
                   />
@@ -561,6 +615,7 @@ const LandingPage = () => {
                   <input
                     type="email"
                     id="email"
+                    ref={emailInputRef}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="you@company.com"
                   />
@@ -574,6 +629,7 @@ const LandingPage = () => {
                   </label>
                   <textarea
                     id="message"
+                    ref={messageInputRef}
                     rows={4}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="How can we help you?"
@@ -599,7 +655,7 @@ const LandingPage = () => {
               <div className="flex items-center space-x-2">
                 <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
                   <Globe className="text-white" size={24} />
-                </div>
+                </div>  
                 <h4 className="text-2xl font-bold text-white">Easy Portal</h4>
               </div>
               <p className="mt-4 text-gray-400 max-w-md">
@@ -607,17 +663,38 @@ const LandingPage = () => {
                 Streamline workflows and increase customer satisfaction.
               </p>
               <div className="mt-6 flex space-x-4">
-                {["facebook", "twitter", "instagram", "linkedin"].map(
-                  (social) => (
-                    <a
-                      key={social}
-                      href="#"
-                      className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-600 transition-colors"
-                    >
-                      <span className="w-5 h-5 bg-gray-500 rounded-sm"></span>
-                    </a>
-                  )
-                )}
+                {[
+                  {
+                    name: "zoho",
+                    icon: IconZ,
+                    url: "https://www.zoho.com/partners/find-partner-profile.html?partnerid=baf0b46ef74ed349968c06eeef3a9022",
+                  },
+                  {
+                    name: "facebook",
+                    icon: Facebook,
+                    url: "https://www.facebook.com/easytocheck",
+                  },
+                  {
+                    name: "linkedin",
+                    icon: Linkedin,
+                    url: "https://www.linkedin.com/company/easytocheck-software-solutions",
+                  },
+                  {
+                    name: "website",
+                    icon: Globe,
+                    url: "https://easytocheck.com",
+                  },
+                ].map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.url}
+                    className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-600 transition-colors"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <social.icon className="w-5 h-5 text-white" />
+                  </a>
+                ))}
               </div>
             </div>
 
@@ -625,52 +702,30 @@ const LandingPage = () => {
               <h4 className="text-lg font-bold mb-4 text-white">Product</h4>
               <ul className="space-y-3">
                 <li>
-                  <a
-                    href="#features"
+                  <Link
+                    to="#features"
+                    onClick={(e) => scrollToDemo("features", e)}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Features
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#pricing"
+                  <Link
+                    to="#pricing"
+                    onClick={(e) => scrollToDemo("pricing", e)}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Pricing
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="#"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Security
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Security
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    API
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Integrations
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -679,36 +734,30 @@ const LandingPage = () => {
               <h4 className="text-lg font-bold mb-4 text-white">Company</h4>
               <ul className="space-y-3">
                 <li>
-                  <a
-                    href="#about"
+                  <Link
+                    to="#about"
+                    onClick={(e) => scrollToDemo("about", e)}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     About
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="#"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Careers
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#contact"
+                  <Link
+                    to="#contact"
+                    onClick={(e) => scrollToDemo("contact", e)}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Contact
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Partners
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -717,36 +766,28 @@ const LandingPage = () => {
               <h4 className="text-lg font-bold mb-4 text-white">Legal</h4>
               <ul className="space-y-3">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="#"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="#"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Terms of Service
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="#"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Cookie Policy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    GDPR
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -754,17 +795,24 @@ const LandingPage = () => {
 
           <div className="mt-12 pt-8 border-t border-gray-800">
             <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mt-4 md:mt-0">
+                <button
+                  onClick={openSupportPopup}
+                  className="text-gray-400 hover:text-white transition-colors"
+                  aria-label="Support"
+                >
+                  {/* Font Awesome Headset Icon */}
+                    <img
+                      src={supportLogo}
+                      alt="Support"
+                      className="w-16 h-16 hover:scale-110 transition-transform duration-300"
+                    />
+                </button>
+              </div>
               <p className="text-gray-400">
                 © 2025 Easy Portal. All rights reserved.
               </p>
-              <div className="mt-4 md:mt-0">
-                <select className="bg-gray-800 text-gray-400 px-4 py-2 rounded-lg border border-gray-700">
-                  <option>English (US)</option>
-                  <option>Español</option>
-                  <option>Français</option>
-                  <option>Deutsch</option>
-                </select>
-              </div>
+ 
             </div>
           </div>
         </div>
@@ -774,3 +822,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+

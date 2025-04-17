@@ -168,9 +168,17 @@ const refreshAccessToken = async (req, res) => {
                          WHERE ROWID = '${ROWID}'`;
         await zcql.executeZCQLQuery(updateQuery);
 
+
+        res.cookie("accessToken", newAccessToken, {
+            maxAge: 60 * 60 * 1000,
+            httpOnly: true,
+            secure: true,
+            sameSite: "Strict"
+        });
+
         return newAccessToken;
     } catch (error) {
-        console.error("Error refreshing token:", error);
+        // console.error("Error refreshing token:", error);
         throw error;
     }
 };

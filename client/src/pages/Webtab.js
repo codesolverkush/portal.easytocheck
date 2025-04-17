@@ -109,7 +109,6 @@ const OrganizationPersonalizationPanel = () => {
         toast.success("Organization details updated successfully");
       }
     } catch (error) {
-      console.error("Failed to update organization details", error);
       toast.error(error?.response?.data?.message || "Failed to update organization details");
     } finally {
       setIsLoading(false);
@@ -125,8 +124,7 @@ const OrganizationPersonalizationPanel = () => {
         
         if (response.status === 200) {
           const data = response.data;
-          console.log(response);
-          
+                
          
           setOrgId(data.data[0]?.Organization?.ROWID|| "");
           
@@ -150,7 +148,6 @@ const OrganizationPersonalizationPanel = () => {
           }
         }
       } catch (error) {
-        console.error("Failed to fetch organization details", error);
         toast.error("Failed to load organization details");
       } finally {
         setIsLoading(false);
@@ -324,8 +321,6 @@ const Webtab = () => {
   // User Access State
   const [userAccessData, setUserAccessData] = useState([]);
 
-  console.log(userAccessData);
-
   // Utility Functions
   const getDaysLeft = (endDate) => {
     const end = new Date(endDate);
@@ -370,7 +365,6 @@ const Webtab = () => {
 
       toast.success('User access updated successfully');
     } catch (error) {
-      console.error("Failed to update user access", error);
       toast.error("Failed to update user access");
 
       // Revert optimistic update on error
@@ -438,7 +432,6 @@ const Webtab = () => {
       }
       setIsLoading(false);
     } catch (error) {
-      console.error("Failed to fetch data", error);
       if (error?.response?.status === 401) {
         navigate("/app/unauth")
       }
@@ -478,16 +471,12 @@ const Webtab = () => {
       // Refresh overall data to update license counts
       fetchUserDetails();
     } catch (error) {
-      console.error("Failed to remove user", error);
       toast.error(error?.response?.data?.message || "Failed to remove user");
     } finally {
       setDeleteLoadingId(null);
       closeConfirmModal();
     }
   };
-
-  console.log(formData);
-
   // Submit New User
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -520,7 +509,6 @@ const Webtab = () => {
 
       toast.success('User added successfully');
     } catch (error) {
-      console.error("Failed to add user", error);
       toast.error(error.response?.data?.message || "Failed to add user");
     } finally {
       setIsSubmitting(false);

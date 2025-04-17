@@ -11,9 +11,7 @@ export default function CreateDealForm() {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(true);
 
-  console.log("field",fields);
-  console.log("ye wal form data" ,formData);
-
+ 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +29,6 @@ export default function CreateDealForm() {
       if (cachedResponse) {
         const data = await cachedResponse.json();
         processFieldData(data);
-        console.log("Deals form fields loaded from Cache Storage!");
         return;
       }
       
@@ -39,18 +36,15 @@ export default function CreateDealForm() {
       const response = await axios.get(
         `${process.env.REACT_APP_APP_API}/deal/getDeal`
       );
-        console.log("getDeal api", response);
       const fieldData = response?.data?.data?.fields || [];
       
       // Store the fetched data in Cache Storage
       const newResponse = new Response(JSON.stringify(fieldData), 
         { headers: { "Content-Type": "application/json" } }); //need to check 
       await cache.put("/deal-form-fields", newResponse);
-      console.log("Deal form fields fetched from API and cached!");
       
       processFieldData(fieldData);
     } catch (error) {
-      console.error("Error fetching CRM fields:", error);
       toast.error(error?.response?.data?.message || "Failed to load form fields!");
     } finally {
       setLoading(false);
@@ -58,7 +52,6 @@ export default function CreateDealForm() {
   }
   
   function processFieldData(fieldData) {
-    console.log("fielddata", fieldData);
     // Filter fields based on view_type.create
     const filteredFields = fieldData.filter((field) => field.view_type?.create !== false);
     
@@ -106,13 +99,11 @@ export default function CreateDealForm() {
         try {
           const cache = await caches.open(CACHE_NAME);
           await cache.delete("/deals");
-          console.log("Deals cache cleared after creating new deal");
         } catch (cacheError) {
-          console.error("Error clearing deal cache", cacheError);
+          toast.error("Something went wrong!");
         }
       }
     } catch (error) {
-      console.error("Error creating deal:", error);
       toast.error(error?.response?.data?.message || "Something went wrong!");
     } finally {
       navigate("/app/dealview");

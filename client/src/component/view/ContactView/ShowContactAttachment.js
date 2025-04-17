@@ -6,10 +6,9 @@ import axios from 'axios';
 import EnhancedTaskLoading from '../../ui/EnhancedTaskLoading';
 
 const AttachmentCard = ({ attachment }) => {
-    console.log(attachment);
+
   const handleDownload = async (attachmentId, fileName) => {
     try {
-        console.log(attachmentId);
       const response = await axios.get(`${process.env.REACT_APP_APP_API}/related/downloadattach/Contacts/${attachment.contactId}/${attachmentId}`, {
         responseType: 'blob',
         withCredentials: true // Ensure credentials are sent with request

@@ -123,7 +123,6 @@ const Webtab = () => {
 
       toast.success('User access updated successfully');
     } catch (error) {
-      console.error("Failed to update user access", error);
       toast.error("Failed to update user access");
       
       // Revert optimistic update on error
@@ -190,7 +189,6 @@ const Webtab = () => {
         }
         setIsLoading(false);
       } catch (error) {
-        console.error("Failed to fetch data", error);
         if(error?.response?.status === 401){
           navigate("/app/unauth")
         }
@@ -220,15 +218,11 @@ const Webtab = () => {
       // Refresh overall data to update license counts
       fetchUserDetails();
     } catch (error) {
-      console.error("Failed to remove user", error);
       toast.error("Failed to remove user");
     } finally {
       setDeleteLoadingId(null);
     }
   };
-
-  console.log(formData);
-
   // Submit New User
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -261,7 +255,6 @@ const Webtab = () => {
       
       toast.success('User added successfully');
     } catch (error) {
-      console.error("Failed to add user", error);
       toast.error(error.response?.data?.message || "Failed to add user");
     } finally {
       setIsSubmitting(false);

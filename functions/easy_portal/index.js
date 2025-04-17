@@ -16,6 +16,8 @@ const specialRouter = require('./routes/special.routes');
 const getsRouter = require('./routes/gets.routes');
 const createRouter = require('./routes/create.routes');
 const updateRouter = require('./routes/update.routes');
+const metadataRouter = require('./routes/metadata.routes');
+const supportRouter = require('./routes/support.routes');
 const cors = require('cors');
 
 
@@ -42,8 +44,7 @@ app.use(cors({
 
 app.use((req, res, next) => { 
     const catalyst = catalystSDK.initialize(req);
-    res.locals.catalyst = catalyst;
-    
+    res.locals.catalyst = catalyst;    
     next();
 });
 
@@ -62,6 +63,11 @@ app.use('/deal',dealRouter);
 app.use('/gets',getsRouter);
 app.use('/create',createRouter);
 app.use('/update',updateRouter);
+
+// Public api
+
+app.use('/getmetadata',metadataRouter);
+app.use('/support',supportRouter);
 
 
 

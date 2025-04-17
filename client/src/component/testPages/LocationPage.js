@@ -32,7 +32,6 @@ export default function LocationCapture() {
             if (data.error) {
               setError("Unable to fetch address.");
             } else {
-              console.log(data);
               const address = data.display_name;
             //   const state = address.state || "Unknown State";
             //   const country = address.country || "Unknown Country";

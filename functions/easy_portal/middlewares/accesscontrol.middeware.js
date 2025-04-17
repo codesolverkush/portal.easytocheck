@@ -21,11 +21,12 @@ const accessControl = async (req, res, next) => {
            const userDetails = await zcql
            .executeZCQLQuery(selectUserQuery);
 
+        //    console.log(userDetails);
+
            req.userDetails = userDetails;
            next();
         
     } catch (error) {
-        console.log(error);
         res.status(500).json({
             success: false,
             message: "Failed to authenticate user",

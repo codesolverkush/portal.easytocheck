@@ -32,7 +32,6 @@ const saveLead = async () => {
       toast.error("Failed to update lead. Please try again.");
     }
   } catch (error) {
-    console.error("Error updating lead:", error);
     toast.error(
       error?.response?.data?.error?.data[0]?.message || "Something went wrong"
     );

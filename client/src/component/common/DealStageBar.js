@@ -35,7 +35,6 @@ const AddNoteModal = ({ isOpen, onClose, dealId, username, onNoteAdded }) => {
       setNoteContent("");
       onClose();
     } catch (error) {
-      console.error("Error adding note:", error);
       toast.error("Failed to add note");
     } finally {
       setIsSubmitting(false);
@@ -166,7 +165,6 @@ const DealStageBar = ({
       // toast.success("Stage updated successfully");
       return true;
     } catch (error) {
-      console.error("Error updating deal:", error);
       toast.error(
         error?.response?.data?.error?.data[0]?.message || "Something went wrong"
       );

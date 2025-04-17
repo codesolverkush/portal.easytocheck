@@ -4,10 +4,8 @@ import { useState } from 'react';
 
 const AddContactNoteModal = ({ isOpen, onClose, contactId, username, onNoteAdded }) => {
 
-  console.log(contactId);
 
     const [noteContent, setNoteContent] = useState('');
-    console.log(noteContent);
     const [isSubmitting, setIsSubmitting] = useState(false);
     
   
@@ -21,7 +19,6 @@ const AddContactNoteModal = ({ isOpen, onClose, contactId, username, onNoteAdded
           Note_Title: noteTitle,
           Note_Content: noteContent
         });
-        console.log(response);
   
         // Adding the note to the list currently
   
@@ -32,7 +29,6 @@ const AddContactNoteModal = ({ isOpen, onClose, contactId, username, onNoteAdded
             Note_Title: noteTitle,
             Note_Content: noteContent
           }
-          console.log(newNote);
   
           onNoteAdded(newNote);
         }

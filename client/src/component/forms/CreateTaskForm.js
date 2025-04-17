@@ -25,7 +25,6 @@ const CreateTaskForm = ({ isOpen, onClose, onTaskCreated }) => {
         handleClose();
       }
     } catch (error) {
-      console.error("Error creating task:", error);
       toast.error(error?.response?.data?.message || "Failed to load form fields!");
     }
   };

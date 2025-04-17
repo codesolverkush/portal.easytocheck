@@ -116,7 +116,6 @@ const MeetingCardView = () => {
       const response = await axios.get(`${process.env.REACT_APP_APP_API}/lead/getmeetingbyid/${meetingId}`);
       setSelectedMeeting(response?.data?.data);
     } catch (error) {
-      console.error("Error fetching meeting details", error);
       toast.error("Failed to load meeting details");
     } finally {
       setLoading(false);
@@ -150,7 +149,6 @@ const MeetingCardView = () => {
         fetchMeetingDetails(editingMeeting.id);
       }
     } catch (error) {
-      console.error("Error updating meeting:", error);
       toast.error(error?.response?.data?.message || "Error updating meeting");
     }
     setIsEditModalOpen(false);

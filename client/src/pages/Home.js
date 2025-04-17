@@ -12,6 +12,7 @@ import { DateTime } from "luxon";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
 import UnauthorizedModal from "../component/errorPages/UnauthorizedModal";
+import { openSupportPopup } from "../utils/supportTrigger";
 
 const recentLeads = [
   { name: "John Smith", company: "ABC Corp", value: "$12,500", date: "2025-02-15" },
@@ -73,13 +74,11 @@ const HomePage = () => {
         const cachedData = await cachedResponse.json();
         // Check if cache is valid (less than 60 minutes old)
         if (Date.now() - cachedData.timestamp < 60 * 60 * 1000) {
-          // console.log(`Retrieved ${key} from cache`);
           return cachedData.data;
         }
       }
       return null;
     } catch (error) {
-      console.error('Cache retrieval error:', error);
       return null;
     }
   };
@@ -99,9 +98,8 @@ const HomePage = () => {
       });
 
       await cache.put(key, response);
-      // console.log(`Saved ${key} to cache`);
     } catch (error) {
-      console.error('Cache save error:', error);
+      toast.error("Something went wrong!");
     }
   };
 
@@ -126,8 +124,7 @@ const HomePage = () => {
       const leadsResponse = await axios.get(`${process.env.REACT_APP_APP_API}/get/leaddetails`);
     
       if(leadsResponse.status === 200){
-        console.log(leadsResponse)
-        leadsCount = leadsResponse?.data?.data?.info?.count || 0;
+      leadsCount = leadsResponse?.data?.data?.info?.count || 0;
       const leadData = leadsResponse?.data?.data?.data || recentLeads;
       setLeads(leadData);
       await saveToCache('/api/leads', leadsCount);
@@ -136,7 +133,6 @@ const HomePage = () => {
       setMetrics(prev => ({ ...prev, leads: leadsCount, loadingLeads: false }));
       }
     } catch (error) {
-      console.error('Error fetching leads:', error);
       if (error?.response?.data?.code === 'ORG_NOT_AUTHORIZED') {
         setIsUnauthorizedModalOpen(true);
       }
@@ -171,7 +167,6 @@ const HomePage = () => {
 
       setMetrics(prev => ({ ...prev, tasks: tasksCount, loadingTasks: false }));
     } catch (error) {
-      console.error('Error fetching tasks:', error);
       setMetrics(prev => ({ ...prev, loadingTasks: false }));
     }
   };
@@ -198,7 +193,6 @@ const HomePage = () => {
 
       setMetrics(prev => ({ ...prev, contacts: contactsCount, loadingContacts: false }));
     } catch (error) {
-      console.error('Error fetching contacts:', error);
       setMetrics(prev => ({ ...prev, loadingContacts: false }));
     }
   };
@@ -223,7 +217,6 @@ const HomePage = () => {
 
       setMetrics(prev => ({ ...prev, deals: dealsCount, loadingDeals: false }));
     } catch (error) {
-      console.error('Error fetching deals:', error);
       setMetrics(prev => ({ ...prev, loadingDeals: false }));
     }
   };
@@ -243,7 +236,6 @@ const HomePage = () => {
 
       setMetrics(prev => ({ ...prev, isLoading: false }));
     } catch (error) {
-      console.error('Error fetching all data:', error);
       setMetrics(prev => ({ ...prev, isLoading: false }));
     }
   };
@@ -266,7 +258,7 @@ const HomePage = () => {
         fetchDeals(true);
       }
     } catch (error) {
-      console.error(`Error refreshing ${component}:`, error);
+      toast.error(`Error refreshing ${component}:`, error);
     }
   };
 
@@ -283,11 +275,10 @@ const HomePage = () => {
       // Fetch fresh data
       fetchAllData(true);
     } catch (error) {
-      console.error('Error clearing cache:', error);
+      toast.error("Something went wrong!");
     }
   };
 
-  console.log(accessData);
 
   useEffect(() => {
     async function fetchData() {
@@ -356,7 +347,7 @@ const HomePage = () => {
       const bytes = CryptoJS.AES.decrypt(ciphertext, SECRET_KEY);
       return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     } catch (error) {
-      console.error("Error decrypting user data:", error);
+      toast.error("Something went wrong!");
       return null;
     }
   };
@@ -375,7 +366,6 @@ const HomePage = () => {
       return user;
     } catch (error) {
       toast.error(error.message || "Failed to retrieve user data.");
-      console.error("User Data Error:", error);
       return null;
     }
   };
@@ -389,7 +379,7 @@ const HomePage = () => {
         });
       });
     } catch (error) {
-      console.error("Location Error:", error);
+      toast.error("Failed to fetch the location!");
       return null;
     }
   };
@@ -766,7 +756,6 @@ const HomePage = () => {
   
       {/* Tab Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Charts */}
         <div className="lg:col-span-2 space-y-8">
           {activeTab === "overview" && (
             <>
@@ -782,7 +771,6 @@ const HomePage = () => {
                   </select>
                 </div>
 
-                {/* Zoom Container */}
                 <div className="overflow-hidden w-full flex justify-center items-center">
                   <div 
                     className="origin-top-left scale-[0.75] sm:scale-[0.85] md:scale-[0.9] lg:scale-100" 
@@ -796,6 +784,54 @@ const HomePage = () => {
                       sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                     />
                   </div>
+                </div>
+              </div>
+              {/* <div className="bg-white p-6 rounded-xl shadow-md">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Sales Performance</h3>
+                  <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-200">
+                    <option>This Year</option>
+                    <option>Last Year</option>
+                    <option>All Time</option>
+                  </select>
+                </div>
+                <div className="h-80">
+                  <Bar
+                    data={salesData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          position: 'top',
+                          labels: {
+                            boxWidth: 12,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                          }
+                        },
+                        tooltip: {
+                          backgroundColor: 'rgba(53, 71, 125, 0.8)',
+                          titleColor: 'white',
+                          bodyColor: 'white',
+                          padding: 12,
+                          cornerRadius: 8
+                        }
+                      },
+                      scales: {
+                        x: {
+                          grid: {
+                            display: false
+                          }
+                        },
+                        y: {
+                          grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                          }
+                        }
+                      }
+                    }}
+                  />
                 </div>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-md">
@@ -845,7 +881,7 @@ const HomePage = () => {
                     }}
                   />
                 </div>
-              </div>
+              </div> */}
 
             </>
           )}
@@ -986,7 +1022,7 @@ const HomePage = () => {
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-4">Need Help?</h3>
                   <p className="mb-6 text-indigo-100">Our support team is available 24/7 to assist you with any questions.</p>
-                  <button className="bg-white text-indigo-600 px-4 py-2 rounded-md font-medium hover:bg-indigo-50 transition-colors">
+                  <button onClick={openSupportPopup} className="bg-white text-indigo-600 px-4 py-2 rounded-md font-medium hover:bg-indigo-50 transition-colors">
                     Contact Support
                   </button>
                 </div>

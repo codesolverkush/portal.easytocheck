@@ -149,7 +149,7 @@ const Organization = () => {
     try {
       // Make sure SECRET_KEY is defined and not undefined
       if (!SECRET_KEY) {
-        console.error("Encryption key is missing");
+        toast.error("Something is missing!");
         return null;
       }
       
@@ -159,14 +159,14 @@ const Organization = () => {
       
       // Verify we have valid text before trying to parse JSON
       if (!decryptedText) {
-        console.error("Failed to decrypt data");
+        toast.error("Failed to decrypt data");
         return null;
       }
       
       // Try to parse as JSON
       return JSON.parse(decryptedText);
     } catch (error) {
-      console.error("Error decrypting data:", error);
+      toast.error("Error decrypting data:");
       return null;
     }
   };

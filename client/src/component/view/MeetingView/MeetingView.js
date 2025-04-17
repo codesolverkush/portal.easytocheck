@@ -92,7 +92,6 @@ const MeetingView = () => {
         await cache.put("/meetings", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching meetings", error);
       if (error.response && error.response.data && error.response.data.code === "ORG_NOT_AUTHORIZED") {
         setError({ code: "ORG_NOT_AUTHORIZED" });
         setTimeout(() => {
@@ -130,7 +129,7 @@ const MeetingView = () => {
         await cache.put("/meetings", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching meetings", error);
+      toast.error("Error fetching meetings");
     } finally {
       setLoading(false);
     }
@@ -258,8 +257,7 @@ const MeetingView = () => {
         toast.success("Meeting Created Successfully!");
       }
     } catch (error) {
-      console.error("Error creating meeting:", error);
-      toast.error(error?.response?.data?.error?.data[0]?.message);
+      toast.error(error?.response?.data?.error?.data[0]?.message || "Error creating meeting!");
     } finally {
       setIsSubmitting(false);
       setIsCreateModalOpen(false);

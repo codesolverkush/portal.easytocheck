@@ -12,7 +12,6 @@ const getAllCache = async (req, res) => {
             return res.status(404).json({ message: "No cache data found" });
         }
     } catch (error) {
-        console.error("Error fetching all cache data:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 };
