@@ -374,6 +374,7 @@ const AddReasonModal = ({
 
 const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
   const lead = data?.data[0]; // Take the first lead from the array
+  console.log(lead);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(true); // State to control details visibility
@@ -1363,6 +1364,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
 
       <ConvertLead
         isOpen={isSupportOpen}
+        lead={lead}
         setIsOpen={setIsSupportOpen}
         data={contact}
         leadId={leadId}

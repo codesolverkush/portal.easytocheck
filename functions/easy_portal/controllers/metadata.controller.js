@@ -16,7 +16,7 @@ const getmetadata = async(req,res)=>{
     //  console.log(selectFindQuery);
          const metadataDetails = await zcql
          .executeZCQLQuery(selectFindQuery);
-        //  console.log(metadataDetails);
+         console.log(metadataDetails);
  
  
          return res.status(200).send({

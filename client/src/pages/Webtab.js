@@ -484,31 +484,41 @@ const Webtab = () => {
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_APP_API}/test/adduser`, formData);
-
-      // Optimistic Update: Add new user to local state
-      const newUser = {
-        usermanagement: {
-          userid: response.data.userId, // Assuming API returns new user ID
-          username: `${formData.first_name} ${formData.last_name}`,
-          email: formData.email_id
+      if(response.status === 200){
+        // easyportal__User_Id:response.data.data.user_id,
+         // Optimistic Update: Add new user to local state
+      const crmresponse = await axios.post(`${process.env.REACT_APP_APP_API}/create/createdata/easyportal__Portal_Users`,{
+        easyportal__User_Id: 986676767,
+        easyportal__User_Email: formData.email_id,
+        Name: `${formData.first_name} ${formData.last_name}` 
+      })
+        if(crmresponse.status === 200){
+          const newUser = {
+            usermanagement: {
+              userid: response.data.userId, // Assuming API returns new user ID
+              username: `${formData.first_name} ${formData.last_name}`,
+              email: formData.email_id
+            }
+          };
+    
+          setUserDetails([...userDetails, newUser]);
+    
+          // Reset form and show success
+          setFormData({
+            email_id: "",
+            first_name: "",
+            last_name: ""
+          });
+          setShowModal(false);
+    
+          // Refresh overall data to update license counts
+          fetchUserDetails();
+    
+          toast.success('User added successfully');
         }
-      };
-
-      setUserDetails([...userDetails, newUser]);
-
-      // Reset form and show success
-      setFormData({
-        email_id: "",
-        first_name: "",
-        last_name: ""
-      });
-      setShowModal(false);
-
-      // Refresh overall data to update license counts
-      fetchUserDetails();
-
-      toast.success('User added successfully');
+      }
     } catch (error) {
+      console.log(error);
       toast.error(error.response?.data?.message || "Failed to add user");
     } finally {
       setIsSubmitting(false);

@@ -40,6 +40,24 @@ const logoutHandler = async (req, res) => {
     }
 };
 
+const trobleShootHandler = async(req,res)=>{
+    
+    try {
+       
+        res.clearCookie("accessToken", { path: "/", domain: "localhost" });
+        res.status(200).json({
+            success:true,
+            message:"Your proble have been fixed!"
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success:false,
+            message:"Please contact to app administrator!"
+        })
+    }
+}
+
 // const logoutHandler = async (req, res) => {
 //     try {
 //         // Get all cookies from the request
@@ -95,4 +113,4 @@ const logoutHandler = async (req, res) => {
 // };
 
 
-module.exports = {  logoutHandler };
+module.exports = {  logoutHandler,trobleShootHandler };

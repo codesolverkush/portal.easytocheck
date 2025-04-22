@@ -22,6 +22,7 @@ import { FaFacebook, FaHeadphones } from "react-icons/fa";
 import IconZ from "../component/ui/Icons";
 import { openSupportPopup } from "../utils/supportTrigger";
 import supportLogo from '../images/support1.png'
+import toast from "react-hot-toast";
 
 const LandingPage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -29,6 +30,14 @@ const LandingPage = () => {
   const [billingCycle, setBillingCycle] = useState("monthly");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [images, setImages] = useState({});
+
+  const [contactFormData,setContactFormData] = useState({
+     fullname: "",
+     email: "",
+     mobile:"",
+     subject:"",
+     message:""
+  })
 
   // Form refs for auto-filling
   const nameInputRef = useRef(null);
@@ -69,75 +78,50 @@ const LandingPage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  //  Fetching the image
+// Fetching the image
 
   // useEffect(() => {
   //   const fetchMetaData = async () => {
   //     try {
   //       const cache = await caches.open("meta-data");
-
-  //       // Check if data is present in cache
-  //       const cachedResponse = await cache.match("/images");
+  //       const cacheKey = `${process.env.REACT_APP_APP_API}/getmetadata/images`;
+  
+  //       const cachedResponse = await cache.match(cacheKey);
   //       if (cachedResponse) {
   //         const data = await cachedResponse.json();
-  //         console.log(data);
   //         setImages(data);
   //         return;
   //       }
-
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_APP_API}/getmetadata/images`
-  //       );
-
+  
+  //       const response = await axios.get(cacheKey);
+  
   //       if (response.status === 200) {
-  //         setImages(response?.data?.data[0]?.etcadminlogs);
-  //         const newResponse = new Response(
-  //           JSON.stringify(response?.data?.data[0]?.etcadminlogs),
-  //           { headers: { "Content-Type": "application/json" } }
-  //         );
-  //         await cache.put("/images", newResponse);
+  //         const metaData = response?.data?.data[0]?.etcadminlogs;
+  //         setImages(metaData);
+  //         const newResponse = new Response(JSON.stringify(metaData), {
+  //           headers: { "Content-Type": "application/json" },
+  //         });
+  //         await cache.put(cacheKey, newResponse);
   //       }
   //     } catch (error) {
-  //       // Silently redirect to signup without showing error
-  //       // 
-        
+  //       console.error("Metadata Fetch Error:", error);
+  //       // Optionally redirect or show fallback
   //     }
   //   };
-
+  
   //   fetchMetaData();
-  // }, [setImages]);
+  // }, []);
 
-  useEffect(() => {
-    const fetchMetaData = async () => {
-      try {
-        const cache = await caches.open("meta-data");
-        const cacheKey = `${process.env.REACT_APP_APP_API}/getmetadata/images`;
-  
-        const cachedResponse = await cache.match(cacheKey);
-        if (cachedResponse) {
-          const data = await cachedResponse.json();
-          setImages(data);
-          return;
-        }
-  
-        const response = await axios.get(cacheKey);
-  
-        if (response.status === 200) {
-          const metaData = response?.data?.data[0]?.etcadminlogs;
-          setImages(metaData);
-          const newResponse = new Response(JSON.stringify(metaData), {
-            headers: { "Content-Type": "application/json" },
-          });
-          await cache.put(cacheKey, newResponse);
-        }
-      } catch (error) {
-        console.error("Metadata Fetch Error:", error);
-        // Optionally redirect or show fallback
-      }
+  // Handle the support form 
+
+    // Handle Form Input Changes
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setContactFormData(prevData => ({
+        ...prevData,
+        [name]: value
+      }));
     };
-  
-    fetchMetaData();
-  }, []);
   
 
   const openSameWindow = (url) => {
@@ -202,6 +186,32 @@ const LandingPage = () => {
       }
     }
   };
+
+  console.log(contactFormData);
+
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_APP_API}/support/createticket`,
+        {
+          ...contactFormData,          
+        }
+      );
+      
+      if(response.status === 200){
+        toast.success("Support request submitted successfully!");
+        setContactFormData({ fullname: '', email: '', mobile: '', subject: '', message: '' });
+      }
+
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to submit support request");
+    }
+  };
+
+
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -378,7 +388,7 @@ const LandingPage = () => {
                 </div>
                 <div className="bg-indigo-50 p-6 flex items-center justify-center">
                   <img
-                    src={images?.image2}
+                    src="https://sellingsignals.com/wp-content/uploads/2022/01/Example-open-pipe-dashboard-from-Salesforce-Essentials.png"
                     alt="Dashboard Preview"
                     className="rounded-lg shadow-lg max-w-full"
                   />
@@ -589,7 +599,7 @@ const LandingPage = () => {
               <h4 className="text-xl font-semibold text-gray-900 mb-6">
                 Send us a message
               </h4>
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSubmit}>
                 <div>
                   <label
                     htmlFor="name"
@@ -599,8 +609,12 @@ const LandingPage = () => {
                   </label>
                   <input
                     type="text"
-                    id="name"
+                    id="fullname"
+                    name="fullname"
                     ref={nameInputRef}
+                    value={contactFormData.fullname}
+                    onChange={handleInputChange}
+                    required
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Your full name"
                   />
@@ -615,9 +629,30 @@ const LandingPage = () => {
                   <input
                     type="email"
                     id="email"
+                    name="email"
+                    required
                     ref={emailInputRef}
+                    value={contactFormData.email}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="you@company.com"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="mobile"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                   Mobile/Contact No:
+                  </label>
+                  <input
+                    type="mobile"
+                    id="mobile"
+                    name="mobile"
+                    value={contactFormData.mobile}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="99XXXXXX88"
                   />
                 </div>
                 <div>
@@ -629,7 +664,11 @@ const LandingPage = () => {
                   </label>
                   <textarea
                     id="message"
+                    name="message"
                     ref={messageInputRef}
+                    value={contactFormData.message}
+                    onChange={handleInputChange}
+                    required
                     rows={4}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="How can we help you?"

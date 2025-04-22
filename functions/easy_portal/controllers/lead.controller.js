@@ -1,8 +1,6 @@
-const axios = require('axios');
 const stream = require("stream");
 const FormData = require("form-data");
 const refreshAccessToken = require('../utils/genaccestoken');
-const { validateUserAndGetOrgId, handleValidationResponse, executeZohoRequest } = require('../utils/authUtils');
 const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
 
 
@@ -111,25 +109,25 @@ const convertLead = async (req,res)=>{
 
     try {
         const userId = req.currentUser?.user_id;
-                        
+        // const userId = '4340000000085001';
         if (!userId) {
             return res.status(404).json({ message: "User ID not found." });
         }
 
-        const accessScore = req.userDetails[0].usermanagement?.Leads;
+        // const accessScore = req.userDetails[0].usermanagement?.Leads;
     
-        if(accessScore < 3){
-            return res.status(403).json({success: false, message: `Insufficient access rights to convert a Lead`});
-        }
-
+        // if(accessScore < 3){
+        //     return res.status(403).json({success: false, message: `Insufficient access rights to convert a Lead`});
+        // }
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
         const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
         const domain = user[0]?.usermanagement?.domain;
-        const { leadId,accountId,contactId,deal_name,closing_date,amount} = req.body;       
-     
+        const { leadId,accountId,contactId,dealName,closingDate,amount} = req.body;       
+        
+        console.log(leadId,accountId,contactId,dealName,closingDate,amount);
     
     
         // Create the main map (object in JavaScript)
@@ -151,8 +149,8 @@ const convertLead = async (req,res)=>{
     
             // Create deal map
             const dealMap = {};
-            dealMap.Deal_Name = deal_name;
-            dealMap.Closing_Date = closing_date;
+            dealMap.Deal_Name = dealName;
+            dealMap.Closing_Date = closingDate;
             dealMap.Amount = amount
             dealMap.Pipeline = "Standard (Standard)";
     
@@ -176,17 +174,16 @@ const convertLead = async (req,res)=>{
 
         let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/Leads/${leadId}/actions/convert`
-   
            
         try {
-            const data = await handleZohoRequest(url, 'get', responseMap, token);
+            const data = await handleZohoRequest(url, 'post', responseMap, token);
             return res.status(200).json({ success: true, data});
         } catch (error) {
             console.log(error)
             if (error.message === "TOKEN_EXPIRED") {
                 try {
                     token = await refreshAccessToken(req, res);
-                    const data = await handleZohoRequest(url, 'get', null, token);
+                    const data = await handleZohoRequest(url, 'post',responseMap, token);
                     return res.status(200).json({ success: true, data});
                 } catch (refreshError) {
                     return res.status(500).json({ success: false, message: refreshError.message });
@@ -198,7 +195,7 @@ const convertLead = async (req,res)=>{
     } catch (error) {
         console.log(error);
         if (!res.headersSent) {
-            return res.status(500).json({ success: false, message: error.message });
+            return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }
     }
     

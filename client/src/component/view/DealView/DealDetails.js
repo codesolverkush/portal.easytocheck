@@ -108,6 +108,7 @@ const NotesCard = ({ note }) => {
 };
 
 const DealDetails = ({ accessScore, data, username }) => {
+  console.log("new data",data);
   const location = useLocation();
   const navigate = useNavigate();
   const initialDealId = location?.state?.dealId;
@@ -419,50 +420,116 @@ const DealDetails = ({ accessScore, data, username }) => {
   };
 
   // Function to render field display (non-edit mode)
-  const renderFieldDisplay = (fieldKey, specialClass = "") => {
-    const fieldApiName = fieldKey.api_name;
-    // Find the field value from lead data
-    const fieldValue = selectedDeal?.data[0]?.[fieldApiName];
+  // const renderFieldDisplay = (fieldKey, specialClass = "") => {
+  //   const fieldApiName = fieldKey.api_name;
+  //   // Find the field value from lead data
+  //   const fieldValue = selectedDeal?.data[0]?.[fieldApiName];
 
-    // Special handling for Lead_Status
-    if (fieldApiName === "Lead_Status" && fieldValue) {
+  //   // Special handling for Lead_Status
+  //   if (fieldApiName === "Lead_Status" && fieldValue) {
+  //     return (
+  //       <span
+  //         className={`px-2 sm:px-3 py-0.5 sm:py-1 inline-block rounded-full text-xs sm:text-sm font-medium ${
+  //           leadSourceColors[fieldValue] || "bg-gray-200 text-gray-700"
+  //         }`}
+  //       >
+  //         {safeRenderValue(fieldValue)}
+  //       </span>
+  //     );
+  //   }
+
+  //   // Special handling for email fields
+  //   if (fieldApiName === "Email" || fieldApiName === "Secondary_Email") {
+  //     return (
+  //       <span
+  //         className={`text-sm sm:text-base font-medium text-blue-600 break-all ${specialClass}`}
+  //       >
+  //         {safeRenderValue(fieldValue)}
+  //       </span>
+  //     );
+  //   }
+
+  //   if (fieldKey.data_type === "datetime") {
+  //     return (
+  //       <span className={`text-sm sm:text-base font-bold break-all`}>
+  //         {formatDate(fieldValue)}
+  //       </span>
+  //     );
+  //   }
+
+  //   // Default display
+  //   return (
+  //     <span className={`text-sm sm:text-base font-medium ${specialClass}`}>
+  //       {safeRenderValue(fieldValue)}
+  //     </span>
+  //   );
+  // };
+console.log("Selected Deal",selectedDeal);
+  // Function to render field display (non-edit mode)
+const renderFieldDisplay = (fieldKey, specialClass = "") => {
+  const fieldApiName = fieldKey.api_name;
+  // Find the field value from lead data
+  const fieldValue = selectedDeal?.data[0]?.[fieldApiName];
+
+  // Special handling for Contact_Name - make it clickable
+  if (fieldApiName === "Contact_Name" && fieldValue) {
+    const contactId = selectedDeal?.data[0]?.Contact_Name?.id || 
+                     (typeof fieldValue === 'object' && fieldValue.id) || 
+                     null;
+
+    console.log(contactId)
+    
+    if (contactId) {
       return (
-        <span
-          className={`px-2 sm:px-3 py-0.5 sm:py-1 inline-block rounded-full text-xs sm:text-sm font-medium ${
-            leadSourceColors[fieldValue] || "bg-gray-200 text-gray-700"
-          }`}
+        <span 
+          className={`text-sm sm:text-base font-medium text-blue-600 cursor-pointer hover:underline ${specialClass}`}
+          onClick={() => navigate("/app/contactprofile", { state: { contactId } })}
         >
           {safeRenderValue(fieldValue)}
         </span>
       );
     }
+  }
 
-    // Special handling for email fields
-    if (fieldApiName === "Email" || fieldApiName === "Secondary_Email") {
-      return (
-        <span
-          className={`text-sm sm:text-base font-medium text-blue-600 break-all ${specialClass}`}
-        >
-          {safeRenderValue(fieldValue)}
-        </span>
-      );
-    }
-
-    if (fieldKey.data_type === "datetime") {
-      return (
-        <span className={`text-sm sm:text-base font-bold break-all`}>
-          {formatDate(fieldValue)}
-        </span>
-      );
-    }
-
-    // Default display
+  // Special handling for Lead_Status
+  if (fieldApiName === "Lead_Status" && fieldValue) {
     return (
-      <span className={`text-sm sm:text-base font-medium ${specialClass}`}>
+      <span
+        className={`px-2 sm:px-3 py-0.5 sm:py-1 inline-block rounded-full text-xs sm:text-sm font-medium ${
+          leadSourceColors[fieldValue] || "bg-gray-200 text-gray-700"
+        }`}
+      >
         {safeRenderValue(fieldValue)}
       </span>
     );
-  };
+  }
+
+  // Special handling for email fields
+  if (fieldApiName === "Email" || fieldApiName === "Secondary_Email") {
+    return (
+      <span
+        className={`text-sm sm:text-base font-medium text-blue-600 break-all ${specialClass}`}
+      >
+        {safeRenderValue(fieldValue)}
+      </span>
+    );
+  }
+
+  if (fieldKey.data_type === "datetime") {
+    return (
+      <span className={`text-sm sm:text-base font-bold break-all`}>
+        {formatDate(fieldValue)}
+      </span>
+    );
+  }
+
+  // Default display
+  return (
+    <span className={`text-sm sm:text-base font-medium ${specialClass}`}>
+      {safeRenderValue(fieldValue)}
+    </span>
+  );
+};
 
   useEffect(() => {
     fetchDealsFields();

@@ -30,11 +30,13 @@ import { userNotExists } from "../../redux/reducers/auth";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
 import SupportPopup from "../forms/SupportPopup";
+import TrobleShoot from "../confirmbox/TrobleShoot";
 
 const Navbar = ({ accessData }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
+  const [isConfirmTrobleShoot,setIsConfirmTrobleShoot] = useState(false);
   const profileRef = useRef(null);
   const profileButtonRef = useRef(null);
   const dispatch = useDispatch();
@@ -48,10 +50,15 @@ const Navbar = ({ accessData }) => {
     setIsSupportOpen(true);
   };
 
+  const openConfirmPopup = ()=>{
+    setIsProfileOpen(false);
+    setIsConfirmTrobleShoot(true);
+  }
+
   // Function to handle support popup closing
-  const handleSupportClose = () => {
-    setIsSupportOpen(false);
-  };
+  // const handleSupportClose = () => {
+  //   setIsSupportOpen(false);
+  // };
 
 
   const SECRET_KEY = process.env.REACT_APP_CRYPTO_API;
@@ -162,6 +169,8 @@ const Navbar = ({ accessData }) => {
       toast.error(message);
     }
   };
+
+
 
   // Shimmer effect component
   const Shimmer = ({ className }) => (
@@ -464,9 +473,12 @@ const Navbar = ({ accessData }) => {
                 </button>
 
                 {/* Help & Support */}
-                <div className="mt-6 border-t border-gray-200 pt-4 animate-fadeIn delay-300">
+                <div className="flex justify-between mt-6 border-t border-gray-200 pt-4 animate-fadeIn delay-300">
                   <button className="text-lg font-medium text-gray-900 mb-3" onClick={openPopup}>
                     Need Help?
+                  </button>
+                  <button className="text-lg font-medium text-gray-900 mb-3" onClick={openConfirmPopup}>
+                     Troubleshoot
                   </button>
                   {/* Support items have been commented out in the original code */}
                 </div>
@@ -491,6 +503,11 @@ const Navbar = ({ accessData }) => {
         setIsOpen={setIsSupportOpen}
         userData={userData}
       />
+
+       <TrobleShoot 
+       isOpen={isConfirmTrobleShoot}
+       setIsOpen={setIsConfirmTrobleShoot}
+       />
 
       
     </>

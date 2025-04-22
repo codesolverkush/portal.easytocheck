@@ -155,7 +155,7 @@ const DealStageBar = ({
   const changeStage = async (stageName) => {
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_APP_API}/deal/updatedeal`,
+        `${process.env.REACT_APP_APP_API}/update/updatemoduledata/Deals`,
         {
           id: data?.data[0]?.id,
           Stage: stageName,

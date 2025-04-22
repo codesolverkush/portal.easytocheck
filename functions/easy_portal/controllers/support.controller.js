@@ -90,9 +90,8 @@
 const createTicket = async (req, res) => {
   try {
     const { catalyst } = res.locals;
-    const { userId, fullname, email, message, subject } = req.body;
+    const { userId, fullname, email, message, mobile, subject } = req.body;
 
- 
     // Get user organization if available
     let orgid = "N/A";
     if (userId) {
@@ -247,19 +246,27 @@ const createTicket = async (req, res) => {
                           <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                               <td width="40%" style="padding: 8px 0; color: #5f6368;">Full Name:</td>
-                              <td style="padding: 8px 0; font-weight: 600; color: #202124;">${fullname || "Not Provided"}</td>
+                              <td style="padding: 8px 0; font-weight: 600; color: #202124;">${
+                                fullname || "Not Provided"
+                              }</td>
                             </tr>
                             <tr>
                               <td style="padding: 8px 0; color: #5f6368;">Email Address:</td>
-                              <td style="padding: 8px 0; font-weight: 600; color: #202124;">${email || "Not Provided"}</td>
+                              <td style="padding: 8px 0; font-weight: 600; color: #202124;">${
+                                email || "Not Provided"
+                              }</td>
                             </tr>
                             <tr>
                               <td style="padding: 8px 0; color: #5f6368;">User ID:</td>
-                              <td style="padding: 8px 0; font-weight: 600; color: #202124;">${userId || "Guest"}</td>
+                              <td style="padding: 8px 0; font-weight: 600; color: #202124;">${
+                                userId || "Guest"
+                              }</td>
                             </tr>
                             <tr>
                               <td style="padding: 8px 0; color: #5f6368;">Organization ID:</td>
-                              <td style="padding: 8px 0; font-weight: 600; color: #202124;">${orgid || "Not Available"}</td>
+                              <td style="padding: 8px 0; font-weight: 600; color: #202124;">${
+                                orgid || "Not Available"
+                              }</td>
                             </tr>
                           </table>
                         </td>
@@ -288,7 +295,9 @@ const createTicket = async (req, res) => {
                       </tr>
                       <tr>
                         <td class="card" style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-                          <p style="margin: 0; color: #3c4043; font-size: 15px;">${subject || "No Subject"}</p>
+                          <p style="margin: 0; color: #3c4043; font-size: 15px;">${
+                            subject || "No Subject"
+                          }</p>
                         </td>
                       </tr>
                     </table>
@@ -393,7 +402,7 @@ const createTicket = async (req, res) => {
       };
 
       const emailResponse = await emailService.sendMail(mailOptions);
-    //   console.log(emailResponse);
+      //   console.log(emailResponse);
     } else {
       const emailSubject =
         subject || `${fullname || "Unknown User"} wants connect with you`;
@@ -427,6 +436,12 @@ const createTicket = async (req, res) => {
                 <td style="padding: 8px 0; color: #666;">Email Address:</td>
                 <td style="padding: 8px 0; font-weight: 600;">${
                   email || "Not Provided"
+                }</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #666;">User ID:</td>
+                <td style="padding: 8px 0; font-weight: 600;">${
+                  mobile || "Not Provided"
                 }</td>
               </tr>
               <tr>

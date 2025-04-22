@@ -43,10 +43,11 @@ const createNewData = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/${module}`;
 
         try {
-            const data = await executeZohoRequest(url, 'post', moduleData, token, req, res);
+            const data = await handleZohoRequest(url, 'post', moduleData, token);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {
+            console.log(error);
             return res.status(error.status || 500).json({
                 success: false, 
                 error: error.response ? error.response.data : error.message
@@ -54,6 +55,7 @@ const createNewData = async (req, res) => {
         }
 
     } catch (error) {
+        console.log(error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }

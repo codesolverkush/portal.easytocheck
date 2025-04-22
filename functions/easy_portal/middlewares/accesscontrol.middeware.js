@@ -1,9 +1,8 @@
 const accessControl = async (req, res, next) => {
     try {
-        const { catalyst } = res?.locals;
+        const { catalyst } = res.locals;
         const userId = req.currentUser?.user_id;
-        const zcql = catalyst.zcql();
-     
+        const zcql = catalyst.zcql();     
 
         if (!catalyst) {
             return res.status(500).json({
@@ -21,11 +20,9 @@ const accessControl = async (req, res, next) => {
            const userDetails = await zcql
            .executeZCQLQuery(selectUserQuery);
 
-        //    console.log(userDetails);
-
            req.userDetails = userDetails;
            next();
-        
+
     } catch (error) {
         res.status(500).json({
             success: false,
