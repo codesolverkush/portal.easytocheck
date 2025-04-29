@@ -18,26 +18,26 @@
 //     time_zone: 'America/Los_Angeles'
 //   }
   
-// const hardcodedUser = {
-//     zuid: '10097563637',
-//     zaaid: '10097563636',
-//     org_id: '10097563636',
-//     status: 'ACTIVE',
-//     is_confirmed: false,
-//     email_id: 'kushal@easytocheck.com',
-//     first_name: 'kushal Pratap ',
-//     last_name: 'Singh',
-//     created_time: 'Mar 27, 2025 11:09 AM',
-//     modified_time: 'Mar 27, 2025 11:09 AM',
-//     invited_time: 'Mar 27, 2025 11:09 AM',
-//     role_details: { role_name: 'App User', role_id: '4340000000043024' },
-//     user_type: 'App User',
-//     source: 'Email',
-//     user_id: '4340000000085001',
-//     locale: 'us|en_us|America/Los_Angeles',
-//     time_zone: 'America/Los_Angeles'
+const hardcodedUser = {
+    zuid: '10097563637',
+    zaaid: '10097563636',
+    org_id: '10097563636',
+    status: 'ACTIVE',
+    is_confirmed: false,
+    email_id: 'kushal@easytocheck.com',
+    first_name: 'kushal Pratap ',
+    last_name: 'Singh',
+    created_time: 'Mar 27, 2025 11:09 AM',
+    modified_time: 'Mar 27, 2025 11:09 AM',
+    invited_time: 'Mar 27, 2025 11:09 AM',
+    role_details: { role_name: 'App User', role_id: '4340000000043024' },
+    user_type: 'App User',
+    source: 'Email',
+    user_id: '4340000000085001',
+    locale: 'us|en_us|America/Los_Angeles',
+    time_zone: 'America/Los_Angeles'
     
-//   }
+  }
 
 
   const catalystAuth = async (req, res, next) => {
@@ -52,20 +52,19 @@
             });
         }
 
-        const userManagement = catalyst.userManagement();
+        // const userManagement = catalyst.userManagement();
 
-        const currentUser = await userManagement.getCurrentUser();   
+        // const currentUser = await userManagement.getCurrentUser();   
 
-        if (!currentUser) {
-            return res.status(401).json({
-                success: false,
-                message: "User not authenticated",
-            });
-        }
+        // if (!currentUser) {
+        //     return res.status(401).json({
+        //         success: false,
+        //         message: "User not authenticated",
+        //     });
+        // }
         
-        req.currentUser = currentUser; 
-        
-        // req.currentUser = hardcodedUser;        
+        // req.currentUser = currentUser;         
+        req.currentUser = hardcodedUser;        
         next();
         
     } catch (error) {

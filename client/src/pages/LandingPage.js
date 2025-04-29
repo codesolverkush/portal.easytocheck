@@ -687,175 +687,176 @@ const LandingPage = () => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-            <div className="lg:col-span-2">
-              <div className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Globe className="text-white" size={24} />
-                </div>  
-                <h4 className="text-2xl font-bold text-white">Easy Portal</h4>
+      <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white py-20 relative overflow-hidden">
+  {/* Animated background elements */}
+  <div className="absolute inset-0 overflow-hidden opacity-10">
+    <div className="absolute -top-24 -left-24 w-96 h-96 bg-indigo-600 rounded-full blur-3xl"></div>
+    <div className="absolute bottom-0 right-0 w-80 h-80 bg-purple-600 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div className="max-w-7xl mx-auto px-6 relative z-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12">
+      {/* Brand section */}
+      <div className="lg:col-span-5">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform hover:rotate-6 transition-transform duration-300">
+            <Globe className="text-white" size={28} />
+          </div>  
+          <h4 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">Easy Portal</h4>
+        </div>
+        
+        <p className="mt-6 text-gray-300 max-w-md text-lg">
+          Experience our powerful Easy Portal with enhanced features and an intuitive user interface designed for modern professionals.
+        </p>
+        
+        <div className="mt-8 flex space-x-5">
+          {[
+            {
+              name: "zoho",
+              icon: IconZ,
+              url: "https://www.zoho.com/partners/find-partner-profile.html?partnerid=baf0b46ef74ed349968c06eeef3a9022",
+            },
+            {
+              name: "facebook",
+              icon: Facebook,
+              url: "https://www.facebook.com/easytocheck",
+            },
+            {
+              name: "linkedin",
+              icon: Linkedin,
+              url: "https://www.linkedin.com/company/easytocheck-software-solutions",
+            },
+            {
+              name: "website",
+              icon: Globe,
+              url: "https://easytocheck.com",
+            },
+          ].map((social) => (
+            <a
+              key={social.name}
+              href={social.url}
+              className="group"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={social.name}
+            >
+              <div className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center group-hover:bg-indigo-600 transition-all duration-300 transform group-hover:-translate-y-1 shadow-lg">
+                <social.icon className="w-6 h-6 text-white" />
               </div>
-              <p className="mt-4 text-gray-400 max-w-md">
-                Transform your business with our powerful CRM solution.
-                Streamline workflows and increase customer satisfaction.
-              </p>
-              <div className="mt-6 flex space-x-4">
-                {[
-                  {
-                    name: "zoho",
-                    icon: IconZ,
-                    url: "https://www.zoho.com/partners/find-partner-profile.html?partnerid=baf0b46ef74ed349968c06eeef3a9022",
-                  },
-                  {
-                    name: "facebook",
-                    icon: Facebook,
-                    url: "https://www.facebook.com/easytocheck",
-                  },
-                  {
-                    name: "linkedin",
-                    icon: Linkedin,
-                    url: "https://www.linkedin.com/company/easytocheck-software-solutions",
-                  },
-                  {
-                    name: "website",
-                    icon: Globe,
-                    url: "https://easytocheck.com",
-                  },
-                ].map((social) => (
-                  <a
-                    key={social.name}
-                    href={social.url}
-                    className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-indigo-600 transition-colors"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <social.icon className="w-5 h-5 text-white" />
-                  </a>
-                ))}
-              </div>
-            </div>
+            </a>
+          ))}
+        </div>
+      </div>
 
-            <div>
-              <h4 className="text-lg font-bold mb-4 text-white">Product</h4>
-              <ul className="space-y-3">
-                <li>
+      {/* Navigation columns */}
+      <div className="lg:col-span-7">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+          <div className="space-y-8">
+            <h4 className="text-xl font-bold text-white relative inline-block">
+              Product
+              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-indigo-500 rounded-full"></span>
+            </h4>
+            <ul className="space-y-4">
+              {[
+                { name: "Features", to: "#features", action: (e) => scrollToDemo("features", e) },
+                { name: "Pricing", to: "#pricing", action: (e) => scrollToDemo("pricing", e) },
+                { name: "Security", to: "#", action: null }
+              ].map((item) => (
+                <li key={item.name} className="transform hover:translate-x-2 transition-transform duration-300">
                   <Link
-                    to="#features"
-                    onClick={(e) => scrollToDemo("features", e)}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    to={item.to}
+                    onClick={item.action}
+                    className="text-gray-300 hover:text-white transition-colors flex items-center space-x-2 group"
                   >
-                    Features
+                    <span className="w-0 group-hover:w-4 h-0.5 bg-indigo-500 transition-all duration-300"></span>
+                    <span>{item.name}</span>
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="#pricing"
-                    onClick={(e) => scrollToDemo("pricing", e)}
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Security
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-bold mb-4 text-white">Company</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    to="#about"
-                    onClick={(e) => scrollToDemo("about", e)}
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#contact"
-                    onClick={(e) => scrollToDemo("contact", e)}
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-bold mb-4 text-white">Legal</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    to="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Cookie Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
+              ))}
+            </ul>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-gray-800">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mt-4 md:mt-0">
-                <button
-                  onClick={openSupportPopup}
-                  className="text-gray-400 hover:text-white transition-colors"
-                  aria-label="Support"
-                >
-                  {/* Font Awesome Headset Icon */}
-                    <img
-                      src={supportLogo}
-                      alt="Support"
-                      className="w-16 h-16 hover:scale-110 transition-transform duration-300"
-                    />
-                </button>
-              </div>
-              <p className="text-gray-400">
-                © 2025 Easy Portal. All rights reserved.
-              </p>
- 
-            </div>
+          <div className="space-y-8">
+            <h4 className="text-xl font-bold text-white relative inline-block">
+              Company
+              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-purple-500 rounded-full"></span>
+            </h4>
+            <ul className="space-y-4">
+              {[
+                { name: "About", to: "#about", action: (e) => scrollToDemo("about", e) },
+                { name: "Careers", to: "#", action: null },
+                { name: "Contact", to: "#contact", action: (e) => scrollToDemo("contact", e) }
+              ].map((item) => (
+                <li key={item.name} className="transform hover:translate-x-2 transition-transform duration-300">
+                  <Link
+                    to={item.to}
+                    onClick={item.action}
+                    className="text-gray-300 hover:text-white transition-colors flex items-center space-x-2 group"
+                  >
+                    <span className="w-0 group-hover:w-4 h-0.5 bg-purple-500 transition-all duration-300"></span>
+                    <span>{item.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="space-y-8">
+            <h4 className="text-xl font-bold text-white relative inline-block">
+              Legal
+              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-indigo-400 rounded-full"></span>
+            </h4>
+            <ul className="space-y-4">
+              {[
+                { name: "Privacy Policy", to: "#", action: null },
+                { name: "Terms of Service", to: "#", action: null },
+                { name: "Cookie Policy", to: "#", action: null }
+              ].map((item) => (
+                <li key={item.name} className="transform hover:translate-x-2 transition-transform duration-300">
+                  <Link
+                    to={item.to}
+                    onClick={item.action}
+                    className="text-gray-300 hover:text-white transition-colors flex items-center space-x-2 group"
+                  >
+                    <span className="w-0 group-hover:w-4 h-0.5 bg-indigo-400 transition-all duration-300"></span>
+                    <span>{item.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-      </footer>
+      </div>
+    </div>
+
+
+    {/* Bottom section */}
+    <div className="mt-12 pt-8 border-t border-gray-800">
+      <div className="flex flex-col md:flex-row justify-between items-center">
+        <div className="mt-4 md:mt-0 order-2 md:order-1">
+          <button
+            onClick={openSupportPopup}
+            className="group relative transition-all duration-300"
+            aria-label="Support"
+          >
+            <div className="absolute inset-0  rounded-full blur-md opacity-75 group-hover:opacity-100 transition-opacity"></div>
+            <img
+              src={supportLogo}
+              alt="Support"
+              className="w-16 h-16 relative z-10 transform group-hover:scale-110 transition-transform duration-300"
+            />
+          </button>
+        </div>
+        
+        <div className="flex flex-col items-center md:items-end space-y-4 order-1 md:order-2">
+          <p className="text-gray-400">
+            © 2025 Easy Portal. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
     </div>
   );
 };

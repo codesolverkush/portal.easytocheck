@@ -95,7 +95,7 @@ const Navbar3 = () => {
                 Features
               </Link>
               <Link 
-                to="/app/contact-us"
+                to="#"
                 className="text-gray-700 hover:text-indigo-600 transition-colors py-2 font-medium"
               >
                 About
