@@ -3,8 +3,6 @@ const getmetadata = async(req,res)=>{
      const {catalyst} = res.locals;
      const zcql = catalyst.zcql();
      const id = 9878978734;
-
-    //  console.log('id',id);
  
      if(id){
          const selectFindQuery = `
@@ -13,10 +11,10 @@ const getmetadata = async(req,res)=>{
          WHERE uniqueid = '${id}' 
          LIMIT 1
      `;
-    //  console.log(selectFindQuery);
+
          const metadataDetails = await zcql
          .executeZCQLQuery(selectFindQuery);
-         console.log(metadataDetails);
+
  
  
          return res.status(200).send({
@@ -49,8 +47,6 @@ const getmetadata = async(req,res)=>{
 //         const {catalyst} = res.locals;
 //         const zcql = catalyst.zcql();
 //         const id = 9878978734;
-
-//         // console.log('id', id);
         
 //         if(id) {
 //             // Create a cache key based on the id
@@ -60,7 +56,6 @@ const getmetadata = async(req,res)=>{
 //             let metadataDetails = metadataCache.get(cacheKey);
             
 //             if (metadataDetails) {
-//                 // console.log('Returning metadata from cache');
 //                 return res.status(200).send({
 //                     data: metadataDetails,
 //                     source: 'cache'
@@ -74,10 +69,8 @@ const getmetadata = async(req,res)=>{
 //                 WHERE uniqueid = '${id}' 
 //                 LIMIT 1
 //             `;
-//             // console.log(selectFindQuery);
             
 //             metadataDetails = await zcql.executeZCQLQuery(selectFindQuery);
-//             // console.log(metadataDetails);
             
 //             // Store in cache for future requests
 //             metadataCache.set(cacheKey, metadataDetails);

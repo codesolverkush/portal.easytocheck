@@ -27,6 +27,5 @@ root.render(
         </HashRouter>
      </Provider>
     </SupportPopupProvider>
-      </UserContext>,
- 
+      </UserContext> 
 );

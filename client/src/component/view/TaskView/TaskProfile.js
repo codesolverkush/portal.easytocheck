@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useLocation } from 'react-router-dom'
-import axios from 'axios'
 import Navbar from '../../common/Navbar';
 import TaskDetails from './TaskDetails';
-import toast from 'react-hot-toast';
 
 
 const Shimmer = () => {
@@ -21,30 +19,30 @@ const Shimmer = () => {
 const TaskProfile = () => {
   const location = useLocation();
   const taskId = location?.state?.taskId;
-  const [data, setData] = useState(null); // state to store the lead data
-  useEffect(() => {
-    const fetchProfileData = async () => {
-        try {
-            let response;
-            if (taskId) {
-                response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Tasks/${taskId}`);
-            }
-            setData(response?.data?.data); // store the fetched data in state
-        } catch (err) {
-          toast.error("You can't fetch this task details!")
-        }
-    };
+  // const [data, setData] = useState(null); // state to store the lead data
+  // useEffect(() => {
+  //   const fetchProfileData = async () => {
+  //       try {
+  //           let response;
+  //           if (taskId) {
+  //               response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Tasks/${taskId}`);
+  //           }
+  //           setData(response?.data?.data); // store the fetched data in state
+  //       } catch (err) {
+  //         toast.error("You can't fetch this task details!")
+  //       }
+  //   };
 
-    fetchProfileData();
+  //   fetchProfileData();
     
-  }, [taskId]);
+  // }, [taskId]);
 
 
-  return !data ?
+  return !taskId ?
   ( <Shimmer/>
   ) :  (
     <div>
-      <TaskDetails data={data} /> 
+      <TaskDetails /> 
       
     </div>
   );

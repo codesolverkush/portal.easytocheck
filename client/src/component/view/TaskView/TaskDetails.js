@@ -38,6 +38,7 @@ const TaskDetails = () => {
   const initialTaskId = location?.state?.taskId;
 
   const [selectedTaskId, setSelectedTaskId] = useState(initialTaskId);
+  const [click,setClick] = useState(false)
   const [taskList, setTaskList] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -223,7 +224,10 @@ return (
           {taskList?.data?.map((task) => (
             <div
               key={task.id}
-              onClick={() => setSelectedTaskId(task.id)}
+              onClick={() => {
+                setSelectedTaskId(task.id);
+                setClick(true);
+              }}              
               className={`p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors ${
                 selectedTaskId === task.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
               }`}

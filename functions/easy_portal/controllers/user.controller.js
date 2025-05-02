@@ -1,116 +1,133 @@
 const logoutHandler = async (req, res) => {
-    try {
-        const { catalyst } = res.locals;
-        const redirectURL = "portal.easytocheck.com"; 
+  try {
+    const { catalyst } = res.locals;
+    const redirectURL = "portal.easytocheck.com";
 
+    const cookies = req.cookies;
 
-        const cookies = req.cookies;
-        
-        // Clear all cookies dynamically
-        if (cookies) {
-            Object.keys(cookies).forEach(cookieName => {
-                res.clearCookie(cookieName, { path: "/" });
-            });
-        }
+    // Clear all cookies dynamically
+    if (cookies) {
+      Object.keys(cookies).forEach((cookieName) => {
+        res.clearCookie(cookieName, { path: "/" });
+      });
+    }
 
-
-        if (!catalyst) {
-            return res.status(500).json({
-                success: false,
-                message: "Catalyst instance is not available in locals",
-            });
-        }
+    if (!catalyst) {
+      return res.status(500).json({
+        success: false,
+        message: "Catalyst instance is not available in locals",
+      });
+    }
 
     //    res.clearCookie("_iamadt_client_10096162526", { path: "/", domain: "easyportal-704392036.development.catalystserverless.com" });
     //    res.clearCookie("_iambdt_client_10096162526", { path: "/", domain: "easyportal-704392036.development.catalystserverless.com" });
-       res.clearCookie("_iamadt_client_10097471762", { path: "/", domain: "portal.easytocheck.com" });
-       res.clearCookie("_iambdt_client_10097471762", { path: "/", domain: "portal.easytocheck.com" });
-       res.clearCookie("_iamadt_client_10097471762", { path: "/", domain: ".portal.easytocheck.com" });
-       res.clearCookie("_iambdt_client_10097471762", { path: "/", domain: ".portal.easytocheck.com" });
+    res.clearCookie("_iamadt_client_10097471762", {
+      path: "/",
+      domain: "portal.easytocheck.com",
+    });
+    res.clearCookie("_iambdt_client_10097471762", {
+      path: "/",
+      domain: "portal.easytocheck.com",
+    });
+    res.clearCookie("_iamadt_client_10097471762", {
+      path: "/",
+      domain: ".portal.easytocheck.com",
+    });
+    res.clearCookie("_iambdt_client_10097471762", {
+      path: "/",
+      domain: ".portal.easytocheck.com",
+    });
 
-       var auth = catalyst?.auth;
-       await auth?.signOut(redirectURL);
+    var auth = catalyst?.auth;
+    await auth?.signOut(redirectURL);
 
-        res.status(200).json({ message: "Logout Successfully!" });
-    } catch (error) {
-        res.status(500).json({ 
-            message: "Logout Failed",
-            error: error.message || error
-        });
-    }
+    res.status(200).json({ message: "Logout Successfully!" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Logout Failed",
+      error: error.message || error,
+    });
+  }
 };
 
-const trobleShootHandler = async(req,res)=>{
-    
-    try {
-       
-        res.clearCookie("accessToken", { path: "/", domain: "localhost" });
-        res.status(200).json({
-            success:true,
-            message:"Your proble have been fixed!"
-        })
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            success:false,
-            message:"Please contact to app administrator!"
-        })
+const trobleShootHandler = async (req, res) => {
+  try {
+    res.clearCookie("accessToken", { path: "/", domain: "localhost" });
+    res.status(200).json({
+      success: true,
+      message: "Your proble have been fixed!",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Please contact to app administrator!",
+    });
+  }
+};
+
+const checkRole = async (req, res) => {
+  try {
+    const userId = req.currentUser?.user_id;
+    const userEmail = req.currentUser?.email_id;
+    const { catalyst } = res.locals;
+    const zcql = catalyst.zcql();
+    let check = false;
+    let users = [];
+
+    if (userId) {
+      const orgQuery = `
+               SELECT orgid FROM usermanagement WHERE userid = '${userId}'
+              `;
+      const orgDetail = await zcql.executeZCQLQuery(orgQuery);
+      const orgId = orgDetail[0]?.usermanagement?.orgid;
+
+      if (!orgId) {
+        return res.status(404).json({
+          success: false,
+          message: "Organization ID not found for the user.",
+        });
+      }
+
+      const selectFindQuery = `
+              SELECT activationdate,activationEndDate,activeLicense,totalLicenses,superadminEmail
+              FROM Organization 
+              WHERE ROWID = '${orgId}' 
+              LIMIT 1
+             `;
+      const orgDetails = await zcql.executeZCQLQuery(selectFindQuery);
+
+      if (!orgDetails || orgDetails.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No organization details found.",
+        });
+      }
+
+      if (orgDetails[0]?.Organization?.superadminEmail === userEmail) {
+        check = true;
+        return res.status(200).json({
+          check: check,
+          role: "superadmin",
+          data: orgDetails,
+          users: users,
+        });
+      } else {
+        return res.status(401).json({
+          success: false,
+          message: "You are not authorized to show this page!",
+        });
+      }
+    } else {
+      return res.status(404).send({
+        success: false,
+        message: "Data not found!",
+      });
     }
-}
+  } catch (error) {
+    res.status(500).send({
+      message: error,
+    });
+  }
+};
 
-// const logoutHandler = async (req, res) => {
-//     try {
-//         // Get all cookies from the request
-//         const cookies = req.cookies;
-        
-//         // Clear all cookies dynamically
-//         if (cookies) {
-//             Object.keys(cookies).forEach(cookieName => {
-//                 res.clearCookie(cookieName, { path: "/" });
-//             });
-//         }
-
-//        res.clearCookie("_iamadt_client_10096162526", { path: "/", domain: "easyportal-704392036.development.catalystserverless.com" });
-//        res.clearCookie("_iambdt_client_10096162526", { path: "/", domain: "easyportal-704392036.development.catalystserverless.com" });
-        
-//         res.status(200).json({ message: "Logout Successfully!" });
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "Logout Failed",
-//             error: error.message || error
-//         });
-//     }
-// };
-// Example in-memory caches
-// const orgCache = {};
-// const tokenCache = {};
-
-// const logoutHandler = async (req, res) => {
-//     try {
-//         const cookies = req.cookies;
-//         const userId = req.currentUser?.user_id;
-
-//         // Clear cookies
-//         if (cookies) {
-//             Object.keys(cookies).forEach(cookieName => {
-//                 res.clearCookie(cookieName, { path: "/" });
-//             });
-//         }
-
-//         // Clear in-memory cache for user
-//         if (userId) {
-//             delete orgCache[userId];
-//             delete tokenCache[userId]; // if you're caching tokens like this
-//         }
-
-//         res.status(200).json({ message: "Logout Successfully!" });
-//     } catch (error) {
-//         res.status(500).json({
-//             message: "Logout Failed",
-//             error: error.message || error
-//         });
-//     }
-// };
-
-
-module.exports = {  logoutHandler,trobleShootHandler };
+module.exports = { logoutHandler, trobleShootHandler, checkRole };

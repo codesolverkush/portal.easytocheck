@@ -7,6 +7,6 @@ const router = express.Router();
 
 
 
-router.get('/associateddeal/:contactId',catalystAuth,associatedDealWithContact);
+router.get('/associateddeal/:contactId',catalystAuth,accessControl,associatedDealWithContact);
 
 module.exports = router;

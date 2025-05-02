@@ -62,18 +62,8 @@ const totalLead = async (req, res) => {
 
 const totalTask = async (req, res) => {
     try {
-        const userId = req.currentUser?.user_id;
-               
-        if (!userId) {
-            return res.status(404).json({ message: "User ID not found." });
-        }
-
-        const { catalyst } = res.locals;
-        const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
-        const user = await zcql.executeZCQLQuery(userQuery);
-        const orgId = user[0]?.usermanagement?.orgid;
-        const domain = user[0]?.usermanagement?.domain;
+        const orgId = req.userDetails[0]?.usermanagement?.orgid;
+        const domain = req.userDetails[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
@@ -113,18 +103,9 @@ const totalTask = async (req, res) => {
 
 const totalMeeting = async (req, res) => {
     try {
-        const userId = req.currentUser?.user_id;
-              
-        if (!userId) {
-            return res.status(404).json({ message: "User ID not found." });
-        }
 
-        const { catalyst } = res.locals;
-        const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
-        const user = await zcql.executeZCQLQuery(userQuery);
-        const orgId = user[0]?.usermanagement?.orgid;
-        const domain = user[0]?.usermanagement?.domain;
+        const orgId = req.userDetails[0]?.usermanagement?.orgid;
+        const domain = req.userDetails[0]?.usermanagement?.domain;
 
 
         if (!orgId) {
@@ -163,23 +144,9 @@ const totalMeeting = async (req, res) => {
 };
 
 const totalDeals = async (req, res) => {
-    // const now = new Date();
-    // const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    
-    // const startDate = `${startOfMonth.toISOString().split('T')[0]}T00:00:00-07:00`;
     try {
-        const userId = req.currentUser?.user_id;
-        
-        if (!userId) {
-            return res.status(404).json({ message: "User ID not found." });
-        }
-
-        const { catalyst } = res.locals;
-        const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
-        const user = await zcql.executeZCQLQuery(userQuery);
-        const orgId = user[0]?.usermanagement?.orgid;
-        const domain = user[0]?.usermanagement?.domain;
+        const orgId = req.userDetails[0]?.usermanagement?.orgid;
+        const domain = req.userDetails[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
@@ -188,9 +155,6 @@ const totalDeals = async (req, res) => {
         let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
-        // const requestData = {
-        //     select_query: `SELECT id FROM Deals WHERE Created_Time > '${startDate}' LIMIT 1000`
-        // };
         const requestData = {
             select_query: `SELECT COUNT(id) FROM Deals WHERE Stage != '' ORDER BY Created_Time DESC LIMIT 1000`
         };
@@ -219,20 +183,10 @@ const totalDeals = async (req, res) => {
 
 const totalContacts = async (req, res) => {
     try {
-        const userId = req.currentUser?.user_id;
-        
         const accessScore = req.userDetails[0].usermanagement?.Contacts;
-        
-        if (!userId) {
-            return res.status(404).json({ message: "User ID not found." });
-        }
-
-        const { catalyst } = res.locals;
-        const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
-        const user = await zcql.executeZCQLQuery(userQuery);
-        const orgId = user[0]?.usermanagement?.orgid;
-        const domain = user[0]?.usermanagement?.domain;
+        const crmuserid = req.userDetails[0]?.usermanagement?.crmuserid;
+        const orgId = req.userDetails[0]?.usermanagement?.orgid;
+        const domain = req.userDetails[0]?.usermanagement?.domain;
 
 
         if (!orgId) {
@@ -242,11 +196,8 @@ const totalContacts = async (req, res) => {
         let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
-        // const requestData = {
-        //     select_query: `SELECT id FROM Deals WHERE Created_Time > '${startDate}' LIMIT 1000`
-        // };
         const requestData = {
-            select_query: `SELECT Full_Name,Email,Lead_Source,Phone,Date_of_Birth,Mailing_Street,Mailing_State,Mailing_Country,Mailing_City,Mailing_Zip,Other_Phone,Secondary_Email,Skype_ID from Contacts WHERE Last_Name != '' ORDER BY Created_Time DESC`
+            select_query: `SELECT Full_Name,Email,Lead_Source,Phone,Date_of_Birth,Mailing_Street,Mailing_State,Mailing_Country,Mailing_City,Mailing_Zip,Other_Phone,Secondary_Email,Skype_ID from Contacts WHERE easyportal__Client_User = ${crmuserid} ORDER BY Created_Time DESC`
         };
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
@@ -273,19 +224,11 @@ const totalContacts = async (req, res) => {
 
 const leadDetails = async (req, res) => {
     try {
-        const userId = req.currentUser?.user_id;
-        const accessScore = req.userDetails?.[0]?.usermanagement?.Leads;
-        
-        if (!userId) {
-            return res.status(404).json({ message: "User ID not found." });
-        }
+        const crmuserid = req.userDetails[0]?.usermanagement?.crmuserid;
+        const orgId = req.userDetails[0]?.usermanagement?.orgid;
+        const domain = req.userDetails[0]?.usermanagement?.domain;
+        const accessScore = req.userDetails[0]?.usermanagement?.Leads;
 
-        const { catalyst } = res.locals;
-        const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
-        const user = await zcql.executeZCQLQuery(userQuery);
-        const orgId = user[0]?.usermanagement?.orgid;
-        const domain = user[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
@@ -295,7 +238,7 @@ const leadDetails = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: "SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Lead_Status,Created_Time FROM Leads WHERE Last_Name != '' ORDER BY Created_Time DESC LIMIT 1000 "
+            select_query: `SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Lead_Status,Created_Time FROM Leads WHERE easyportal__Client_User = ${crmuserid} ORDER BY Created_Time DESC LIMIT 1000`
         };
            
         try {
@@ -326,23 +269,28 @@ const leadDetails = async (req, res) => {
 
 const dealDetails = async (req, res) => {
     try {
-        const userId = req.currentUser?.user_id;
+        // const userId = req.currentUser?.user_id;
         
-        const accessScore = req.userDetails[0].usermanagement?.Leads;
-        // if(accesScore < 2){
-        //     return res.status(403).json({ success: false, message: "Access Not Available" });
-        // }
-        
-        if (!userId) {
-            return res.status(404).json({ message: "User ID not found." });
-        }
 
-        const { catalyst } = res.locals;
-        const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
-        const user = await zcql.executeZCQLQuery(userQuery);
-        const orgId = user[0]?.usermanagement?.orgid;
-        const domain = user[0]?.usermanagement?.domain;
+        // // if(accesScore < 2){
+        // //     return res.status(403).json({ success: false, message: "Access Not Available" });
+        // // }
+        
+        // if (!userId) {
+        //     return res.status(404).json({ message: "User ID not found." });
+        // }
+
+        // const { catalyst } = res.locals;
+        // const zcql = catalyst.zcql();
+        // const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        // const user = await zcql.executeZCQLQuery(userQuery);
+        // const orgId = user[0]?.usermanagement?.orgid;
+        // const domain = user[0]?.usermanagement?.domain;
+        
+        const accessScore = req.userDetails[0].usermanagement?.Deals;
+        const crmuserid = req.userDetails[0]?.usermanagement?.crmuserid;
+        const orgId = req.userDetails[0]?.usermanagement?.orgid;
+        const domain = req.userDetails[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
@@ -352,25 +300,21 @@ const dealDetails = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: "SELECT id,Deal_Name,Closing_Date,Contact_Name,Account_Name,Stage,Pipeline,Created_Time FROM Deals WHERE Deal_Name != '' ORDER BY Created_Time DESC LIMIT 2000 "
-            // select_query: "SELECT * FROM Leads LIMIT 200"
-
+            select_query: `SELECT id,Deal_Name,Closing_Date,Contact_Name,Account_Name,Stage,Pipeline,Created_Time FROM Deals WHERE easyportal__Portal_User = ${crmuserid} ORDER BY Created_Time DESC LIMIT 2000 `
         };
-
-        //  const requestData = {
-        //     select_query: "select COUNT(id) from Leads where Last_Name != ''"
-        // };
            
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
             return res.status(200).json({ success: true, data, accessScore });
         } catch (error) {
-            // console.log(error)
             if (error.message === "TOKEN_EXPIRED") {
+                // Refresh token without ending the response
                 try {
                     token = await refreshAccessToken(req, res);
-                    const data = await handleZohoRequest(url, 'get', null, token);
-                    return res.status(200).json({ success: true, data,accessScore });
+                   
+                    const data = await handleZohoRequest(url, 'post', requestData, token);
+                
+                    return res.status(200).json({ success: true, data, accessScore });
                 } catch (refreshError) {
                     return res.status(500).json({ success: false, message: refreshError.message });
                 }
@@ -379,7 +323,6 @@ const dealDetails = async (req, res) => {
             }
         }
     } catch (error) {
-        console.log(error)
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }

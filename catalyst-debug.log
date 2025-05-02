@@ -1,0 +1,655 @@
+[debug] [2025-05-02T04:57:38.159Z] : 
+[debug] [2025-05-02T04:57:38.161Z] : ----------------------------------------------------------------------
+[debug] [2025-05-02T04:57:38.161Z] : Command:      C:\Program Files\nodejs\node.exe C:\Users\Dell5490\AppData\Roaming\npm\node_modules\zcatalyst-cli\lib\bin\catalyst.js deploy
+[debug] [2025-05-02T04:57:38.161Z] : CLI Version:  1.17.6
+[debug] [2025-05-02T04:57:38.162Z] : Platform:     win32
+[debug] [2025-05-02T04:57:38.162Z] : Node Version: v22.12.0
+[debug] [2025-05-02T04:57:38.162Z] : Time:         Fri May 02 2025 10:27:38 GMT+0530 (India Standard Time)
+[debug] [2025-05-02T04:57:38.162Z] : ----------------------------------------------------------------------
+[debug] [2025-05-02T04:57:38.162Z] : 
+[debug] [2025-05-02T04:57:38.962Z] : > authorizing via signed-in user option
+[debug] [2025-05-02T04:57:38.962Z] : > command requires scopes: ["ZohoCatalyst.projects.ALL","ZohoCatalyst.functions.ALL","ZohoCatalyst.webapp.ALL","ZohoCatalyst.appsail.Update"]
+[debug] [2025-05-02T04:57:38.976Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006 
+
+[debug] [2025-05-02T04:57:39.918Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 02 May 2025 04:57:40 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=b14009a6059feb83ee8aa1c715a015c5; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=be4f09b3-1ee4-4873-9afe-c354350a6dd6;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=be4f09b3-1ee4-4873-9afe-c354350a6dd6;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-02T04:57:39.924Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006/environment 
+
+[debug] [2025-05-02T04:57:40.236Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 02 May 2025 04:57:40 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=bbdfb771565421abbe10f7a180903d28; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=93447f12-0d92-409b-b04f-67032b24d68b;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=93447f12-0d92-409b-b04f-67032b24d68b;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-02T04:57:40.251Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006/function 
+Query params: {"type":"basicio,event,cron,applogic,integration,browser_logic"}
+
+[debug] [2025-05-02T04:57:40.605Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 02 May 2025 04:57:40 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=4ead9897700827f973c0f7dbded7f673; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=4484aacc-df52-4659-bc76-bc8aa004ac15;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=4484aacc-df52-4659-bc76-bc8aa004ac15;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-02T04:57:40.614Z] : unknown eol undefined hence skipping check
+[debug] [2025-05-02T04:57:43.142Z] : >>>> HTTP REQUEST : PUT https://api.catalyst.zoho.com/baas/v1/project/4340000000043006/server/upsert 
+
+[debug] [2025-05-02T04:57:56.314Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 02 May 2025 04:57:56 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=b14009a6059feb83ee8aa1c715a015c5; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=e14d6bc1-badf-4a69-841a-7e42f3c15193;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=e14d6bc1-badf-4a69-841a-7e42f3c15193;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[info] [2025-05-02T04:57:56.508Z] : i Plugin : "zcatalyst-cli-plugin-react" is used for client deploy
+[info] [2025-05-02T04:57:56.508Z] : i Building Application...
+[info] [2025-05-02T04:57:59.150Z] : [react-plugin]: Creating an optimized production build...
+[info] [2025-05-02T04:58:26.355Z] : [react-plugin]: Compiled with warnings.
+
+[info] [2025-05-02T04:58:26.365Z] : [react-plugin]: [eslint] 
+src\App.js
+  Line 73:7:  'licenseExemptRoutes' is assigned a value but never used  no-unused-vars
+
+src\component\common\DealStageBar.js
+  Line 4:10:    'X' is defined but never used                       no-unused-vars
+  Line 4:13:    'Clipboard' is defined but never used               no-unused-vars
+  Line 4:24:    'ArrowRight' is defined but never used              no-unused-vars
+  Line 139:10:  'selectedStage' is assigned a value but never used  no-unused-vars
+  Line 173:13:  'response' is assigned a value but never used       no-unused-vars
+
+src\component\common\Navbar.js
+  Line 25:10:  'Globe' is defined but never used                                                                                  no-unused-vars
+  Line 114:6:  React Hook useEffect has a missing dependency: 'getUserDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\common\Navbar3.js
+  Line 25:9:  'scrollToSection' is assigned a value but never used  no-unused-vars
+
+src\component\confirmbox\CheckInModal.js
+  Line 12:9:  'loc' is assigned a value but never used  no-unused-vars
+
+src\component\forms\ConvertLead.js
+  Line 2:16:  'ChevronDown' is defined but never used  no-unused-vars
+
+src\component\forms\CreateContactForm.js
+  Line 54:6:  React Hook useEffect has a missing dependency: 'fetchCRMFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\forms\CreateDealForm.js
+  Line 56:6:  React Hook useEffect has a missing dependency: 'fetchCRMFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\forms\CreateLeadForm.js
+  Line 54:6:  React Hook useEffect has a missing dependency: 'fetchCRMFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\forms\SupportPopup.js
+  Line 52:13:  'response' is assigned a value but never used  no-unused-vars
+
+src\component\landingComponent\AboutUs.js
+  Line 6:3:  'User' is defined but never used        no-unused-vars
+  Line 9:3:  'ArrowRight' is defined but never used  no-unused-vars
+
+src\component\pages\OrganizationProfile.js
+  Line 405:10:  'MdOutlineAdminPanelSettings' is defined but never used                                                              no-unused-vars
+  Line 418:10:  'role' is assigned a value but never used                                                                            no-unused-vars
+  Line 487:6:   React Hook useEffect has a missing dependency: 'fetchProfileData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\testPages\CachePage.js
+  Line 5:10:  'tasks' is assigned a value but never used                                                                     no-unused-vars
+  Line 6:10:  'loading' is assigned a value but never used                                                                   no-unused-vars
+  Line 7:10:  'error' is assigned a value but never used                                                                     no-unused-vars
+  Line 8:10:  'pageInfo' is assigned a value but never used                                                                  no-unused-vars
+  Line 59:6:  React Hook useEffect has a missing dependency: 'fetchTasks'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\testPages\LeadDetails.js
+  Line 4:3:     'Paperclip' is defined but never used                                                                              no-unused-vars
+  Line 5:3:     'Edit' is defined but never used                                                                                   no-unused-vars
+  Line 6:3:     'Send' is defined but never used                                                                                   no-unused-vars
+  Line 7:3:     'MoreHorizontal' is defined but never used                                                                         no-unused-vars
+  Line 9:3:     'Mail' is defined but never used                                                                                   no-unused-vars
+  Line 10:3:    'Clock' is defined but never used                                                                                  no-unused-vars
+  Line 11:3:    'Calendar' is defined but never used                                                                               no-unused-vars
+  Line 12:3:    'Globe' is defined but never used                                                                                  no-unused-vars
+  Line 13:3:    'MapPin' is defined but never used                                                                                 no-unused-vars
+  Line 14:3:    'User' is defined but never used                                                                                   no-unused-vars
+  Line 15:3:    'Briefcase' is defined but never used                                                                              no-unused-vars
+  Line 16:3:    'Tag' is defined but never used                                                                                    no-unused-vars
+  Line 17:3:    'Bell' is defined but never used                                                                                   no-unused-vars
+  Line 18:3:    'Menu' is defined but never used                                                                                   no-unused-vars
+  Line 25:10:   'Link' is defined but never used                                                                                   no-unused-vars
+  Line 35:8:    'ShimmerPage' is defined but never used                                                                            no-unused-vars
+  Line 420:10:  'sidebarOpen' is assigned a value but never used                                                                   no-unused-vars
+  Line 420:23:  'setSidebarOpen' is assigned a value but never used                                                                no-unused-vars
+  Line 440:9:   'sidebarRef' is assigned a value but never used                                                                    no-unused-vars
+  Line 443:10:  'formData' is assigned a value but never used                                                                      no-unused-vars
+  Line 444:10:  'loading' is assigned a value but never used                                                                       no-unused-vars
+  Line 480:6:   React Hook useEffect has a missing dependency: 'fetchCRMFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 693:9:   'handleChange' is assigned a value but never used                                                                  no-unused-vars
+
+src\component\testPages\LeadsView.js
+  Line 14:3:   'Check' is defined but never used                                                                              no-unused-vars
+  Line 15:3:   'DragVertical' is defined but never used                                                                       no-unused-vars
+  Line 18:10:  'DateTime' is defined but never used                                                                           no-unused-vars
+  Line 234:6:  React Hook useEffect has a missing dependency: 'fetchLeads'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\view\ContactView\ContactDetails.js
+  Line 4:3:     'User' is defined but never used                                                                                        no-unused-vars
+  Line 5:3:     'Mail' is defined but never used                                                                                        no-unused-vars
+  Line 6:3:     'Calendar' is defined but never used                                                                                    no-unused-vars
+  Line 7:3:     'Clock' is defined but never used                                                                                       no-unused-vars
+  Line 9:3:     'Search' is defined but never used                                                                                      no-unused-vars
+  Line 10:3:    'Plus' is defined but never used                                                                                        no-unused-vars
+  Line 12:3:    'MapPin' is defined but never used                                                                                      no-unused-vars
+  Line 13:3:    'MessageCircle' is defined but never used                                                                               no-unused-vars
+  Line 14:3:    'UserSquare' is defined but never used                                                                                  no-unused-vars
+  Line 15:3:    'Edit' is defined but never used                                                                                        no-unused-vars
+  Line 25:8:    'ShowAttachment' is defined but never used                                                                              no-unused-vars
+  Line 153:29:  'setSelectedContactId' is assigned a value but never used                                                               no-unused-vars
+  Line 154:10:  'contactList' is assigned a value but never used                                                                        no-unused-vars
+  Line 156:10:  'loading' is assigned a value but never used                                                                            no-unused-vars
+  Line 157:10:  'searchTerm' is assigned a value but never used                                                                         no-unused-vars
+  Line 157:22:  'setSearchTerm' is assigned a value but never used                                                                      no-unused-vars
+  Line 158:10:  'sortField' is assigned a value but never used                                                                          no-unused-vars
+  Line 158:21:  'setSortField' is assigned a value but never used                                                                       no-unused-vars
+  Line 159:10:  'sortDirection' is assigned a value but never used                                                                      no-unused-vars
+  Line 159:25:  'setSortDirection' is assigned a value but never used                                                                   no-unused-vars
+  Line 160:10:  'isCreateModalOpen' is assigned a value but never used                                                                  no-unused-vars
+  Line 161:10:  'isMobileSidebarOpen' is assigned a value but never used                                                                no-unused-vars
+  Line 170:10:  'isEditModalOpen' is assigned a value but never used                                                                    no-unused-vars
+  Line 170:27:  'setIsEditModalOpen' is assigned a value but never used                                                                 no-unused-vars
+  Line 171:10:  'editContact' is assigned a value but never used                                                                        no-unused-vars
+  Line 171:23:  'setEditContact' is assigned a value but never used                                                                     no-unused-vars
+  Line 183:10:  'formData' is assigned a value but never used                                                                           no-unused-vars
+  Line 524:6:   React Hook useEffect has a missing dependency: 'fetchContactsFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 531:6:   React Hook useEffect has a missing dependency: 'fetchContactDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 568:9:   'handleCreateContact' is assigned a value but never used                                                                no-unused-vars
+
+src\component\view\ContactView\ContactView.js
+  Line 14:3:   'Check' is defined but never used                                                                                 no-unused-vars
+  Line 15:3:   'DragVertical' is defined but never used                                                                          no-unused-vars
+  Line 239:6:  React Hook useEffect has a missing dependency: 'fetchContacts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\view\DealView\DealDetails.js
+  Line 4:3:     'User' is defined but never used                                                                                     no-unused-vars
+  Line 5:3:     'Mail' is defined but never used                                                                                     no-unused-vars
+  Line 6:3:     'Calendar' is defined but never used                                                                                 no-unused-vars
+  Line 7:3:     'Clock' is defined but never used                                                                                    no-unused-vars
+  Line 9:3:     'Search' is defined but never used                                                                                   no-unused-vars
+  Line 10:3:    'Plus' is defined but never used                                                                                     no-unused-vars
+  Line 12:3:    'MapPin' is defined but never used                                                                                   no-unused-vars
+  Line 13:3:    'MessageCircle' is defined but never used                                                                            no-unused-vars
+  Line 14:3:    'UserSquare' is defined but never used                                                                               no-unused-vars
+  Line 15:3:    'Edit' is defined but never used                                                                                     no-unused-vars
+  Line 119:26:  'setSelectedDealId' is assigned a value but never used                                                               no-unused-vars
+  Line 120:10:  'dealList' is assigned a value but never used                                                                        no-unused-vars
+  Line 120:20:  'setDealList' is assigned a value but never used                                                                     no-unused-vars
+  Line 122:10:  'loading' is assigned a value but never used                                                                         no-unused-vars
+  Line 123:10:  'searchTerm' is assigned a value but never used                                                                      no-unused-vars
+  Line 123:22:  'setSearchTerm' is assigned a value but never used                                                                   no-unused-vars
+  Line 124:10:  'sortField' is assigned a value but never used                                                                       no-unused-vars
+  Line 124:21:  'setSortField' is assigned a value but never used                                                                    no-unused-vars
+  Line 125:10:  'sortDirection' is assigned a value but never used                                                                   no-unused-vars
+  Line 125:25:  'setSortDirection' is assigned a value but never used                                                                no-unused-vars
+  Line 126:10:  'isCreateModalOpen' is assigned a value but never used                                                               no-unused-vars
+  Line 126:29:  'setIsCreateModalOpen' is assigned a value but never used                                                            no-unused-vars
+  Line 127:10:  'isMobileSidebarOpen' is assigned a value but never used                                                             no-unused-vars
+  Line 129:10:  'isEditModalOpen' is assigned a value but never used                                                                 no-unused-vars
+  Line 129:27:  'setIsEditModalOpen' is assigned a value but never used                                                              no-unused-vars
+  Line 134:10:  'formData' is assigned a value but never used                                                                        no-unused-vars
+  Line 140:10:  'currentStage' is assigned a value but never used                                                                    no-unused-vars
+  Line 552:6:   React Hook useEffect has a missing dependency: 'fetchDealsFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 564:6:   React Hook useEffect has a missing dependency: 'fetchDealDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\view\DealView\DealView.js
+  Line 14:3:   'Check' is defined but never used                                                                              no-unused-vars
+  Line 15:3:   'DragVertical' is defined but never used                                                                       no-unused-vars
+  Line 52:10:  'isCreateModalOpen' is assigned a value but never used                                                         no-unused-vars
+  Line 52:29:  'setIsCreateModalOpen' is assigned a value but never used                                                      no-unused-vars
+  Line 53:10:  'isSubmitting' is assigned a value but never used                                                              no-unused-vars
+  Line 53:24:  'setIsSubmitting' is assigned a value but never used                                                           no-unused-vars
+  Line 226:6:  React Hook useEffect has a missing dependency: 'fetchDeals'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\view\MeetingView\MeetingView.js
+  Line 37:10:  'isCreateModalOpen' is assigned a value but never used                                                            no-unused-vars
+  Line 38:10:  'isSubmitting' is assigned a value but never used                                                                 no-unused-vars
+  Line 220:6:  React Hook useEffect has a missing dependency: 'fetchMeetings'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 358:9:  'handleCreateMeeting' is assigned a value but never used                                                          no-unused-vars
+
+src\component\view\TaskView\TaskDetails.js
+  Line 2:39:   'CheckCircle' is defined but never used          no-unused-vars
+  Line 2:71:   'ArrowUp' is defined but never used              no-unused-vars
+  Line 2:80:   'ArrowDown' is defined but never used            no-unused-vars
+  Line 37:9:   'navigate' is assigned a value but never used    no-unused-vars
+  Line 41:10:  'click' is assigned a value but never used       no-unused-vars
+  Line 141:9:  'handleSort' is assigned a value but never used  no-unused-vars
+
+src\component\view\TaskView\TaskView.js
+  Line 241:6:  React Hook useEffect has a missing dependency: 'fetchTasks'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\index.js
+  Line 1:9:   'StrictMode' is defined but never used     no-unused-vars
+  Line 7:10:  'BrowserRouter' is defined but never used  no-unused-vars
+
+src\pages\Home.js
+  Line 2:10:   'Bar' is defined but never used                                                                                  no-unused-vars
+  Line 2:15:   'Line' is defined but never used                                                                                 no-unused-vars
+  Line 6:10:   'Calendar' is defined but never used                                                                             no-unused-vars
+  Line 6:20:   'Users' is defined but never used                                                                                no-unused-vars
+  Line 6:27:   'CheckSquare' is defined but never used                                                                          no-unused-vars
+  Line 6:40:   'TrendingUp' is defined but never used                                                                           no-unused-vars
+  Line 6:58:   'Paperclip' is defined but never used                                                                            no-unused-vars
+  Line 6:69:   'Clock' is defined but never used                                                                                no-unused-vars
+  Line 6:96:   'ClipboardCheck' is defined but never used                                                                       no-unused-vars
+  Line 6:131:  'Contact' is defined but never used                                                                              no-unused-vars
+  Line 10:8:   'CreateContactForm' is defined but never used                                                                    no-unused-vars
+  Line 11:10:  'DateTime' is defined but never used                                                                             no-unused-vars
+  Line 39:10:  'isContactModelOpen' is assigned a value but never used                                                          no-unused-vars
+  Line 39:30:  'setIsContactModalOpen' is assigned a value but never used                                                       no-unused-vars
+  Line 273:6:  React Hook useEffect has a missing dependency: 'fetchAllData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 286:9:  'salesData' is assigned a value but never used                                                                   no-unused-vars
+  Line 306:9:  'leadsData' is assigned a value but never used                                                                   no-unused-vars
+  Line 334:9:  'getUserDetails' is assigned a value but never used                                                              no-unused-vars
+  Line 352:9:  'getLocation' is assigned a value but never used                                                                 no-unused-vars
+
+src\pages\LandingPage.js
+  Line 5:3:    'AlertCircle' is defined but never used           no-unused-vars
+  Line 14:3:   'ChevronDown' is defined but never used           no-unused-vars
+  Line 15:3:   'Twitter' is defined but never used               no-unused-vars
+  Line 16:3:   'Instagram' is defined but never used             no-unused-vars
+  Line 21:10:  'FaFacebook' is defined but never used            no-unused-vars
+  Line 21:22:  'FaHeadphones' is defined but never used          no-unused-vars
+  Line 28:10:  'menuOpen' is assigned a value but never used     no-unused-vars
+  Line 28:20:  'setMenuOpen' is assigned a value but never used  no-unused-vars
+  Line 29:10:  'isScrolled' is assigned a value but never used   no-unused-vars
+  Line 32:10:  'images' is assigned a value but never used       no-unused-vars
+  Line 32:18:  'setImages' is assigned a value but never used    no-unused-vars
+
+src\pages\Webtab.js
+  Line 3:22:    'FaCheckCircle' is defined but never used                                                                            no-unused-vars
+  Line 5:17:    'Toaster' is defined but never used                                                                                  no-unused-vars
+  Line 7:10:    'Edit' is defined but never used                                                                                     no-unused-vars
+  Line 78:9:    'handleOrgIdChange' is assigned a value but never used                                                               no-unused-vars
+  Line 464:15:  'crmresponse' is assigned a value but never used                                                                     no-unused-vars
+  Line 589:6:   React Hook useEffect has a missing dependency: 'fetchUserDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\wrapper\LicenseCheck.js
+  Line 8:8:    'toast' is defined but never used           no-unused-vars
+  Line 13:26:  'orgId' is assigned a value but never used  no-unused-vars
+[info] [2025-05-02T04:58:26.417Z] : [react-plugin]: 
+Search for the keywords to learn more about each warning.
+[info] [2025-05-02T04:58:26.417Z] : [react-plugin]: To ignore, add // eslint-disable-next-line to the line before.
+
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]: File sizes after gzip:
+
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   182.71 kB  build\static\js\main.69d72a33.js
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   69.37 kB   build\static\js\825.d7e64cc8.chunk.js
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   13.03 kB   build\static\css\main.55338b74.css
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   12.29 kB   build\static\js\290.e379d0fb.chunk.js
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   9.9 kB     build\static\js\642.23e7ba0c.chunk.js
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   9.56 kB    build\static\js\796.9689b9ce.chunk.js
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   7.3 kB     build\static\js\451.4d30da23.chunk.js
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   7.04 kB    build\static\js\244.b4823701.chunk.js
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   6.15 kB    build\static\js\425.383f6b5f.chunk.js
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   5.66 kB    build\static\js\394.a12aa7ec.chunk.js
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   5.5 kB     build\static\js\629.58361a57.chunk.js
+[info] [2025-05-02T04:58:26.418Z] : [react-plugin]:   5.34 kB    build\static\js\427.362001b4.chunk.js
+[info] [2025-05-02T04:58:26.419Z] : [react-plugin]:   5.14 kB    build\static\js\25.3f002603.chunk.js
+[info] [2025-05-02T04:58:26.419Z] : [react-plugin]:   5.13 kB    build\static\js\295.94881a1c.chunk.js
+[info] [2025-05-02T04:58:26.419Z] : [react-plugin]:   4.45 kB    build\static\js\883.4d6f9efa.chunk.js
+[info] [2025-05-02T04:58:26.419Z] : [react-plugin]:   4.01 kB    build\static\js\382.35d7c560.chunk.js
+[info] [2025-05-02T04:58:26.419Z] : [react-plugin]:   3.6 kB     build\static\js\170.865b40d1.chunk.js
+[info] [2025-05-02T04:58:26.419Z] : [react-plugin]:   3.49 kB    build\static\js\530.e793f3fd.chunk.js
+[info] [2025-05-02T04:58:26.420Z] : [react-plugin]:   3.43 kB    build\static\js\806.948239c4.chunk.js
+[info] [2025-05-02T04:58:26.420Z] : [react-plugin]:   2.91 kB    build\static\js\241.3a050995.chunk.js
+[info] [2025-05-02T04:58:26.420Z] : [react-plugin]:   2.85 kB    build\static\js\104.e4779f8a.chunk.js
+[info] [2025-05-02T04:58:26.420Z] : [react-plugin]:   2.71 kB    build\static\js\174.7a5b8ef8.chunk.js
+[info] [2025-05-02T04:58:26.420Z] : [react-plugin]:   2.3 kB     build\static\js\539.f8e02444.chunk.js
+[info] [2025-05-02T04:58:26.420Z] : [react-plugin]:   1.98 kB    build\static\js\341.1666bcd5.chunk.js
+[info] [2025-05-02T04:58:26.421Z] : [react-plugin]:   1.27 kB    build\static\js\930.6e5a39fe.chunk.js
+[info] [2025-05-02T04:58:26.421Z] : [react-plugin]:   1.26 kB    build\static\js\85.7c47e83f.chunk.js
+[info] [2025-05-02T04:58:26.421Z] : [react-plugin]:   1.19 kB    build\static\js\419.bfc39e96.chunk.js
+[info] [2025-05-02T04:58:26.421Z] : [react-plugin]:   998 B      build\static\js\972.59d48007.chunk.js
+[info] [2025-05-02T04:58:26.422Z] : [react-plugin]:   947 B      build\static\js\191.7fd04c97.chunk.js
+[info] [2025-05-02T04:58:26.422Z] : [react-plugin]:   905 B      build\static\js\606.37192026.chunk.js
+[info] [2025-05-02T04:58:26.422Z] : [react-plugin]:   607 B      build\static\js\14.cca13408.chunk.js
+[info] [2025-05-02T04:58:26.422Z] : [react-plugin]:   595 B      build\static\js\900.2243f84e.chunk.js
+[info] [2025-05-02T04:58:26.422Z] : [react-plugin]:   565 B      build\static\js\423.28960c79.chunk.js
+[info] [2025-05-02T04:58:26.422Z] : [react-plugin]:  
+[debug] [2025-05-02T04:58:28.506Z] : >>>> HTTP REQUEST : POST https://api.catalyst.zoho.com/baas/v1/project/4340000000043006/webapp 
+
+[debug] [2025-05-02T04:58:40.237Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 02 May 2025 04:58:40 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=4ead9897700827f973c0f7dbded7f673; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=f60083a4-7630-4da9-8519-913a8319e39a;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=f60083a4-7630-4da9-8519-913a8319e39a;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[info] [2025-05-02T04:58:40.247Z] : 
+[info] [2025-05-02T04:58:40.248Z] : i functions(easy_portal): URL => https://easyportal-704392036.development.catalystserverless.com/server/easy_portal/
+[info] [2025-05-02T04:58:40.249Z] : √ functions(easy_portal): deploy successful
+[info] [2025-05-02T04:58:40.249Z] : 
+[info] [2025-05-02T04:58:40.250Z] : √ client: deploy successful
+[info] [2025-05-02T04:58:40.250Z] : i client: URL => https://easyportal-704392036.development.catalystserverless.com/app/index.html
+[info] [2025-05-02T04:58:40.251Z] : 
+[info] [2025-05-02T04:58:40.251Z] : √ Catalyst deploy complete!
+[debug] [2025-05-02T04:58:40.253Z] : NO ERRORS REGISTERED
+[debug] [2025-05-02T04:58:40.254Z] : EXEC ENDED with event: deploy, message: success
+[debug] [2025-05-02T04:58:40.254Z] : TOTAL DURATION OF COMMAND EXEC : 61305
+[debug] [2025-05-02T04:58:40.403Z] : >>>> HTTP REQUEST : POST https://api.catalyst.zoho.com/baas/v1/cli/logs 
+<request body omitted>
+
+[debug] [2025-05-02T04:58:42.000Z] : <<<< HTTP RESPONSE : 400
+Response Headers: {"server":"ZGS","date":"Fri, 02 May 2025 04:58:42 GMT","content-type":"application/json;charset=ISO-8859-1","content-length":"141","connection":"keep-alive","set-cookie":["zalb_46512fd555=c3d5ec374d3dc932973a3d50f55d8d00; Path=/; Secure; HttpOnly","JSESSIONID=CF033EFCE39AC7D6CB7622BE92E18A8F; Path=/; Secure; HttpOnly"],"x-content-type-options":"nosniff","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-02T04:58:42.000Z] : Response Body : {"status":"failure","data":{"error_code":"MORE_THAN_MAX_LENGTH","message":"Please check if the length of the input is in the correct range"}}
+
+[debug] [2025-05-02T04:58:42.002Z] : Unable to send debug log to server: HTTP Error: 400, Please check if the length of the input is in the correct range
+[debug] [2025-05-02T05:36:56.588Z] : 
+[debug] [2025-05-02T05:36:56.606Z] : ----------------------------------------------------------------------
+[debug] [2025-05-02T05:36:56.606Z] : Command:      C:\Program Files\nodejs\node.exe C:\Users\Dell5490\AppData\Roaming\npm\node_modules\zcatalyst-cli\lib\bin\catalyst.js serve
+[debug] [2025-05-02T05:36:56.607Z] : CLI Version:  1.17.6
+[debug] [2025-05-02T05:36:56.607Z] : Platform:     win32
+[debug] [2025-05-02T05:36:56.608Z] : Node Version: v22.12.0
+[debug] [2025-05-02T05:36:56.608Z] : Time:         Fri May 02 2025 11:06:56 GMT+0530 (India Standard Time)
+[debug] [2025-05-02T05:36:56.608Z] : ----------------------------------------------------------------------
+[debug] [2025-05-02T05:36:56.608Z] : 
+[debug] [2025-05-02T05:36:58.665Z] : > authorizing via signed-in user option
+[debug] [2025-05-02T05:36:58.665Z] : > command requires scopes: ["ZohoCatalyst.projects.ALL","ZohoCatalyst.functions.ALL","ZohoCatalyst.functions.EXECUTE","ZohoCatalyst.webapp.ALL","ZohoCatalyst.pdfshot.execute","ZohoCatalyst.authentication.CREATE"]
+[debug] [2025-05-02T05:36:58.685Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006 
+
+[debug] [2025-05-02T05:37:00.044Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 02 May 2025 05:37:00 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=4ead9897700827f973c0f7dbded7f673; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=ab7b885f-c36a-4996-a6b1-f62f5766c51a;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=ab7b885f-c36a-4996-a6b1-f62f5766c51a;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-02T05:37:00.057Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006/environment 
+
+[debug] [2025-05-02T05:37:00.410Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 02 May 2025 05:37:00 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=c3d5ec374d3dc932973a3d50f55d8d00; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=6d234196-d862-4a69-b6b2-897ace531270;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=6d234196-d862-4a69-b6b2-897ace531270;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-02T05:37:00.989Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006/function 
+Query params: {"type":"basicio,event,cron,applogic,integration,browser_logic"}
+
+[debug] [2025-05-02T05:37:01.349Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 02 May 2025 05:37:01 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=bbdfb771565421abbe10f7a180903d28; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=88d2288d-9092-4f53-a813-6e0417ed843b;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=88d2288d-9092-4f53-a813-6e0417ed843b;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-02T05:37:01.354Z] : unknown eol undefined hence skipping check
+[info] [2025-05-02T05:37:12.122Z] : [react-plugin]: Starting the development server...
+
+[info] [2025-05-02T05:37:12.123Z] : 
+[info] [2025-05-02T05:37:12.124Z] : i Client[client]: Plugin : "zcatalyst-cli-plugin-react" is used for client serve
+[info] [2025-05-02T05:37:12.124Z] : 
+[info] [2025-05-02T05:37:14.474Z] : 
+[info] [2025-05-02T05:37:14.475Z] :  >>>>>>>>>>>>> AdvancedIO <<<<<<<<<<<< 
+[info] [2025-05-02T05:37:14.475Z] : i easy_portal: http://localhost:3000/server/easy_portal/
+[info] [2025-05-02T05:37:14.475Z] : 
+[info] [2025-05-02T05:37:14.475Z] : 
+[info] [2025-05-02T05:37:14.476Z] :  >>>>>>>>>>>>> Web Client <<<<<<<<<<<<
+[info] [2025-05-02T05:37:14.476Z] : i client[client]: http://localhost:3000/app/
+[info] [2025-05-02T05:37:14.476Z] : 
+[info] [2025-05-02T05:37:30.404Z] : [react-plugin]: Compiled with warnings.
+
+[info] [2025-05-02T05:37:30.422Z] : [react-plugin]: [eslint] 
+src\App.js
+  Line 73:7:  'licenseExemptRoutes' is assigned a value but never used  no-unused-vars
+
+src\component\common\DealStageBar.js
+  Line 4:10:    'X' is defined but never used                       no-unused-vars
+  Line 4:13:    'Clipboard' is defined but never used               no-unused-vars
+  Line 4:24:    'ArrowRight' is defined but never used              no-unused-vars
+  Line 139:10:  'selectedStage' is assigned a value but never used  no-unused-vars
+  Line 173:13:  'response' is assigned a value but never used       no-unused-vars
+
+src\component\common\Navbar.js
+  Line 25:10:  'Globe' is defined but never used                                                                                  no-unused-vars
+  Line 95:6:   React Hook useEffect has a missing dependency: 'getUserDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\common\Navbar3.js
+  Line 25:9:  'scrollToSection' is assigned a value but never used  no-unused-vars
+
+src\component\confirmbox\CheckInModal.js
+  Line 12:9:  'loc' is assigned a value but never used  no-unused-vars
+
+src\component\forms\ConvertLead.js
+  Line 2:16:  'ChevronDown' is defined but never used  no-unused-vars
+
+src\component\forms\CreateContactForm.js
+  Line 54:6:  React Hook useEffect has a missing dependency: 'fetchCRMFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\forms\CreateDealForm.js
+  Line 56:6:  React Hook useEffect has a missing dependency: 'fetchCRMFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\forms\CreateLeadForm.js
+  Line 54:6:  React Hook useEffect has a missing dependency: 'fetchCRMFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\forms\SupportPopup.js
+  Line 52:13:  'response' is assigned a value but never used  no-unused-vars
+
+src\component\landingComponent\AboutUs.js
+  Line 6:3:  'User' is defined but never used        no-unused-vars
+  Line 9:3:  'ArrowRight' is defined but never used  no-unused-vars
+
+src\component\pages\Connections.js
+  Line 3:17:  'useContext' is defined but never used         no-unused-vars
+  Line 4:10:  'Link' is defined but never used               no-unused-vars
+  Line 4:16:  'redirect' is defined but never used           no-unused-vars
+  Line 17:9:  'navigate' is assigned a value but never used  no-unused-vars
+
+src\component\pages\LicensePage.js
+  Line 21:9:    'handleRenewLicense' is assigned a value but never used                                                                                                                                                                                                                                                                                                            no-unused-vars
+  Line 225:17:  The href attribute requires a valid value to be accessible. Provide a valid, navigable address as the href value. If you cannot provide a valid href, but still need the element to resemble a link, use a button and change it with appropriate styles. Learn more: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/HEAD/docs/rules/anchor-is-valid.md  jsx-a11y/anchor-is-valid
+
+src\component\pages\OrganizationProfile.js
+  Line 405:10:  'MdOutlineAdminPanelSettings' is defined but never used                                                              no-unused-vars
+  Line 418:10:  'role' is assigned a value but never used                                                                            no-unused-vars
+  Line 487:6:   React Hook useEffect has a missing dependency: 'fetchProfileData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\pages\UserCreate.js
+  Line 10:9:  'navigate' is assigned a value but never used  no-unused-vars
+
+src\component\testPages\CachePage.js
+  Line 5:10:  'tasks' is assigned a value but never used                                                                     no-unused-vars
+  Line 6:10:  'loading' is assigned a value but never used                                                                   no-unused-vars
+  Line 7:10:  'error' is assigned a value but never used                                                                     no-unused-vars
+  Line 8:10:  'pageInfo' is assigned a value but never used                                                                  no-unused-vars
+  Line 59:6:  React Hook useEffect has a missing dependency: 'fetchTasks'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\testPages\LeadDetails.js
+  Line 4:3:     'Paperclip' is defined but never used                                                                              no-unused-vars
+  Line 5:3:     'Edit' is defined but never used                                                                                   no-unused-vars
+  Line 6:3:     'Send' is defined but never used                                                                                   no-unused-vars
+  Line 7:3:     'MoreHorizontal' is defined but never used                                                                         no-unused-vars
+  Line 9:3:     'Mail' is defined but never used                                                                                   no-unused-vars
+  Line 10:3:    'Clock' is defined but never used                                                                                  no-unused-vars
+  Line 11:3:    'Calendar' is defined but never used                                                                               no-unused-vars
+  Line 12:3:    'Globe' is defined but never used                                                                                  no-unused-vars
+  Line 13:3:    'MapPin' is defined but never used                                                                                 no-unused-vars
+  Line 14:3:    'User' is defined but never used                                                                                   no-unused-vars
+  Line 15:3:    'Briefcase' is defined but never used                                                                              no-unused-vars
+  Line 16:3:    'Tag' is defined but never used                                                                                    no-unused-vars
+  Line 17:3:    'Bell' is defined but never used                                                                                   no-unused-vars
+  Line 18:3:    'Menu' is defined but never used                                                                                   no-unused-vars
+  Line 25:10:   'Link' is defined but never used                                                                                   no-unused-vars
+  Line 35:8:    'ShimmerPage' is defined but never used                                                                            no-unused-vars
+  Line 420:10:  'sidebarOpen' is assigned a value but never used                                                                   no-unused-vars
+  Line 420:23:  'setSidebarOpen' is assigned a value but never used                                                                no-unused-vars
+  Line 440:9:   'sidebarRef' is assigned a value but never used                                                                    no-unused-vars
+  Line 443:10:  'formData' is assigned a value but never used                                                                      no-unused-vars
+  Line 444:10:  'loading' is assigned a value but never used                                                                       no-unused-vars
+  Line 480:6:   React Hook useEffect has a missing dependency: 'fetchCRMFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 693:9:   'handleChange' is assigned a value but never used                                                                  no-unused-vars
+
+src\component\testPages\LeadProfile.js
+  Line 5:8:  'Navbar' is defined but never used  no-unused-vars
+
+src\component\testPages\LeadsView.js
+  Line 14:3:   'Check' is defined but never used                                                                              no-unused-vars
+  Line 15:3:   'DragVertical' is defined but never used                                                                       no-unused-vars
+  Line 18:10:  'DateTime' is defined but never used                                                                           no-unused-vars
+  Line 234:6:  React Hook useEffect has a missing dependency: 'fetchLeads'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\testPages\TestPage.js
+  Line 4:21:    'Paperclip' is defined but never used                      no-unused-vars
+  Line 4:38:    'Send' is defined but never used                           no-unused-vars
+  Line 4:44:    'MoreHorizontal' is defined but never used                 no-unused-vars
+  Line 4:67:    'Mail' is defined but never used                           no-unused-vars
+  Line 4:73:    'Clock' is defined but never used                          no-unused-vars
+  Line 4:80:    'Calendar' is defined but never used                       no-unused-vars
+  Line 4:90:    'Globe' is defined but never used                          no-unused-vars
+  Line 4:97:    'MapPin' is defined but never used                         no-unused-vars
+  Line 4:105:   'User' is defined but never used                           no-unused-vars
+  Line 4:111:   'Briefcase' is defined but never used                      no-unused-vars
+  Line 4:122:   'Tag' is defined but never used                            no-unused-vars
+  Line 4:127:   'Bell' is defined but never used                           no-unused-vars
+  Line 4:133:   'Menu' is defined but never used                           no-unused-vars
+  Line 5:10:    'Link' is defined but never used                           no-unused-vars
+  Line 293:10:  'sidebarOpen' is assigned a value but never used           no-unused-vars
+  Line 324:10:  'isReasonModalOpen' is assigned a value but never used     no-unused-vars
+  Line 324:29:  'setIsReasonModalOpen' is assigned a value but never used  no-unused-vars
+  Line 382:9:   'additionalInfo' is assigned a value but never used        no-unused-vars
+  Line 387:9:   'formatLabel' is assigned a value but never used           no-unused-vars
+
+src\component\ui\DetailsShimmer.js
+  Line 2:8:  'Navbar' is defined but never used  no-unused-vars
+
+src\component\view\ContactView\AssociatedDealWithContact.js
+  Line 2:20:  'DollarSign' is defined but never used  no-unused-vars
+
+src\component\view\ContactView\ContactDetails.js
+  Line 4:3:     'User' is defined but never used                                                                                        no-unused-vars
+  Line 5:3:     'Mail' is defined but never used                                                                                        no-unused-vars
+  Line 6:3:     'Calendar' is defined but never used                                                                                    no-unused-vars
+  Line 7:3:     'Clock' is defined but never used                                                                                       no-unused-vars
+  Line 9:3:     'Search' is defined but never used                                                                                      no-unused-vars
+  Line 10:3:    'Plus' is defined but never used                                                                                        no-unused-vars
+  Line 12:3:    'MapPin' is defined but never used                                                                                      no-unused-vars
+  Line 13:3:    'MessageCircle' is defined but never used                                                                               no-unused-vars
+  Line 14:3:    'UserSquare' is defined but never used                                                                                  no-unused-vars
+  Line 15:3:    'Edit' is defined but never used                                                                                        no-unused-vars
+  Line 25:8:    'ShowAttachment' is defined but never used                                                                              no-unused-vars
+  Line 153:29:  'setSelectedContactId' is assigned a value but never used                                                               no-unused-vars
+  Line 154:10:  'contactList' is assigned a value but never used                                                                        no-unused-vars
+  Line 156:10:  'loading' is assigned a value but never used                                                                            no-unused-vars
+  Line 157:10:  'searchTerm' is assigned a value but never used                                                                         no-unused-vars
+  Line 157:22:  'setSearchTerm' is assigned a value but never used                                                                      no-unused-vars
+  Line 158:10:  'sortField' is assigned a value but never used                                                                          no-unused-vars
+  Line 158:21:  'setSortField' is assigned a value but never used                                                                       no-unused-vars
+  Line 159:10:  'sortDirection' is assigned a value but never used                                                                      no-unused-vars
+  Line 159:25:  'setSortDirection' is assigned a value but never used                                                                   no-unused-vars
+  Line 160:10:  'isCreateModalOpen' is assigned a value but never used                                                                  no-unused-vars
+  Line 161:10:  'isMobileSidebarOpen' is assigned a value but never used                                                                no-unused-vars
+  Line 170:10:  'isEditModalOpen' is assigned a value but never used                                                                    no-unused-vars
+  Line 170:27:  'setIsEditModalOpen' is assigned a value but never used                                                                 no-unused-vars
+  Line 171:10:  'editContact' is assigned a value but never used                                                                        no-unused-vars
+  Line 171:23:  'setEditContact' is assigned a value but never used                                                                     no-unused-vars
+  Line 183:10:  'formData' is assigned a value but never used                                                                           no-unused-vars
+  Line 524:6:   React Hook useEffect has a missing dependency: 'fetchContactsFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 531:6:   React Hook useEffect has a missing dependency: 'fetchContactDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 568:9:   'handleCreateContact' is assigned a value but never used                                                                no-unused-vars
+
+src\component\view\ContactView\ContactProfile.js
+  Line 4:8:  'Navbar' is defined but never used  no-unused-vars
+
+src\component\view\ContactView\ContactView.js
+  Line 14:3:   'Check' is defined but never used                                                                                 no-unused-vars
+  Line 15:3:   'DragVertical' is defined but never used                                                                          no-unused-vars
+  Line 239:6:  React Hook useEffect has a missing dependency: 'fetchContacts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\view\DealView\DealDetails.js
+  Line 4:3:     'User' is defined but never used                                                                                     no-unused-vars
+  Line 5:3:     'Mail' is defined but never used                                                                                     no-unused-vars
+  Line 6:3:     'Calendar' is defined but never used                                                                                 no-unused-vars
+  Line 7:3:     'Clock' is defined but never used                                                                                    no-unused-vars
+  Line 9:3:     'Search' is defined but never used                                                                                   no-unused-vars
+  Line 10:3:    'Plus' is defined but never used                                                                                     no-unused-vars
+  Line 12:3:    'MapPin' is defined but never used                                                                                   no-unused-vars
+  Line 13:3:    'MessageCircle' is defined but never used                                                                            no-unused-vars
+  Line 14:3:    'UserSquare' is defined but never used                                                                               no-unused-vars
+  Line 15:3:    'Edit' is defined but never used                                                                                     no-unused-vars
+  Line 119:26:  'setSelectedDealId' is assigned a value but never used                                                               no-unused-vars
+  Line 120:10:  'dealList' is assigned a value but never used                                                                        no-unused-vars
+  Line 120:20:  'setDealList' is assigned a value but never used                                                                     no-unused-vars
+  Line 122:10:  'loading' is assigned a value but never used                                                                         no-unused-vars
+  Line 123:10:  'searchTerm' is assigned a value but never used                                                                      no-unused-vars
+  Line 123:22:  'setSearchTerm' is assigned a value but never used                                                                   no-unused-vars
+  Line 124:10:  'sortField' is assigned a value but never used                                                                       no-unused-vars
+  Line 124:21:  'setSortField' is assigned a value but never used                                                                    no-unused-vars
+  Line 125:10:  'sortDirection' is assigned a value but never used                                                                   no-unused-vars
+  Line 125:25:  'setSortDirection' is assigned a value but never used                                                                no-unused-vars
+  Line 126:10:  'isCreateModalOpen' is assigned a value but never used                                                               no-unused-vars
+  Line 126:29:  'setIsCreateModalOpen' is assigned a value but never used                                                            no-unused-vars
+  Line 127:10:  'isMobileSidebarOpen' is assigned a value but never used                                                             no-unused-vars
+  Line 129:10:  'isEditModalOpen' is assigned a value but never used                                                                 no-unused-vars
+  Line 129:27:  'setIsEditModalOpen' is assigned a value but never used                                                              no-unused-vars
+  Line 134:10:  'formData' is assigned a value but never used                                                                        no-unused-vars
+  Line 140:10:  'currentStage' is assigned a value but never used                                                                    no-unused-vars
+  Line 552:6:   React Hook useEffect has a missing dependency: 'fetchDealsFields'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 564:6:   React Hook useEffect has a missing dependency: 'fetchDealDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\view\DealView\DealProfile.js
+  Line 4:8:  'Navbar' is defined but never used  no-unused-vars
+
+src\component\view\DealView\DealView.js
+  Line 14:3:   'Check' is defined but never used                                                                              no-unused-vars
+  Line 15:3:   'DragVertical' is defined but never used                                                                       no-unused-vars
+  Line 52:10:  'isCreateModalOpen' is assigned a value but never used                                                         no-unused-vars
+  Line 52:29:  'setIsCreateModalOpen' is assigned a value but never used                                                      no-unused-vars
+  Line 53:10:  'isSubmitting' is assigned a value but never used                                                              no-unused-vars
+  Line 53:24:  'setIsSubmitting' is assigned a value but never used                                                           no-unused-vars
+  Line 226:6:  React Hook useEffect has a missing dependency: 'fetchDeals'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\component\view\MeetingView\MeetingView.js
+  Line 37:10:  'isCreateModalOpen' is assigned a value but never used                                                            no-unused-vars
+  Line 38:10:  'isSubmitting' is assigned a value but never used                                                                 no-unused-vars
+  Line 220:6:  React Hook useEffect has a missing dependency: 'fetchMeetings'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 358:9:  'handleCreateMeeting' is assigned a value but never used                                                          no-unused-vars
+
+src\component\view\TaskView\TaskDetails.js
+  Line 2:39:   'CheckCircle' is defined but never used          no-unused-vars
+  Line 2:71:   'ArrowUp' is defined but never used              no-unused-vars
+  Line 2:80:   'ArrowDown' is defined but never used            no-unused-vars
+  Line 37:9:   'navigate' is assigned a value but never used    no-unused-vars
+  Line 41:10:  'click' is assigned a value but never used       no-unused-vars
+  Line 141:9:  'handleSort' is assigned a value but never used  no-unused-vars
+
+src\component\view\TaskView\TaskView.js
+  Line 241:6:  React Hook useEffect has a missing dependency: 'fetchTasks'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\index.js
+  Line 1:9:   'StrictMode' is defined but never used     no-unused-vars
+  Line 7:10:  'BrowserRouter' is defined but never used  no-unused-vars
+
+src\pages\Home.js
+  Line 2:10:   'Bar' is defined but never used                                                                                  no-unused-vars
+  Line 2:15:   'Line' is defined but never used                                                                                 no-unused-vars
+  Line 6:10:   'Calendar' is defined but never used                                                                             no-unused-vars
+  Line 6:20:   'Users' is defined but never used                                                                                no-unused-vars
+  Line 6:27:   'CheckSquare' is defined but never used                                                                          no-unused-vars
+  Line 6:40:   'TrendingUp' is defined but never used                                                                           no-unused-vars
+  Line 6:58:   'Paperclip' is defined but never used                                                                            no-unused-vars
+  Line 6:69:   'Clock' is defined but never used                                                                                no-unused-vars
+  Line 6:96:   'ClipboardCheck' is defined but never used                                                                       no-unused-vars
+  Line 6:131:  'Contact' is defined but never used                                                                              no-unused-vars
+  Line 10:8:   'CreateContactForm' is defined but never used                                                                    no-unused-vars
+  Line 11:10:  'DateTime' is defined but never used                                                                             no-unused-vars
+  Line 39:10:  'isContactModelOpen' is assigned a value but never used                                                          no-unused-vars
+  Line 39:30:  'setIsContactModalOpen' is assigned a value but never used                                                       no-unused-vars
+  Line 273:6:  React Hook useEffect has a missing dependency: 'fetchAllData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 286:9:  'salesData' is assigned a value but never used                                                                   no-unused-vars
+  Line 306:9:  'leadsData' is assigned a value but never used                                                                   no-unused-vars
+  Line 334:9:  'getUserDetails' is assigned a value but never used                                                              no-unused-vars
+  Line 352:9:  'getLocation' is assigned a value but never used                                                                 no-unused-vars
+
+src\pages\LandingPage.js
+  Line 5:3:    'AlertCircle' is defined but never used           no-unused-vars
+  Line 14:3:   'ChevronDown' is defined but never used           no-unused-vars
+  Line 15:3:   'Twitter' is defined but never used               no-unused-vars
+  Line 16:3:   'Instagram' is defined but never used             no-unused-vars
+  Line 21:10:  'FaFacebook' is defined but never used            no-unused-vars
+  Line 21:22:  'FaHeadphones' is defined but never used          no-unused-vars
+  Line 28:10:  'menuOpen' is assigned a value but never used     no-unused-vars
+  Line 28:20:  'setMenuOpen' is assigned a value but never used  no-unused-vars
+  Line 29:10:  'isScrolled' is assigned a value but never used   no-unused-vars
+  Line 32:10:  'images' is assigned a value but never used       no-unused-vars
+  Line 32:18:  'setImages' is assigned a value but never used    no-unused-vars
+
+src\pages\Organization.js
+  Line 30:10:  'isLoadingPincode' is assigned a value but never used                                                           no-unused-vars
+  Line 144:5:  React Hook useEffect has a missing dependency: 'decryptData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\pages\Webtab.js
+  Line 3:22:    'FaCheckCircle' is defined but never used                                                                            no-unused-vars
+  Line 5:17:    'Toaster' is defined but never used                                                                                  no-unused-vars
+  Line 7:10:    'Edit' is defined but never used                                                                                     no-unused-vars
+  Line 78:9:    'handleOrgIdChange' is assigned a value but never used                                                               no-unused-vars
+  Line 464:15:  'crmresponse' is assigned a value but never used                                                                     no-unused-vars
+  Line 589:6:   React Hook useEffect has a missing dependency: 'fetchUserDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src\wrapper\LicenseCheck.js
+  Line 8:8:    'toast' is defined but never used           no-unused-vars
+  Line 13:26:  'orgId' is assigned a value but never used  no-unused-vars
+[info] [2025-05-02T05:37:30.429Z] : [react-plugin]: 
+Search for the keywords to learn more about each warning.
+[info] [2025-05-02T05:37:30.430Z] : [react-plugin]: To ignore, add // eslint-disable-next-line to the line before.
+

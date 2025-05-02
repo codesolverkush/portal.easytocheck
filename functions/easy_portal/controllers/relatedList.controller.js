@@ -87,9 +87,11 @@ const createNote = async (req, res) => {
             data: [
                 {
                     Note_Title: req.body.Note_Title,
-                    Note_Content: req.body.Note_Content
+                    Note_Content: req.body.Note_Content,
+                    
                 }
-            ]
+            ],
+
         };
 
         let token = await getAccessToken(orgId,req,res);
@@ -368,6 +370,7 @@ const createOpenActivity = async (req, res) => {
             ]
         };
 
+
         let token = await getAccessToken(orgId,req,res);
         const url = `https://www.zohoapis.${domain}/crm/v7/Tasks`;
 
@@ -396,6 +399,62 @@ const createOpenActivity = async (req, res) => {
     }
 };
 
+const updateTask = async (req, res) => {
+    try {
+        const userId = req.currentUser?.user_id;
+        if (!userId) {
+            return res.status(404).json({ success: false, message: "User ID not found." });
+        }
+
+        const { catalyst } = res.locals;
+        const zcql = catalyst.zcql();
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const user = await zcql.executeZCQLQuery(userQuery);
+        const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
+        const {id,Status} = req.body;
+
+        if (!orgId) {
+            return res.status(404).json({ success: false, message: "Organization ID not found." });
+        }
 
 
-module.exports = { getNoteById, createNote, attachFile, getAttachFile, getOpenActivitiesById, createOpenActivity };
+        const taskData = {
+            data: [
+                {
+                  id: id,
+                  Status: Status
+                }
+            ]
+        };
+
+        let token = await getAccessToken(orgId,req,res);
+        const url = `https://www.zohoapis.${domain}/crm/v7/Tasks`;
+
+        try {
+            const data = await handleZohoRequest(url, 'put', taskData, token);
+            return res.status(200).json({ success: true, data });
+
+        } catch (error) {
+            if (error.message === "TOKEN_EXPIRED") {
+                try {
+                    token = await refreshAccessToken(req, res);
+                    process.env.ACCESS_TOKEN = token;
+                    const data = await handleZohoRequest(url, 'put', taskData, token);
+                    return res.status(200).json({ success: true, data });
+                } catch (refreshError) {
+                    return res.status(500).json({ success: false, error: refreshError.response ? refreshError.response.data : refreshError.message });
+                }
+            }
+            return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
+        }
+
+    } catch (error) {
+        if (!res.headersSent) {
+            return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
+        }
+    }
+};
+
+
+module.exports = { getNoteById, createNote, attachFile, getAttachFile, getOpenActivitiesById, createOpenActivity,updateTask };

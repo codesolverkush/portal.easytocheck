@@ -35,7 +35,7 @@ const MakeConnection = () => {
       // Prepare the authorization URL with correct scope for creating leads in Zoho CRM
       // const redirectUri = encodeURIComponent('https://easyportal-704392036.development.catalystserverless.com/app');
       // const redirectUri = encodeURIComponent('http://localhost:3000/app');
-      const redirectUri = encodeURIComponent("https://portal.easytocheck.com")
+      const redirectUri = encodeURIComponent("https://portal.easytocheck.com");
       const scope = encodeURIComponent('ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoCRM.coql.READ');
       
       // Create the authorization URL
@@ -215,95 +215,3 @@ const MakeConnection = () => {
 };
 
 export default MakeConnection;
-
-
-
-
-// import { useLocation } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
-// import axios from 'axios';
-// import toast from "react-hot-toast";
-// import { useState } from "react";
-
-// const MakeConnection = () => {
-//   const location = useLocation();
-//   const navigate = useNavigate();
-  
-//   const orgId = location.state?.orgId;
-
-  
-
-//   const [clientid, setClientid] = useState('');
-//   const [clientsecret, setClientsecret] = useState('');
-//   const [refreshtoken, setRefreshtoken] = useState('');
-//   const [authcode, setAuthcode] = useState('');
-
-//   const submitHandler = async (e) => {
-//     e.preventDefault();
-
-//     const connectionData = {
-//       orgId, 
-//       clientid,
-//       clientsecret,
-//       refreshtoken,
-//       authcode,
-//     };
-
-
-//     try {
-//        const response = await axios.post(`${process.env.REACT_APP_APP_API}/org/makeconnection`,connectionData);
-//        console.log(response);
-
-//       if (response.status === 200) {
-//         toast.success('Organization registered successfully!');
-//         navigate('/app/orgProfile', { state: { orgId } });
-//       }
-//     } catch (error) {
-//       console.log(error);
-//       const message = error?.response?.data?.message || "Some internal error";
-//       toast.error(message);
-//     }
-//   };
-
-//   return (
-//     <div className="p-7 flex h-screen flex-col justify-between">
-//       <div>
-//         <img
-//           className="w-17 h-20 m-4"
-//           src="https://cdn-icons-png.flaticon.com/512/295/295128.png"
-//           alt=""
-//         />
-//         <form onSubmit={submitHandler}>
-//           <h3 className="text-xl mb-2">Client ID</h3>
-//           <input className="bg-[#eeeeee] mb-7 rounded px-4 py-2 border w-full text-lg placeholder:text-base" required type="text" placeholder="Enter Client ID" value={clientid} onChange={(e) => setClientid(e.target.value)} />
-
-//           <h3 className="text-xl mb-2">Client Secret</h3>
-//           <input className="bg-[#eeeeee] mb-7 rounded px-4 py-2 border w-full text-lg placeholder:text-base" required type="text" placeholder="Enter Client Secret" value={clientsecret} onChange={(e) => setClientsecret(e.target.value)} />
-
-//           <h3 className="text-xl mb-2">Refresh Token</h3>
-//           <input className="bg-[#eeeeee] mb-7 rounded px-4 py-2 border w-full text-lg placeholder:text-base" required type="text" placeholder="Enter Refresh Token" value={refreshtoken} onChange={(e) => setRefreshtoken(e.target.value)} />
-
-//           <h3 className="text-xl mb-2">Auth Code</h3>
-//           <input className="bg-[#eeeeee] mb-7 rounded px-4 py-2 border w-full text-lg placeholder:text-base" required type="text" placeholder="Enter Auth Code" value={authcode} onChange={(e) => setAuthcode(e.target.value)} />
-
-//           <button className="bg-[#111111] rounded px-4 py-2 font-semibold mb-2 border w-full text-white text-lg placeholder:text-base">
-//              Build the Connection
-//           </button>
-//         </form>
-//       </div>
-
-//       <div>
-//         <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-//           <p className="text-gray-800 text-center font-medium">
-//             If you encounter any issues, feel free to reach out to us at {" "}
-//             <a href="mailto:kushal@gmail.com" className="text-blue-600 hover:underline">
-//               kushal@gmail.com
-//             </a>
-//           </p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default MakeConnection;

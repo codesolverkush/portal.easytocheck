@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../../common/Navbar";
 import { useNavigate } from "react-router-dom";
-import { Search, ArrowUp, ArrowDown, X, Plus, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { Search, ArrowUp, ArrowDown, X, Plus, ChevronLeft, ChevronRight, Calendar, Settings } from "lucide-react";
 import toast from "react-hot-toast";
 import moment from 'moment';
 
@@ -60,7 +60,117 @@ const MeetingView = () => {
     Description: "",
   });
 
+   const [showColumnModal, setShowColumnModal] = useState(false);
+    const [selectedColumns, setSelectedColumns] = useState({
+      Event_Title: true,
+      Start_DateTime: true,
+      End_DateTime: true,
+      All_day: true,
+      Check_In_Status: true,
+      Created_Time: true,
+    });
+  
+
   const navigate = useNavigate();
+
+
+
+    // Add this function to handle column toggling
+    const toggleColumn = (columnName) => {
+      setSelectedColumns((prev) => ({
+        ...prev,
+        [columnName]: !prev[columnName],
+      }));
+    };
+  
+    // Add this function to save column settings
+    const saveColumnSettings = () => {
+      // Optionally save to localStorage to persist user preferences
+      localStorage.setItem("crm-meeting-columns", JSON.stringify(selectedColumns));
+      setShowColumnModal(false);
+    };
+  
+    // Add this useEffect to load saved column preferences on component mount
+    useEffect(() => {
+      const savedColumns = localStorage.getItem("crm-meeting-columns");
+      if (savedColumns) {
+        setSelectedColumns(JSON.parse(savedColumns));
+      }
+    }, []);
+  
+    const ColumnManagementModal = () => {
+      if (!showColumnModal) return null;
+  
+      const columnOptions = [
+        { key: "Event_Title", label: "Meeting Title" },
+        { key: "Start_DateTime", label: "Start Time" },
+        { key: "End_DateTime", label: "End Time" },
+        { key: "Check_In_Status", label: "Status" },
+        { key: "Created_Time", label: "Created Time" },
+      ];
+  
+      return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h2 className="text-lg font-bold">Manage Columns</h2>
+              <button
+                onClick={() => setShowColumnModal(false)}
+                className="text-gray-500"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-4">
+              <p className="text-sm text-gray-600 mb-4">
+                Select the columns you want to display in the table.
+              </p>
+  
+              <div className="space-y-2 max-h-[50vh] overflow-y-auto">
+                {columnOptions.map((column) => (
+                  <div
+                    key={column.key}
+                    className="flex items-center p-2 hover:bg-gray-50 rounded"
+                  >
+                    <input
+                      type="checkbox"
+                      id={`column-${column.key}`}
+                      checked={selectedColumns[column.key]}
+                      onChange={() => toggleColumn(column.key)}
+                      className="mr-3 h-5 w-5 text-blue-500"
+                    />
+                    <label
+                      htmlFor={`column-${column.key}`}
+                      className="flex-grow cursor-pointer"
+                    >
+                      {column.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
+  
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => setShowColumnModal(false)}
+                  className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={saveColumnSettings}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+  
+
+
 
   const CACHE_NAME = "crm-cache";
 
@@ -82,7 +192,7 @@ const MeetingView = () => {
       }
 
       // If no cached data, fetch from API
-      const response = await axios.get(`${process.env.REACT_APP_APP_API}/get/contact`);
+      const response = await axios.get(`${process.env.REACT_APP_APP_API}/get/meetings`);
       if (response.status === 200) {
         const data = response.data.data || [];
         setMeetings(data);
@@ -118,7 +228,7 @@ const MeetingView = () => {
     setLoading(true);
     try {
       // Fetch the latest meeting details from the API
-      const response = await axios.get(`${process.env.REACT_APP_APP_API}/get/meeting`);
+      const response = await axios.get(`${process.env.REACT_APP_APP_API}/get/meetings`);
       if (response.status === 200) {
         const data = response.data.data || [];
         setMeetings(data);
@@ -362,6 +472,15 @@ const MeetingView = () => {
                 </svg>
                 Sync Now
               </button>
+
+              <button
+                onClick={() => setShowColumnModal(true)}
+                className="flex-1 sm:flex-none bg-white border border-gray-300 text-gray-700 px-3 sm:px-4 py-2 rounded-lg sm:flex items-center justify-center hidden hover:bg-gray-50 transition-colors text-sm md:text-base"
+              >
+                <Settings size={16} className="mr-1 md:mr-2" />
+                <span>Manage Columns</span>
+              </button>
+
               <button
                 onClick={() => setIsCreateModalOpen(true)}
                 className="flex-1 sm:flex-none bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors text-sm md:text-base"
@@ -539,7 +658,7 @@ const MeetingView = () => {
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <th className="p-4 cursor-pointer" onClick={() => handleSort("Event_Title")}>
+              {selectedColumns["Event_Title"] && (<th className="p-4 cursor-pointer" onClick={() => handleSort("Event_Title")}>
                   <div className="flex items-center">
                     Meeting Title
                     {sortField === "Event_Title" && (
@@ -549,6 +668,8 @@ const MeetingView = () => {
                     )}
                   </div>
                 </th>
+              )}
+              {selectedColumns["Start_DateTime"] && (
                 <th className="p-4 cursor-pointer" onClick={() => handleSort("Start_DateTime")}>
                   <div className="flex items-center">
                     Start Time
@@ -559,6 +680,8 @@ const MeetingView = () => {
                     )}
                   </div>
                 </th>
+              )}
+              {selectedColumns["End_DateTime"] && (
                 <th className="p-4 cursor-pointer" onClick={() => handleSort("End_DateTime")}>
                   <div className="flex items-center">
                     End Time
@@ -569,6 +692,8 @@ const MeetingView = () => {
                     )}
                   </div>
                 </th>
+              )}
+              {selectedColumns["Check_In_Status"] && (
                 <th className="p-4 cursor-pointer" onClick={() => handleSort("Check_In_Status")}>
                   <div className="flex items-center">
                     Status
@@ -579,6 +704,8 @@ const MeetingView = () => {
                     )}
                   </div>
                 </th>
+              )}
+              {selectedColumns["Created_Time"] && (
                 <th className="p-4 cursor-pointer" onClick={() => handleSort("Created_Time")}>
                   <div className="flex items-center">
                     Created Time
@@ -589,6 +716,7 @@ const MeetingView = () => {
                     )}
                   </div>
                 </th>
+              )}
               </tr>
             </thead>
             <tbody>
@@ -599,15 +727,25 @@ const MeetingView = () => {
                     className="border-t hover:bg-gray-50 cursor-pointer transition-colors"
                     onClick={() => getEachRecordHandler(meeting.id)}
                   >
+                    {selectedColumns["Event_Title"] && (
                     <td className="p-4 text-sm font-medium text-gray-700">{meeting.Event_Title}</td>
+                    )}
+                    {selectedColumns["Start_DateTime"] && (
                     <td className="p-4 text-sm">{formatDateTime(meeting.Start_DateTime)}</td>
+                    )}
+                    {selectedColumns["End_DateTime"] && (
                     <td className="p-4 text-sm">{formatDateTime(meeting.End_DateTime)}</td>
+                    )}
+                    {selectedColumns["Check_In_Status"] && (
                     <td className="p-4 text-sm">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[meeting.Check_In_Status] || "bg-gray-200 text-gray-700"}`}>
                         {meeting.Check_In_Status || 'PLANNED'}
                       </span>
                     </td>
+                    )}
+                    {selectedColumns["Created_Time"] && (
                     <td className="p-4 text-sm">{moment(meeting.Created_Time).format("DD-MM-YY HH:mm") || "-"}</td>
+                    )}
                   </tr>
                 ))
               ) : (
@@ -800,6 +938,8 @@ const MeetingView = () => {
           </div>
         </div>
       )}
+
+      <ColumnManagementModal/>
 
       </div>
   );

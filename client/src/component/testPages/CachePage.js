@@ -58,8 +58,6 @@ const CachePage = () => {
     fetchTasks();
   }, []);
 
-  console.log(tasks);
-  console.log(pageInfo);
 
   // Return values and methods for component use
   return (

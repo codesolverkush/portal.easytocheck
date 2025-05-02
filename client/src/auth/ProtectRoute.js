@@ -22,6 +22,7 @@ const decryptData = (ciphertext) => {
 
 const ProtectRoute = ({ children }) => {
   const { user, loader } = useSelector((state) => state.auth);
+
   const location = useLocation();
   const dispatch = useDispatch();
 

@@ -3,8 +3,8 @@ import axios from 'axios';
 import { FaUserPlus, FaCheckCircle, FaTrash, FaUsers, FaLock, FaExclamationTriangle, FaEdit } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 import { toast, Toaster } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-import { Edit } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Edit, Home } from 'lucide-react';
 
 // Shimmer Component for Loading States
 const Shimmer = ({
@@ -458,18 +458,23 @@ const Webtab = () => {
     setDeleteLoadingId(id);
 
     try {
-      await axios.delete(`${process.env.REACT_APP_APP_API}/admin/removeuser/${id}`);
-
-      // Optimistic Update: Remove user from local state
+      const response = await axios.delete(`${process.env.REACT_APP_APP_API}/admin/removeuser/${id}`);
+      
+      if(response.status === 200){
+        const crmresponse = await axios.post(`${process.env.REACT_APP_APP_API}/admin/crmupdate/${id}`)
+         // Optimistic Update: Remove user from local state
       const updatedUsers = userDetails.filter(user =>
         user?.usermanagement?.userid !== id
       );
-
       setUserDetails(updatedUsers);
       toast.success('User successfully removed');
 
       // Refresh overall data to update license counts
       fetchUserDetails();
+      }
+
+
+     
     } catch (error) {
       toast.error(error?.response?.data?.message || "Failed to remove user");
     } finally {
@@ -478,52 +483,105 @@ const Webtab = () => {
     }
   };
   // Submit New User
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setIsSubmitting(true);
+
+  //   try {
+  //     const response = await axios.post(`${process.env.REACT_APP_APP_API}/test/adduser`, formData);
+  //     if(response.status === 200){
+  //       // easyportal__User_Id:response.data.data.user_id,
+  //       console.log(response);
+  //        // Optimistic Update: Add new user to local state
+  //     const crmresponse = await axios.post(`${process.env.REACT_APP_APP_API}/create/createnewuser/easyportal__Portal_Users`,{
+  //       crmuserid: response.data.data.user_id,
+  //       easyportal__User_Email: formData.email_id,
+  //       Name: `${formData.first_name} ${formData.last_name}`,
+  //       easyportal__Status: "Active"
+  //     })
+
+  //     console.log(crmresponse);
+  //       if(crmresponse.status === 200){
+  //         const newUser = {
+  //           usermanagement: {
+  //             userid: response.data.data.user_id, // Assuming API returns new user ID
+  //             username: `${formData.first_name} ${formData.last_name}`,
+  //             email: formData.email_id
+  //           }
+  //         };
+
+  //         console.log("New User added",newUser);
+    
+  //         setUserDetails([...userDetails, newUser]);
+    
+  //         // Reset form and show success
+  //         setFormData({
+  //           email_id: "",
+  //           first_name: "",
+  //           last_name: ""
+  //         });
+  //         setShowModal(false);
+    
+  //         // Refresh overall data to update license counts
+  //         fetchUserDetails();
+    
+  //         toast.success('User added successfully');
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.response?.data?.message || "Failed to add user");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+  
     try {
-      const response = await axios.post(`${process.env.REACT_APP_APP_API}/test/adduser`, formData);
-      if(response.status === 200){
-        // easyportal__User_Id:response.data.data.user_id,
-         // Optimistic Update: Add new user to local state
-      const crmresponse = await axios.post(`${process.env.REACT_APP_APP_API}/create/createdata/easyportal__Portal_Users`,{
-        easyportal__User_Id: 986676767,
-        easyportal__User_Email: formData.email_id,
-        Name: `${formData.first_name} ${formData.last_name}` 
-      })
-        if(crmresponse.status === 200){
+      const regResponse = await axios.post(`${process.env.REACT_APP_APP_API}/test/adduser`, formData);
+  
+      if (regResponse.status === 200) {
+        const crmresponse = await axios.post(`${process.env.REACT_APP_APP_API}/create/createnewuser/easyportal__Portal_Users`, {
+          crmuserid: regResponse.data.data.user_id,
+          easyportal__User_Email: formData.email_id,
+          Name: `${formData.first_name} ${formData.last_name}`,
+          easyportal__Status: "Active",
+          orgId: regResponse.data.data.orgId,
+          licenseRollback: regResponse.data.data.licenseRollback
+        });
+        
+  
+        if (crmresponse.status === 200) {
+          toast.success("User added successfully");
+  
           const newUser = {
             usermanagement: {
-              userid: response.data.userId, // Assuming API returns new user ID
+              userid: regResponse.data.data.user_id,
               username: `${formData.first_name} ${formData.last_name}`,
               email: formData.email_id
             }
           };
-    
-          setUserDetails([...userDetails, newUser]);
-    
-          // Reset form and show success
-          setFormData({
-            email_id: "",
-            first_name: "",
-            last_name: ""
-          });
+  
+          setUserDetails(prev => [...prev, newUser]);
+          setFormData({ email_id: "", first_name: "", last_name: "" });
           setShowModal(false);
-    
-          // Refresh overall data to update license counts
           fetchUserDetails();
-    
-          toast.success('User added successfully');
+        } else {
+          throw new Error(crmresponse.data.message || "CRM update failed");
         }
+      } else {
+        throw new Error(regResponse.data.message || "User registration failed");
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.response?.data?.message || "Failed to add user");
+      toast.error(error.response.data.message || "User could not be added!");
     } finally {
       setIsSubmitting(false);
-    }
+    } 
   };
+  
 
   // Initial Data Fetch
   useEffect(() => {
@@ -541,10 +599,20 @@ const Webtab = () => {
     <div className="p-6 max-w-6xl mx-auto bg-white rounded-lg shadow-lg">
 
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">User Management Dashboard</h1>
-        <p className="text-gray-600">Manage your users and license</p>
+      <div className="mb-6 flex justify-between">
+         <div>
+         <h1 className="text-2xl font-bold text-gray-800">User Management Dashboard</h1>
+         <p className="text-gray-600">Manage your users and license</p>
+         </div>
+         <Link 
+         to="/app/home"
+    className="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition bg-blue-600 hover:bg-blue-700 text-white"
+  >
+    <Home className="w-5 h-5" />
+    <span className="hidden sm:inline">Home</span>
+  </Link>
       </div>
+
 
 
 

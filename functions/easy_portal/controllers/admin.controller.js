@@ -1,3 +1,7 @@
+const refreshAccessToken = require("../utils/genaccestoken");
+const { handleZohoRequest, getAccessToken } = require("../utils/zohoUtils");
+
+
 const webtabHander = async (req, res) => {
   try {
     const userId = req.currentUser?.user_id;
@@ -193,7 +197,6 @@ const updateUserAccess = async (req, res) => {
       //     // write ksfn
       // }
 
-      // console.log(updateResult);
 
       // Fetch the updated user permissions
       const fetchQuery = `
@@ -202,7 +205,6 @@ const updateUserAccess = async (req, res) => {
             `;
       const fetchResult = await zcql.executeZCQLQuery(fetchQuery);
 
-      // console.log(fetchResult);
 
       res.status(200).json({
         success: true,
@@ -229,6 +231,163 @@ const updateUserAccess = async (req, res) => {
       message: "Internal server error",
       error: error.message,
     });
+  }
+};
+
+const updatePortalUser = async (req, res) => {
+  try {
+    const userId = req.currentUser?.user_id;
+    
+    if (!userId) {
+      return res.status(404).json({ message: "User ID not found." });
+    }
+
+    const { catalyst } = res.locals;
+    const zcql = catalyst.zcql();
+    const { crmuserid } = req.params;
+    
+    if (!crmuserid) {
+      return res.status(400).json({ message: "Portal User ID is required in params." });
+    }
+
+    // Get organization details with proper error handling
+    let user;
+    try {
+      const userQuery = `SELECT orgid, domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+      user = await zcql.executeZCQLQuery(userQuery);
+      
+      if (!user || !user[0] || !user[0].usermanagement) {
+        return res.status(404).json({ message: "User not found in database." });
+      }
+    } catch (dbError) {
+      console.error("Database query error:", dbError);
+      return res.status(500).json({ message: "Error fetching user information", error: dbError.message });
+    }
+
+    const orgId = user[0]?.usermanagement?.orgid;
+    const domain = user[0]?.usermanagement?.domain;
+
+    if (!orgId || !domain) {
+      return res.status(404).json({ message: "Organization ID or domain not found." });
+    }
+
+    // Get access token with proper error handling
+    let token;
+    try {
+      token = await getAccessToken(orgId, req, res);
+    } catch (tokenError) {
+      console.error("Token error:", tokenError);
+      return res.status(401).json({ message: "Authentication failed", error: tokenError.message });
+    }
+
+    // First request: Find the portal user
+    const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
+    const requestData = {
+      select_query: `select id,Name from easyportal__Portal_Users where crmuserid = '${crmuserid}' limit 1`
+    };
+
+    
+    let portalUserData;
+    try {
+      portalUserData = await handleZohoRequest(url, 'post', requestData, token);
+      
+      if (!portalUserData || !portalUserData.data || portalUserData.data.length === 0) {
+        return res.status(404).json({ message: "Portal user not found in Zoho CRM." });
+      }
+      
+      const id = portalUserData.data[0]?.id;
+      const name = portalUserData.data[0]?.Name;
+      if (!id) {
+        return res.status(404).json({ message: "Portal user ID not found in response." });
+      }
+      
+      // Second request: Update the portal user status
+      const portalMap = {
+        id: id,
+        Name:`[INACTIVE] ${name}`,
+        easyportal__Status: "Inactive" 
+      };
+
+      
+      
+      const responseMap = {
+        data: [portalMap]
+      };
+      
+      const portalUrl = `https://www.zohoapis.${domain}/crm/v7/easyportal__Portal_Users`;
+      
+      const updateResult = await handleZohoRequest(portalUrl, 'put', responseMap, token);
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: "Portal user deactivated successfully",
+        data: updateResult 
+      });
+      
+    } catch (apiError) {
+      // Handle token expiration specifically
+      if (apiError.message === "TOKEN_EXPIRED") {
+        try {
+          token = await refreshAccessToken(req, res);
+          
+          // Retry the original request with new token
+          portalUserData = await handleZohoRequest(url, 'post', requestData, token);
+          
+          if (!portalUserData || !portalUserData.data || portalUserData.data.length === 0) {
+            return res.status(404).json({ message: "Portal user not found in Zoho CRM." });
+          }
+          
+          const id = portalUserData.data[0]?.id;
+          if (!id) {
+            return res.status(404).json({ message: "Portal user ID not found in response." });
+          }
+          
+          // Second request with new token
+          const portalMap = {
+            id: id,
+            easyportal__Status: "Inactive"
+          };
+          
+          const responseMap = {
+            data: [portalMap]
+          };
+          
+          const portalUrl = `https://www.zohoapis.${domain}/crm/v7/easyportal__Portal_Users`;
+          const updateResult = await handleZohoRequest(portalUrl, 'put', responseMap, token);
+          
+          return res.status(200).json({ 
+            success: true, 
+            message: "Portal user deactivated successfully after token refresh",
+            data: updateResult 
+          });
+          
+        } catch (refreshError) {
+          console.error("Token refresh error:", refreshError);
+          return res.status(401).json({ 
+            success: false, 
+            message: "Authentication failed after token refresh attempt", 
+            error: refreshError.message 
+          });
+        }
+      } else {
+        // Handle other API errors
+        console.error("API request error:", apiError);
+        return res.status(500).json({ 
+          success: false, 
+          message: "Error communicating with Zoho API", 
+          error: apiError.message 
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Unhandled error in updatePortalUser:", error);
+    if (!res.headersSent) {
+      return res.status(500).json({ 
+        success: false, 
+        message: "An unexpected error occurred", 
+        error: error.message 
+      });
+    }
   }
 };
 
@@ -271,4 +430,4 @@ const personalizedUpdate = async (req, res) => {
   }
 };
 
-module.exports = { webtabHander, removeUser, updateUserAccess };
+module.exports = { webtabHander, removeUser, updateUserAccess, updatePortalUser, personalizedUpdate };

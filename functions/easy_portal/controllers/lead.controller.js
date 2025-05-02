@@ -81,7 +81,6 @@ const searchRecords = async (req, res) => {
             const data = {"Contact" : contactdata, "Account" : accountData};
             return res.status(200).json({ success: true, data});
         } catch (error) {
-            console.log(error)
             if (error.message === "TOKEN_EXPIRED") {
                 try {
                     token = await refreshAccessToken(req, res);
@@ -97,7 +96,6 @@ const searchRecords = async (req, res) => {
             }
         }
     } catch (error) {
-        console.log(error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -114,11 +112,12 @@ const convertLead = async (req,res)=>{
             return res.status(404).json({ message: "User ID not found." });
         }
 
-        // const accessScore = req.userDetails[0].usermanagement?.Leads;
+        // const accessScore = req.userDetails[0].usermanagement?.Leads; 
     
         // if(accessScore < 3){
         //     return res.status(403).json({success: false, message: `Insufficient access rights to convert a Lead`});
         // }
+
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
         const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
@@ -127,8 +126,7 @@ const convertLead = async (req,res)=>{
         const domain = user[0]?.usermanagement?.domain;
         const { leadId,accountId,contactId,dealName,closingDate,amount} = req.body;       
         
-        console.log(leadId,accountId,contactId,dealName,closingDate,amount);
-    
+        // const crmuserid = req.userDetails[0]?.usermanagement?.crmuserid;
     
         // Create the main map (object in JavaScript)
             const mp = {};
@@ -153,7 +151,7 @@ const convertLead = async (req,res)=>{
             dealMap.Closing_Date = closingDate;
             dealMap.Amount = amount
             dealMap.Pipeline = "Standard (Standard)";
-    
+   
             // Add deal map to main map
             mp.Deals = dealMap;
     
@@ -165,7 +163,6 @@ const convertLead = async (req,res)=>{
             const responseMap = {};
             responseMap.data = list;
 
-            console.log(responseMap)
     
 
         if (!orgId) {
@@ -179,8 +176,7 @@ const convertLead = async (req,res)=>{
             const data = await handleZohoRequest(url, 'post', responseMap, token);
             return res.status(200).json({ success: true, data});
         } catch (error) {
-            console.log(error)
-            if (error.message === "TOKEN_EXPIRED") {
+            if (error.message === "TOKEN_EXPIRED"){
                 try {
                     token = await refreshAccessToken(req, res);
                     const data = await handleZohoRequest(url, 'post',responseMap, token);
@@ -193,7 +189,6 @@ const convertLead = async (req,res)=>{
             }
         }
     } catch (error) {
-        console.log(error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, error: error.response ? error.response.data : error.message });
         }

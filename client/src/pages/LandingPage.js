@@ -44,7 +44,6 @@ const LandingPage = () => {
   const emailInputRef = useRef(null);
   const messageInputRef = useRef(null);
 
-  console.log(images);
 
   const yearlyDiscount = 0.2; // 20% discount for yearly billing
 
@@ -186,9 +185,6 @@ const LandingPage = () => {
       }
     }
   };
-
-  console.log(contactFormData);
-
 
   const handleSubmit = async(e) => {
     e.preventDefault();

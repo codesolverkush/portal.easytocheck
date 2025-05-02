@@ -1,10 +1,10 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import { X, Clipboard } from "lucide-react";
+import { X, Clipboard, ArrowRight } from "lucide-react";
 
 // AddNoteModal component for adding notes
-const AddNoteModal = ({ isOpen, onClose, dealId, username, onNoteAdded }) => {
+const AddNoteModal = ({ isOpen, onClose,currentStage,pendingStageChange, dealId,username, onNoteAdded }) => {
   const [noteContent, setNoteContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -13,7 +13,7 @@ const AddNoteModal = ({ isOpen, onClose, dealId, username, onNoteAdded }) => {
     setIsSubmitting(true);
 
     try {
-      const noteTitle = `Added by ${username}`;
+      const noteTitle = `Stage changed by ${username}`;
       const response = await axios.post(
         `${process.env.REACT_APP_APP_API}/related/createnote/Deals/${dealId}`,
         {
@@ -47,13 +47,28 @@ const AddNoteModal = ({ isOpen, onClose, dealId, username, onNoteAdded }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-auto">
         <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-800">Add a Note</h2>
+        <div className="flex items-center gap-4 flex-grow">
+        <div className="font-medium text-gray-700 px-4 py-2.5 bg-gray-100 rounded-md shadow-sm">
+          {currentStage}
+        </div>
+        
+        <div className="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500">
+            <path d="M5 12h14m-7-7l7 7-7 7"></path>
+          </svg>
+        </div>
+        
+        <div className="font-medium text-blue-800 px-4 py-2.5 bg-blue-300 rounded-md shadow-sm">
+          {pendingStageChange?.label}
+        </div>
+      </div>
+          {/* <h2 className="text-lg font-semibold text-gray-800">Add a Note</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
           >
             <X className="w-5 h-5" />
-          </button>
+          </button> */}
         </div>
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
@@ -66,7 +81,7 @@ const AddNoteModal = ({ isOpen, onClose, dealId, username, onNoteAdded }) => {
             <input
               id="noteTitle"
               type="text"
-              value={`Added by ${username}`}
+              value={`Stage changed by ${username}`}
               readOnly
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
@@ -102,7 +117,7 @@ const AddNoteModal = ({ isOpen, onClose, dealId, username, onNoteAdded }) => {
               disabled={isSubmitting}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              {isSubmitting ? "Adding..." : "Add Note"}
+              {isSubmitting ? "Changing..." : "Change Stage"}
             </button>
           </div>
         </form>
@@ -146,6 +161,7 @@ const DealStageBar = ({
           { id: "closedWon", label: "Closed Won" },
           { id: "closedLost", label: "Closed Lost" },
         ];
+
 
   // Function to determine if a stage is active
   const isStageActive = (stageId) => {
@@ -191,6 +207,7 @@ const DealStageBar = ({
         // Open the note modal
         setSelectedStage(clickedStage);
         setIsNoteModalOpen(true);
+        
       }
     }
   };
@@ -223,7 +240,7 @@ const DealStageBar = ({
   };
 
   return (
-    <div className="bg-white p-4 border-b border-gray-200">
+    <div className="hidden sm:block bg-white p-4 border-b border-gray-200">
       <div className="flex flex-col space-y-2">
         {/* Date information row */}
         <div className="flex justify-between text-xs text-gray-500 px-2">
@@ -319,6 +336,8 @@ const DealStageBar = ({
       {/* Add Note Modal */}
       <AddNoteModal
         isOpen={isNoteModalOpen}
+        currentStage={currentStage}
+        pendingStageChange={pendingStageChange}
         onClose={() => setIsNoteModalOpen(false)}
         dealId={data?.data[0]?.id}
         username={username}

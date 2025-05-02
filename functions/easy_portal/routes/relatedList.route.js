@@ -2,7 +2,7 @@ const express = require('express');
 const catalystAuth = require('../middlewares/catalystAuth');
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
-const { getNoteById, createNote, attachFile, getAttachFile, getOpenActivitiesById, createOpenActivity } = require('../controllers/relatedList.controller');
+const { getNoteById, createNote, attachFile, getAttachFile, getOpenActivitiesById, createOpenActivity, updateTask } = require('../controllers/relatedList.controller');
 
 
 const router = express.Router();
@@ -22,6 +22,7 @@ router.get('/downloadattach/:module/:leadId/:attachementId',catalystAuth,getAtta
 
 router.get('/openactivities',catalystAuth,getOpenActivitiesById);
 router.post("/createTask",catalystAuth,createOpenActivity);
+router.put("/updatetask",catalystAuth,updateTask);
 
 
 module.exports = router;

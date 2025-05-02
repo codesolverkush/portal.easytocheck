@@ -7,23 +7,29 @@ const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
 
 const checkin = async (req, res) => {
     try {
-        const userId = req.currentUser?.user_id;
-        if (!userId) {
-            return res.status(404).json({ success: false, message: "User ID not found." });
-        }
+        // const userId = req.currentUser?.user_id;
+        // if (!userId) {
+        //     return res.status(404).json({ success: false, message: "User ID not found." });
+        // }
 
-        const { catalyst } = res.locals;
-        const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
-        const user = await zcql.executeZCQLQuery(userQuery);
-        const orgId = user[0]?.usermanagement?.orgid;
-        const domain = user[0]?.usermanagement?.domain;
+        // const { catalyst } = res.locals;
+        // const zcql = catalyst.zcql();
+        // const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        // const user = await zcql.executeZCQLQuery(userQuery);
+        // const orgId = user[0]?.usermanagement?.orgid;
+        // const domain = user[0]?.usermanagement?.domain;
+
+        const orgId = req.userDetails[0]?.usermanagement?.orgid;
+        const domain = req.userDetails[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ success: false, message: "Organization ID not found." });
         }
 
-        const leadData = { data: [req.body] };
+        const list = [ "approval","workflow","blueprint","pathfinder","orchestration"]
+
+
+        const leadData = { data: [{...req.body}], trigger: list };
         let token = await getAccessToken(orgId,req, res);
         const url = `https://www.zohoapis.${domain}/crm/v7/Attendance`;
 
@@ -64,17 +70,20 @@ const checkin = async (req, res) => {
 
 const checkOut = async (req, res) => {
     try {
-        const userId = req.currentUser?.user_id;
-        if (!userId) {
-            return res.status(404).json({ success: false, message: "User ID not found." });
-        }
+        // const userId = req.currentUser?.user_id;
+        // if (!userId) {
+        //     return res.status(404).json({ success: false, message: "User ID not found." });
+        // }
 
-        const { catalyst } = res.locals;
-        const zcql = catalyst.zcql();
-        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
-        const user = await zcql.executeZCQLQuery(userQuery);
-        const orgId = user[0]?.usermanagement?.orgid;
-        const domain = user[0]?.usermanagement?.domain;
+        // const { catalyst } = res.locals;
+        // const zcql = catalyst.zcql();
+        // const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        // const user = await zcql.executeZCQLQuery(userQuery);
+        // const orgId = user[0]?.usermanagement?.orgid;
+        // const domain = user[0]?.usermanagement?.domain;
+
+        const orgId = req.userDetails[0]?.usermanagement?.orgid;
+        const domain = req.userDetails[0]?.usermanagement?.domain;
 
         if (!orgId) {
             return res.status(404).json({ success: false, message: "Organization ID not found." });
@@ -99,6 +108,8 @@ const checkOut = async (req, res) => {
             const recordId = record.id;
             const updateUrl = `https://www.zohoapis.${domain}/crm/v7/Attendance/${recordId}`;
 
+            const list = [ "approval","workflow","blueprint","pathfinder","orchestration"];
+
             // Update the record to check out
             const updateData = {
                 data: [
@@ -108,7 +119,8 @@ const checkOut = async (req, res) => {
                         Record_Status__s: "Checked Out",
                         Check_out_Address: req.body.Check_out_Address || null
                     }
-                ]
+                ],
+                trigger:list
             };
 
             const updateResponse = await handleZohoRequest(updateUrl, 'put', updateData, token);

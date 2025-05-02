@@ -11,6 +11,13 @@ const accessControl = async (req, res, next) => {
             });
         }
 
+        if(!userId || userId === null || userId === undefined){
+            return res.status(401).json({
+                success:false,
+                message: "User not authenticated!"
+            })
+        }
+
         const selectUserQuery = `
             SELECT *
             FROM usermanagement 

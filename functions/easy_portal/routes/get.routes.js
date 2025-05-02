@@ -7,9 +7,9 @@ const router = express.Router();
 
 
 router.get('/lead',catalystAuth,totalLead);
-router.get('/task',catalystAuth,totalTask);
-router.get('/contact',catalystAuth,totalMeeting);
-router.get('/deal',catalystAuth,totalDeals);
+router.get('/task',catalystAuth,accessControl,totalTask);
+router.get('/meetings',catalystAuth,accessControl,totalMeeting);
+router.get('/deal',catalystAuth,accessControl,totalDeals);
 
 
 // get the lead details for the dashboard preparation...

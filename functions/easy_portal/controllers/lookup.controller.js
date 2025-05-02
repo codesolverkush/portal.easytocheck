@@ -6,7 +6,6 @@ const fetchContacts = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
         const query = req.query.query; 
-        console.log(query);
         
         if (!userId) {
             return res.status(404).json({ message: "User ID not found." });
@@ -34,10 +33,9 @@ const fetchContacts = async (req, res) => {
         select_query: `select Last_Name, First_Name,Email,Full_Name, Lead_Source from Contacts where (((Full_Name like '%${safeFullName}%'))) limit 1000`
         };
 
-        console.log(requestData);
+       
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
-            // console.log(data);
             return res.status(200).json({ success: true, data });
         } catch (error) {
             if (error.message === "TOKEN_EXPIRED") {
@@ -64,7 +62,7 @@ const fetchAccounts = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
         const query = req.query.query; 
-        console.log(query);
+       
         
         if (!userId) {
             return res.status(404).json({ message: "User ID not found." });
@@ -92,13 +90,13 @@ const fetchAccounts = async (req, res) => {
             select_query: `select Account_Name from Accounts where (((Account_Name like '%${safeFullName}%'))) limit 1000`
         };
 
-        console.log(requestData);
+      
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
-            // console.log(data);
+           
             return res.status(200).json({ success: true, data });
         } catch (error) {
-            // console.log(error);
+        
             if (error.message === "TOKEN_EXPIRED") {
                 try {
                     token = await refreshAccessToken(req, res);
@@ -112,7 +110,6 @@ const fetchAccounts = async (req, res) => {
             }
         }
     } catch (error) {
-        // console.log(error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }

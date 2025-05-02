@@ -11,6 +11,8 @@ import TestPage from './component/testPages/TestPage.js';
 import MeetingView from './component/view/MeetingView/MeetingView.js';
 import MeetingProfile from './component/view/MeetingView/MeetingProfile.js';
 import AuthorizedPage from './component/errorPages/AuthorizedPage.js';
+import Webtab2 from './component/testPages/Webtab2.js';
+import DragDropComponent from './component/testPages/DragDropComponent.js';
 
 
 // Lazy loaded components (same as before)
@@ -22,6 +24,7 @@ const LicenseExpiredPage = lazy(() => import('./component/pages/LicensePage'));
 const Connections = lazy(() => import('./component/pages/Connections'));
 const UserCreate = lazy(() => import('./component/pages/UserCreate'));
 const CreateLeadForm = lazy(() => import('./component/forms/CreateLeadForm.js'));
+const CreateContactForm = lazy(()=> import('./component/forms/CreateContactForm.js'));
 const MakeConnection = lazy(() => import('./component/pages/MakeConnection.js'));
 const LandingPage = lazy(() => import('./pages/LandingPage.js'));
 const AttachFilePage = lazy(() => import('./component/testPages/AttachFilePage.js'));
@@ -281,6 +284,15 @@ function App() {
 
           {/* Contact route start */}
 
+          <Route 
+            path='/app/contactform'
+            element={
+              <ProtectedRouteWithLicense>
+                 <CreateContactForm/>
+              </ProtectedRouteWithLicense>
+            }
+            />
+
           <Route
             path='/app/contactview'
             element={
@@ -370,6 +382,19 @@ function App() {
             }
           />
 
+          <Route 
+          path='/app/web'
+          element={
+            <Webtab2/>
+          }
+          />
+          <Route  
+          path='/app/drag'
+          element={
+            <DragDropComponent/>
+          }
+          />
+          
           {/* Catch-all route */}
           <Route path="*" element={<Navigate to="/app/login" replace />} />
         </Routes>
