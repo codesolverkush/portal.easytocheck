@@ -4,7 +4,7 @@
     gap: 8px;
     width: 100%;
     justify-content: center; /* Centers buttons on larger screens */
-}
+} 
   
 .action-button {
   display: flex;
@@ -249,4 +249,22 @@
   0% { opacity: 0.5; }
   50% { opacity: 1; }
   100% { opacity: 0.5; }
+}
+
+
+/* View Style... */
+
+.theme-view{
+  background-color: #0a3bc0;
+}
+.theme-view-2{
+  background-color: #bdccf3;
+  color: #0a3bc0;
+}
+
+.theme-view-2:hover{
+  color: #7793e5;
+}
+.theme-view:hover{
+  background-color: #0937b6;
 }

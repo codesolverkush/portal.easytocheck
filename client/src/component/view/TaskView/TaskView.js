@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import moment from "moment";
+import { textColors } from "../../../config/colors";
 
 const priorityColors = {
   High: "bg-red-200 text-red-700",
@@ -479,361 +480,421 @@ const TaskView = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-
-      <div className="p-4 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <div className="flex flex-col sm:flex-row w-full justify-between mb-4 md:mb-0 mr-5">
-            <h1 className="text-2xl font-bold text-gray-800 mb-3 sm:mb-0">
-              Task Management
-            </h1>
-            <div className="flex flex-wrap gap-2 sm:gap-4">
-              <button
-                onClick={hardSync}
-                className="flex-1 sm:flex-none bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors text-sm md:text-base"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 mr-1 md:mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-                Sync Now
-              </button>
-
-              <button
-                onClick={() => setShowColumnModal(true)}
-                className="flex-1 sm:flex-none bg-white border border-gray-300 text-gray-700 px-3 sm:px-4 py-2 rounded-lg sm:flex items-center justify-center hidden hover:bg-gray-50 transition-colors text-sm md:text-base"
-              >
-                <Settings size={16} className="mr-1 md:mr-2" />
-                <span>Manage Columns</span>
-              </button>
-
-              <button
-                onClick={() => setIsCreateModalOpen(true)}
-                className="flex-1 sm:flex-none bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors text-sm md:text-base"
-              >
-                <Plus size={16} className="mr-1 md:mr-2" />
-                <span className="hidden sm:inline">Create Task</span>
-                <span className="sm:hidden">Create</span>
-              </button>
-            </div>
-          </div>
-          <div className="w-full md:w-auto flex flex-col md:flex-row gap-3">
-            <div className="relative w-full md:w-64">
-              <input
-                type="text"
-                placeholder="Search tasks..."
-                value={searchTerm}
-                onChange={handleSearch}
-                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <Search
-                className="absolute left-3 top-2.5 text-gray-400"
-                size={16}
-              />
-            </div>
-
-            <div className="relative w-full md:w-auto">
-              <button
-                onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="w-full md:w-auto px-4 py-2 border rounded-lg flex items-center justify-center bg-white hover:bg-gray-50 transition-colors"
-              >
-                <Calendar size={16} className="mr-2 text-gray-500" />
-                <span className="text-gray-700">Date Filter</span>
-                {isDateRangeActive && (
-                  <span className="ml-1 h-2 w-2 bg-blue-500 rounded-full"></span>
-                )}
-              </button>
-
-              {isFilterOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg z-10 p-4 border">
-                  <div className="mb-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Start Date
-                    </label>
-                    <input
-                      type="date"
-                      value={startDate}
-                      onChange={handleStartDateChange}
-                      className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      End Date
-                    </label>
-                    <input
-                      type="date"
-                      value={endDate}
-                      onChange={handleEndDateChange}
-                      className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div className="flex justify-between">
-                    <button
-                      onClick={clearDateRangeFilter}
-                      className="px-3 py-1.5 border rounded-lg text-gray-600 hover:bg-gray-50 text-sm"
-                    >
-                      Clear
-                    </button>
-                    <button
-                      onClick={applyDateRangeFilter}
-                      className="px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm"
-                    >
-                      Apply Filter
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {isDateRangeActive && (
-          <div className="mb-4 flex items-center gap-2 bg-blue-50 p-2 rounded-lg">
-            <span className="text-blue-700 font-medium">
-              Date range filter:
-            </span>
-            <span className="text-blue-600">{formatDateRange()}</span>
-            <button
-              onClick={clearDateRangeFilter}
-              className="ml-2 text-blue-500 hover:text-blue-700"
-            >
-              <X size={16} />
-            </button>
-          </div>
-        )}
-
-        {/* Mobile items per page selector */}
-        <div className="md:hidden relative mb-4">
-          <div className="flex items-center justify-between bg-white p-3 rounded-lg shadow">
-            <div className="flex items-center">
-              <span className="text-sm text-gray-600 mr-2">Show:</span>
-              <button
-                onClick={() => setIsItemsPerPageOpen(!isItemsPerPageOpen)}
-                className="border rounded px-3 py-1 text-sm flex items-center justify-between w-20"
-              >
-                {tasksPerPage}
-                <svg
-                  className={`w-4 h-4 transition-transform ${
-                    isItemsPerPageOpen ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
-              </button>
-            </div>
-            <div className="text-sm text-gray-600">
-              {totalTasks > 0
-                ? `${indexOfFirstTask + 1}-${Math.min(
-                    indexOfLastTask,
-                    totalTasks
-                  )} of ${totalTasks}`
-                : `0 tasks`}
-            </div>
-          </div>
-
-          {isItemsPerPageOpen && (
-            <div className="absolute left-0 right-0 mt-1 bg-white border rounded-lg shadow-lg z-10">
-              {[10, 20, 30, 50, 100].map((value) => (
+    <>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Navbar />
+        <div className="flex-1 p-4 max-w-7xl mx-auto w-full flex flex-col">
+          {/* Header section */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <div className="flex flex-col sm:flex-row w-full justify-between mb-4 md:mb-0 mr-5">
+              <h1 className={`text-2xl font-bold ${textColors.primary} mb-3 sm:mb-0`}>
+                Task Management
+              </h1>
+              <div className="flex flex-wrap gap-2 sm:gap-4">
                 <button
-                  key={value}
-                  onClick={() => handleTasksPerPageChange(value)}
-                  className={`block w-full text-left px-4 py-2 text-sm ${
-                    tasksPerPage === value
-                      ? "bg-blue-50 text-blue-600"
-                      : "hover:bg-gray-50"
-                  }`}
+                  onClick={hardSync}
+                  className="flex-1 sm:flex-none theme-view text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm md:text-base"
                 >
-                  {value}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 mr-1 md:mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </svg>
+                  Sync Now
                 </button>
-              ))}
+
+                <button
+                  onClick={() => setShowColumnModal(true)}
+                  className="flex-1 sm:flex-none bg-white border border-gray-300 text-gray-700 px-3 sm:px-4 py-2 rounded-lg sm:flex items-center justify-center hidden hover:bg-gray-50 transition-colors text-sm md:text-base"
+                >
+                  <Settings size={16} className="mr-1 md:mr-2" />
+                  <span>Manage Columns</span>
+                </button>
+
+                <button
+                  onClick={() => setIsCreateModalOpen(true)}
+                  className="flex-1 sm:flex-none theme-view text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm md:text-base"
+                >
+                  <Plus size={16} className="mr-1 md:mr-2" />
+                  <span className="hidden sm:inline">Create Task</span>
+                  <span className="sm:hidden">Create</span>
+                </button>
+              </div>
+            </div>
+            <div className="w-full md:w-auto flex flex-col md:flex-row gap-3">
+              <div className="relative w-full md:w-64">
+                <input
+                  type="text"
+                  placeholder="Search tasks..."
+                  value={searchTerm}
+                  onChange={handleSearch}
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <Search
+                  className="absolute left-3 top-2.5 text-gray-400"
+                  size={16}
+                />
+              </div>
+
+              <div className="relative w-full md:w-auto">
+                <button
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  className="w-full md:w-auto px-4 py-2 border rounded-lg flex items-center justify-center bg-white hover:bg-gray-50 transition-colors"
+                >
+                  <Calendar size={16} className="mr-2 text-gray-500" />
+                  <span className="text-gray-700">Date Filter</span>
+                  {isDateRangeActive && (
+                    <span className="ml-1 h-2 w-2 bg-blue-800 rounded-full"></span>
+                  )}
+                </button>
+
+                {isFilterOpen && (
+                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-lg z-10 p-4 border">
+                    <div className="mb-3">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        value={startDate}
+                        onChange={handleStartDateChange}
+                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        value={endDate}
+                        onChange={handleEndDateChange}
+                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="flex justify-between">
+                      <button
+                        onClick={clearDateRangeFilter}
+                        className="px-3 py-1.5 border rounded-lg text-gray-600 hover:bg-gray-50 text-sm"
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={applyDateRangeFilter}
+                        className="px-3 py-1.5 theme-view text-white rounded-lg text-sm"
+                      >
+                        Apply Filter
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {isDateRangeActive && (
+            <div className="mb-4 flex items-center gap-2 bg-blue-50 p-2 rounded-lg">
+              <span className="text-blue-700 font-medium">
+                Date range filter:
+              </span>
+              <span className="text-blue-600">{formatDateRange()}</span>
+              <button
+                onClick={clearDateRangeFilter}
+                className="ml-2 theme-view"
+              >
+                <X size={16} />
+              </button>
             </div>
           )}
-        </div>
 
-        {/* Pagination Controls - Top */}
-        <div className="hidden md:flex justify-between items-center mb-4 bg-white p-2 rounded-lg shadow">
-          <div className="flex items-center mb-2 sm:mb-0">
-            <label
-              htmlFor="tasksPerPage"
-              className="mr-2 text-sm text-gray-600"
-            >
-              Show:
-            </label>
-            <select
-              id="tasksPerPage"
-              value={tasksPerPage}
-              onChange={(e) => handleTasksPerPageChange(e.target.value)}
-              className="border rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={30}>30</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
-            <span className="ml-2 text-sm text-gray-600">tasks per page</span>
+          {/* Mobile items per page selector */}
+          <div className="md:hidden relative mb-4">
+            <div className="flex items-center justify-between bg-white p-3 rounded-lg shadow">
+              <div className="flex items-center">
+                <span className="text-sm text-gray-600 mr-2">Show:</span>
+                <button
+                  onClick={() => setIsItemsPerPageOpen(!isItemsPerPageOpen)}
+                  className="border rounded px-3 py-1 text-sm flex items-center justify-between w-20"
+                >
+                  {tasksPerPage}
+                  <svg
+                    className={`w-4 h-4 transition-transform ${
+                      isItemsPerPageOpen ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+              <div className="text-sm text-gray-600">
+                {totalTasks > 0
+                  ? `${indexOfFirstTask + 1}-${Math.min(
+                      indexOfLastTask,
+                      totalTasks
+                    )} of ${totalTasks}`
+                  : `0 tasks`}
+              </div>
+            </div>
+
+            {isItemsPerPageOpen && (
+              <div className="absolute left-0 right-0 mt-1 bg-white border rounded-lg shadow-lg z-10">
+                {[10, 20, 30, 50, 100].map((value) => (
+                  <button
+                    key={value}
+                    onClick={() => handleTasksPerPageChange(value)}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      tasksPerPage === value
+                        ? "bg-blue-50 text-blue-600"
+                        : "hover:bg-gray-50"
+                    }`}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          <div className="flex items-center">
-            <span className="text-sm text-gray-600 mr-4">
-              {totalTasks > 0
-                ? `Showing ${indexOfFirstTask + 1} to ${Math.min(
-                    indexOfLastTask,
-                    totalTasks
-                  )} of ${totalTasks} tasks`
-                : `0 tasks found`}
-            </span>
-            <div className="flex">
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className={`p-1 mx-1 rounded ${
-                  currentPage === 1
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-blue-500 hover:bg-blue-100"
-                }`}
+          {/* Desktop Pagination Controls - Top */}
+          <div className="hidden md:flex justify-between items-center mb-4 bg-white p-3 rounded-lg shadow">
+            <div className="flex items-center mb-2 sm:mb-0">
+              <label
+                htmlFor="tasksPerPage"
+                className="mr-2 text-sm text-gray-600"
               >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === totalPages || totalPages === 0}
-                className={`p-1 mx-1 rounded ${
-                  currentPage === totalPages || totalPages === 0
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-blue-500 hover:bg-blue-100"
-                }`}
+                Show:
+              </label>
+              <select
+                id="tasksPerPage"
+                value={tasksPerPage}
+                onChange={(e) => handleTasksPerPageChange(e.target.value)}
+                className="border rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-800"
               >
-                <ChevronRight size={20} />
-              </button>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={30}>30</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+              <span className="ml-2 text-sm text-gray-600">tasks per page</span>
+            </div>
+
+            <div className="flex items-center">
+              <span className="text-sm text-gray-600 mr-4">
+                {totalTasks > 0
+                  ? `Showing ${indexOfFirstTask + 1} to ${Math.min(
+                      indexOfLastTask,
+                      totalTasks
+                    )} of ${totalTasks} tasks`
+                  : `0 tasks found`}
+              </span>
+              <div className="flex">
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`p-1 mx-1 rounded ${
+                    currentPage === 1
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-blue-800 hover:bg-blue-100"
+                  }`}
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages || totalPages === 0}
+                  className={`p-1 mx-1 rounded ${
+                    currentPage === totalPages || totalPages === 0
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-blue-800 hover:bg-blue-100"
+                  }`}
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Desktop view */}
-        <div className="hidden md:block bg-white shadow rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {selectedColumns["Subject"] && (
-                  <th
-                    className="p-4 cursor-pointer"
-                    onClick={() => handleSort("Subject")}
-                  >
-                    <div className="flex items-center">
-                      Lead Name
-                      {sortField === "Subject" && (
-                        <span className="ml-1">
-                          {sortDirection === "asc" ? (
-                            <ArrowUp size={14} />
-                          ) : (
-                            <ArrowDown size={14} />
+          {/* Main content area */}
+          <div className="flex-1">
+            {/* Task listing for desktop */}
+            <div className="hidden md:block bg-white shadow rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {selectedColumns["Subject"] && (
+                      <th
+                        className="p-4 cursor-pointer"
+                        onClick={() => handleSort("Subject")}
+                      >
+                        <div className="flex items-center">
+                          Lead Name
+                          {sortField === "Subject" && (
+                            <span className="ml-1">
+                              {sortDirection === "asc" ? (
+                                <ArrowUp size={14} />
+                              ) : (
+                                <ArrowDown size={14} />
+                              )}
+                            </span>
                           )}
-                        </span>
-                      )}
-                    </div>
-                  </th>
-                )}
-                {selectedColumns["Status"] && (
-                  <th
-                    className="p-4 cursor-pointer"
-                    onClick={() => handleSort("Status")}
-                  >
-                    <div className="flex items-center">
-                      Status
-                      {sortField === "Staus" && (
-                        <span className="ml-1">
-                          {sortDirection === "asc" ? (
-                            <ArrowUp size={14} />
-                          ) : (
-                            <ArrowDown size={14} />
+                        </div>
+                      </th>
+                    )}
+                    {selectedColumns["Status"] && (
+                      <th
+                        className="p-4 cursor-pointer"
+                        onClick={() => handleSort("Status")}
+                      >
+                        <div className="flex items-center">
+                          Status
+                          {sortField === "Staus" && (
+                            <span className="ml-1">
+                              {sortDirection === "asc" ? (
+                                <ArrowUp size={14} />
+                              ) : (
+                                <ArrowDown size={14} />
+                              )}
+                            </span>
                           )}
-                        </span>
-                      )}
-                    </div>
-                  </th>
-                )}
-                {selectedColumns["Due_Date"] && (
-                  <th className="p-4">Due Date</th>
-                )}
-                {selectedColumns["Priority"] && (
-                  <th className="p-4">Priority</th>
-                )}
-                {selectedColumns["Created_Time"] && (
-                  <th
-                    className="p-4 cursor-pointer"
-                    onClick={() => handleSort("Created_Time")}
-                  >
-                    <div className="flex items-center">
-                      Created Time
-                      {sortField === "Created_Time" && (
-                        <span className="ml-1">
-                          {sortDirection === "asc" ? (
-                            <ArrowUp size={14} />
-                          ) : (
-                            <ArrowDown size={14} />
+                        </div>
+                      </th>
+                    )}
+                    {selectedColumns["Due_Date"] && (
+                      <th className="p-4">Due Date</th>
+                    )}
+                    {selectedColumns["Priority"] && (
+                      <th className="p-4">Priority</th>
+                    )}
+                    {selectedColumns["Created_Time"] && (
+                      <th
+                        className="p-4 cursor-pointer"
+                        onClick={() => handleSort("Created_Time")}
+                      >
+                        <div className="flex items-center">
+                          Created Time
+                          {sortField === "Created_Time" && (
+                            <span className="ml-1">
+                              {sortDirection === "asc" ? (
+                                <ArrowUp size={14} />
+                              ) : (
+                                <ArrowDown size={14} />
+                              )}
+                            </span>
                           )}
-                        </span>
-                      )}
-                    </div>
-                  </th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
+                        </div>
+                      </th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentTasks.length > 0 ? (
+                    currentTasks.map((task, index) => (
+                      <tr
+                        key={index}
+                        className="border-t hover:bg-gray-50 cursor-pointer transition-colors"
+                        onClick={() => getEachRecordHandler(task.id)}
+                      >
+                        {selectedColumns["Subject"] && (
+                          <td className="p-4 text-sm font-medium text-gray-700">
+                            {task.Subject || "-"}
+                          </td>
+                        )}
+
+                        {selectedColumns["Status"] && (
+                          <td className="p-4 text-sm">
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                statusColors[task.Status] ||
+                                "bg-gray-200 text-gray-700"
+                              }`}
+                            >
+                              {task.Status}
+                            </span>
+                          </td>
+                        )}
+
+                        {selectedColumns["Due_Date"] && (
+                          <td className="p-4 text-sm">{task.Due_Date}</td>
+                        )}
+
+                        {selectedColumns["Priority"] && (
+                          <td className="p-4 text-sm">
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                priorityColors[task.Priority] ||
+                                "bg-gray-200 text-gray-700"
+                              }`}
+                            >
+                              {task.Priority}
+                            </span>
+                          </td>
+                        )}
+
+                        {selectedColumns["Created_Time"] && (
+                          <td className="p-4 text-sm">
+                            {moment(task.Created_Time).format("DD-MM-YY HH:mm") ||
+                              "-"}
+                          </td>
+                        )}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="p-4 text-center text-gray-500">
+                        No tasks available.{" "}
+                        {searchTerm && "Try a different search term."}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Task cards for mobile */}
+            <div className="md:hidden">
               {currentTasks.length > 0 ? (
                 currentTasks.map((task, index) => (
-                  <tr
+                  <div
                     key={index}
-                    className="border-t hover:bg-gray-50 cursor-pointer transition-colors"
-                    onClick={() => getEachRecordHandler(task.id)}
+                    className="bg-white shadow rounded-lg p-4 mb-4 border-l-4 border-blue-800"
+                    onClick={() => viewTaskDetails(task)}
                   >
-                    {selectedColumns["Subject"] && (
-                      <td className="p-4 text-sm font-medium text-gray-700">
-                        {task.Subject || "-"}
-                      </td>
-                    )}
-
-                    {selectedColumns["Status"] && (
-                      <td className="p-4 text-sm">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            statusColors[task.Status] ||
-                            "bg-gray-200 text-gray-700"
-                          }`}
-                        >
-                          {task.Status}
-                        </span>
-                      </td>
-                    )}
-
-                    {selectedColumns["Due_Date"] && (
-                      <td className="p-4 text-sm">{task.Due_Date}</td>
-                    )}
-
-                    {selectedColumns["Priority"] && (
-                      <td className="p-4 text-sm">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-medium text-gray-800">{task.Subject}</h3>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          statusColors[task.Status] || "bg-gray-200 text-gray-700"
+                        }`}
+                      >
+                        {task.Status}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <div className="text-xs text-gray-500 flex items-center">
+                        <span className="font-medium mr-1">Due Date:</span>{" "}
+                        {task.Due_Date}
+                      </div>
+                      <div className="text-xs text-gray-500 flex items-center">
+                        <span className="font-medium mr-1">Priority:</span>
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
                             priorityColors[task.Priority] ||
@@ -842,364 +903,284 @@ const TaskView = () => {
                         >
                           {task.Priority}
                         </span>
-                      </td>
-                    )}
-
-                    {selectedColumns["Created_Time"] && (
-                      <td className="p-4 text-sm">
-                        {moment(task.Created_Time).format("DD-MM-YY HH:mm") ||
-                          "-"}
-                      </td>
-                    )}
-                  </tr>
+                      </div>
+                    </div>
+                  </div>
                 ))
               ) : (
-                <tr>
-                  <td colSpan="5" className="p-4 text-center text-gray-500">
-                    No tasks available.{" "}
-                    {searchTerm && "Try a different search term."}
-                  </td>
-                </tr>
+                <div className="bg-white shadow rounded-lg p-6 text-center text-gray-500">
+                  No tasks available. {searchTerm && "Try a different search term."}
+                </div>
               )}
-            </tbody>
-          </table>
-        </div>
+            </div>
+          </div>
 
-        {/* Mobile view */}
-        <div className="md:hidden">
-          {currentTasks.length > 0 ? (
-            currentTasks.map((task, index) => (
-              <div
-                key={index}
-                className="bg-white shadow rounded-lg p-4 mb-4 border-l-4 border-blue-500"
-                onClick={() => viewTaskDetails(task)}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-medium text-gray-800">{task.Subject}</h3>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      statusColors[task.Status] || "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {task.Status}
+          {/* Fixed bottom pagination */}
+          <div className="mt-auto pt-4">
+            {/* Mobile Pagination Controls - Bottom */}
+            {totalTasks > 0 && (
+              <div className="md:hidden flex justify-between items-center bg-white p-4 rounded-lg shadow-lg sticky bottom-0">
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`p-2 rounded-lg ${currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-blue-100 text-blue-800'}`}
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                
+                <span className="text-sm font-medium">
+                  Page {currentPage} of {totalPages}
+                </span>
+                
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`p-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-blue-100 text-blue-800'}`}
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            )}
+
+            {/* Desktop Pagination Controls - Bottom */}
+            {totalTasks > 0 && (
+              <div className="hidden md:flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-lg sticky bottom-0">
+                <div className="flex items-center mb-2 sm:mb-0">
+                  <span className="text-sm text-gray-600">
+                    Page {currentPage} of {totalPages}
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  <div className="text-xs text-gray-500 flex items-center">
-                    <span className="font-medium mr-1">Due Date:</span>{" "}
-                    {task.Due_Date}
+                
+                <div className="flex items-center">
+                  <button
+                    onClick={() => paginate(1)}
+                    disabled={currentPage === 1}
+                    className={`px-3 py-1 mx-1 rounded text-sm ${currentPage === 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'theme-view-2'}`}
+                  >
+                    First
+                  </button>
+                  <button
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`px-3 py-1 mx-1 rounded text-sm ${currentPage === 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'theme-view-2'}`}
+                  >
+                    Previous
+                  </button>
+                  
+                  {/* Page number buttons */}
+                  <div className="hidden sm:flex">
+                    {[...Array(Math.min(5, totalPages))].map((_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      
+                      if (pageNum <= totalPages) {
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => paginate(pageNum)}
+                            className={`w-8 h-8 mx-1 rounded-full ${currentPage === pageNum ? 'theme-view text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      }
+                      return null;
+                    })}
                   </div>
-                  <div className="text-xs text-gray-500 flex items-center">
-                    <span className="font-medium mr-1">Priority:</span>
+                  
+                  <button
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`px-3 py-1 mx-1 rounded text-sm ${currentPage === totalPages ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-blue-100 theme-view-2'}`}
+                  >
+                    Next
+                  </button>
+                  <button
+                    onClick={() => paginate(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className={`px-3 py-1 mx-1 rounded text-sm ${currentPage === totalPages ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-blue-100 theme-view-2'}`}
+                  >
+                    Last
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Task details modal for mobile */}
+        {selectedTask && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 md:hidden">
+            <div className="bg-white rounded-lg w-full max-w-md">
+              <div className="flex justify-between items-center p-4 border-b">
+                <h2 className="text-lg font-bold">Task Details</h2>
+                <button onClick={closeTaskDetails} className="text-gray-500">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-4">
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <span className="block text-xs font-medium text-gray-500">
+                      SUBJECT
+                    </span>
+                    <span className="block text-sm">{selectedTask.Subject}</span>
+                  </div>
+                  <div>
+                    <span className="block text-xs font-medium text-gray-500">
+                      STATUS
+                    </span>
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        priorityColors[task.Priority] ||
+                      className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                        statusColors[selectedTask.Status] ||
                         "bg-gray-200 text-gray-700"
                       }`}
                     >
-                      {task.Priority}
+                      {selectedTask.Status}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-xs font-medium text-gray-500">
+                      DUE DATE
+                    </span>
+                    <span className="block text-sm">{selectedTask.Due_Date}</span>
+                  </div>
+                  <div>
+                    <span className="block text-xs font-medium text-gray-500">
+                      PRIORITY
+                    </span>
+                    <span
+                      className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                        priorityColors[selectedTask.Priority] ||
+                        "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      {selectedTask.Priority}
                     </span>
                   </div>
                 </div>
+                <button
+                  onClick={() => {
+                    closeTaskDetails();
+                    getEachRecordHandler(selectedTask.id);
+                  }}
+                  className="w-full mt-6 py-2 theme-view text-white rounded-lg transition-colors"
+                >
+                  View Full Details
+                </button>
               </div>
-            ))
-          ) : (
-            <div className="bg-white shadow rounded-lg p-6 text-center text-gray-500">
-              No tasks available. {searchTerm && "Try a different search term."}
             </div>
-          )}
-        </div>
-
-        {/* Mobile Pagination Controls - Bottom */}
-        {totalTasks > 0 && (
-          <div className="md:hidden flex justify-between items-center mt-4 pt-4 border-t">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`p-2 rounded-lg ${
-                currentPage === 1
-                  ? "bg-gray-100 text-gray-400"
-                  : "bg-blue-100 text-blue-600"
-              }`}
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            <span className="text-sm font-medium">
-              Page {currentPage} of {totalPages}
-            </span>
-
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`p-2 rounded-lg ${
-                currentPage === totalPages
-                  ? "bg-gray-100 text-gray-400"
-                  : "bg-blue-100 text-blue-600"
-              }`}
-            >
-              <ChevronRight size={20} />
-            </button>
           </div>
         )}
 
-        {/* Desktop Pagination Controls - Bottom */}
-        {totalTasks > 0 && (
-          <div className="hidden md:flex sm:flex-row justify-between items-center mt-4 pt-4 border-t">
-            <div className="flex items-center mb-2 sm:mb-0">
-              <span className="text-sm text-gray-600">
-                Page {currentPage} of {totalPages}
-              </span>
-            </div>
-
-            <div className="flex items-center">
-              <button
-                onClick={() => paginate(1)}
-                disabled={currentPage === 1}
-                className={`px-3 py-1 mx-1 rounded text-sm ${
-                  currentPage === 1
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                }`}
-              >
-                First
-              </button>
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className={`px-3 py-1 mx-1 rounded text-sm ${
-                  currentPage === 1
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                }`}
-              >
-                Previous
-              </button>
-
-              {/* Page number buttons */}
-              <div className="hidden sm:flex">
-                {[...Array(Math.min(5, totalPages))].map((_, i) => {
-                  let pageNum;
-                  if (totalPages <= 5) {
-                    pageNum = i + 1;
-                  } else if (currentPage <= 3) {
-                    pageNum = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNum = totalPages - 4 + i;
-                  } else {
-                    pageNum = currentPage - 2 + i;
-                  }
-
-                  if (pageNum <= totalPages) {
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => paginate(pageNum)}
-                        className={`w-8 h-8 mx-1 rounded-full ${
-                          currentPage === pageNum
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  }
-                  return null;
-                })}
+        {/* Create Task Modal */}
+        {isCreateModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg w-full max-w-md">
+              <div className="flex justify-between items-center p-4 border-b">
+                <h2 className="text-lg font-bold">Create New Task</h2>
+                <button
+                  onClick={() => setIsCreateModalOpen(false)}
+                  className="text-gray-500"
+                >
+                  <X size={20} />
+                </button>
               </div>
-
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className={`px-3 py-1 mx-1 rounded text-sm ${
-                  currentPage === totalPages
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                }`}
-              >
-                Next
-              </button>
-              <button
-                onClick={() => paginate(totalPages)}
-                disabled={currentPage === totalPages}
-                className={`px-3 py-1 mx-1 rounded text-sm ${
-                  currentPage === totalPages
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                }`}
-              >
-                Last
-              </button>
+              <form onSubmit={handleCreateTask} className="p-4">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      value={newTask.Subject}
+                      onChange={(e) =>
+                        setNewTask({ ...newTask, Subject: e.target.value })
+                      }
+                      className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Status
+                    </label>
+                    <select
+                      value={newTask.Status}
+                      onChange={(e) =>
+                        setNewTask({ ...newTask, Status: e.target.value })
+                      }
+                      className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800"
+                    >
+                      <option value="New">New</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Due Date
+                    </label>
+                    <input
+                      type="date"
+                      value={newTask.Due_Date}
+                      onChange={(e) =>
+                        setNewTask({ ...newTask, Due_Date: e.target.value })
+                      }
+                      className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Priority
+                    </label>
+                    <select
+                      value={newTask.Priority}
+                      onChange={(e) =>
+                        setNewTask({ ...newTask, Priority: e.target.value })
+                      }
+                      className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800"
+                    >
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-end space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsCreateModalOpen(false)}
+                    className="px-4 py-2 text-gray-600 border rounded-lg hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 theme-view text-white rounded-lg"
+                    disabled={isSubmitting}
+                  >
+                    Create Task
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
       </div>
 
-      {/* Create Task Modal */}
-      {isCreateModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="text-lg font-bold">Create New Task</h2>
-              <button
-                onClick={() => setIsCreateModalOpen(false)}
-                className="text-gray-500"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <form onSubmit={handleCreateTask} className="p-4">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    value={newTask.Subject}
-                    onChange={(e) =>
-                      setNewTask({ ...newTask, Subject: e.target.value })
-                    }
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Status
-                  </label>
-                  <select
-                    value={newTask.Status}
-                    onChange={(e) =>
-                      setNewTask({ ...newTask, Status: e.target.value })
-                    }
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="New">New</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Due Date
-                  </label>
-                  <input
-                    type="date"
-                    value={newTask.Due_Date}
-                    onChange={(e) =>
-                      setNewTask({ ...newTask, Due_Date: e.target.value })
-                    }
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Priority
-                  </label>
-                  <select
-                    value={newTask.Priority}
-                    onChange={(e) =>
-                      setNewTask({ ...newTask, Priority: e.target.value })
-                    }
-                    className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                  </select>
-                </div>
-              </div>
-              <div className="mt-6 flex justify-end space-x-3">
-                <button
-                  type="button"
-                  onClick={() => setIsCreateModalOpen(false)}
-                  className="px-4 py-2 text-gray-600 border rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                  disabled={isSubmitting}
-                >
-                  Create Task
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Mobile Task Details Modal */}
-      {selectedTask && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 md:hidden">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="text-lg font-bold">Task Details</h2>
-              <button onClick={closeTaskDetails} className="text-gray-500">
-                <X size={20} />
-              </button>
-            </div>
-            <div className="p-4">
-              <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <span className="block text-xs font-medium text-gray-500">
-                    SUBJECT
-                  </span>
-                  <span className="block text-sm">{selectedTask.Subject}</span>
-                </div>
-                <div>
-                  <span className="block text-xs font-medium text-gray-500">
-                    STATUS
-                  </span>
-                  <span
-                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                      statusColors[selectedTask.Status] ||
-                      "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {selectedTask.Status}
-                  </span>
-                </div>
-                <div>
-                  <span className="block text-xs font-medium text-gray-500">
-                    DUE DATE
-                  </span>
-                  <span className="block text-sm">{selectedTask.Due_Date}</span>
-                </div>
-                <div>
-                  <span className="block text-xs font-medium text-gray-500">
-                    PRIORITY
-                  </span>
-                  <span
-                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                      priorityColors[selectedTask.Priority] ||
-                      "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {selectedTask.Priority}
-                  </span>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  closeTaskDetails();
-                  getEachRecordHandler(selectedTask.id);
-                }}
-                className="w-full mt-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-              >
-                View Full Details
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <ColumnManagementModal />
-    </div>
+    </>
   );
 };
 

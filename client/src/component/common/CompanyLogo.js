@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+
 export const CompanyLogo2 = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isAnimating, setIsAnimating] = useState(true);
@@ -43,7 +44,7 @@ export const CompanyLogo2 = () => {
         <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 mb-1">
           Easy Portal
         </h1>
-        <p className="text-sm font-medium text-gray-600 tracking-wider transform transition-all duration-500">
+        <p className="text-sm font-medium text-white tracking-wider transform transition-all duration-500">
           Business Solutions
         </p>
       </div>
@@ -58,43 +59,53 @@ export const CompanyLogo2 = () => {
 
 
 
-export const CompanyLogo = () => {
+
+export const CompanyLogo = ({ color = "text-blue-400" }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div 
+    <div
       className="flex items-center cursor-pointer transition-all duration-300 ml-2"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Logo Icon with gradient background */}
+      {/* Logo Icon */}
       <div className="relative mr-3">
-        <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 shadow transform transition-all duration-300 ease-in-out rotate-1 hover:rotate-3">
+        <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-700 to-indigo-700 shadow-lg transform transition duration-300 ease-in-out rotate-1 hover:rotate-3">
           <div className="absolute inset-0.5 bg-white rounded-sm flex items-center justify-center overflow-hidden">
-            <div className={`text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 transform transition-all duration-300 ${isHovered ? 'scale-110' : 'scale-100'}`}>
+            <div
+              className={`text-lg font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700 transform transition-all duration-300 ${
+                isHovered ? "scale-110" : "scale-100"
+              }`}
+            >
               EP
             </div>
-            
-            {/* Small animated dot */}
-            <div className="absolute -bottom-1 -right-1 w-2 h-2 rounded-full bg-blue-400 animate-ping opacity-70" style={{ animationDuration: '3s' }}></div>
+
+            {/* Animated Dot */}
+            <div
+              className="absolute -bottom-1 -right-1 w-2 h-2 rounded-full bg-blue-400 animate-ping opacity-70"
+              style={{ animationDuration: "2.5s" }}
+            ></div>
           </div>
         </div>
       </div>
-      
-      {/* Logo Text with gradient effect - more compact */}
+
+      {/* Logo Text */}
       <Link to="/app/dashboard">
-      <div className="flex flex-col">
-        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 leading-none">
-          Easy Portal
-        </h1>
-        <p className="text-xs text-gray-600 tracking-wide">
-          Business Solutions
-        </p>
-        {/* Subtle underline that appears on hover */}
-        <div className="relative mt-0.5">
-          <div className={`h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 ease-in-out ${isHovered ? 'w-full' : 'w-0'}`}></div>
+        <div className="flex flex-col">
+          <h1 className={`text-xl font-bold ${color} leading-tight tracking-tight`}>
+            Easy Portal
+          </h1>
+          <p className={`text-xs ${color} tracking-wide`}>Business Solutions</p>
+          {/* Underline on hover */}
+          <div className="relative mt-0.5">
+            <div
+              className={`h-0.5 bg-blue-400 transition-all duration-300 ease-in-out ${
+                isHovered ? "w-full" : "w-0"
+              }`}
+            ></div>
+          </div>
         </div>
-      </div>
       </Link>
     </div>
   );

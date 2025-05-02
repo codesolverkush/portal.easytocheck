@@ -178,7 +178,7 @@ export default function CreateContactFrom() {
       if (response?.status === 200) {
         toast.success("Contact Created Successfully!");
         const cache = await caches.open(CACHE_NAME);
-        await cache.delete("/contact");
+        await cache.delete("/contacts");
         navigate("/app/contactview");
       }
     } catch (error) {
