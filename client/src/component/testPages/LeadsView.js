@@ -18,7 +18,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { DateTime } from "luxon";
 import moment from "moment";
 import toast from "react-hot-toast";
-import { textColors } from "../../config/colors";
+import { bgColors, hoverColors, textColors } from "../../config/colors";
 
 const statusColors = {
   Contacted: "bg-green-200 text-green-700",
@@ -390,7 +390,7 @@ const LeadView = () => {
           </p>
           <button
             onClick={() => navigate("/app/connection")}
-            className="w-full theme-view text-white py-2 rounded-lg transition-colors"
+            className={`w-full ${bgColors.primary} ${hoverColors.primary} text-white py-2 rounded-lg transition-colors`}
           >
             Connect Now
           </button>
@@ -412,7 +412,7 @@ const LeadView = () => {
               <div className="flex flex-wrap gap-2 sm:gap-4">
                 <button
                   onClick={hardSync}
-                  className="flex-1 sm:flex-none theme-view text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm md:text-base"
+                  className={`flex-1 sm:flex-none ${bgColors.primary} ${hoverColors.primary} text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm md:text-base`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -446,7 +446,7 @@ const LeadView = () => {
                     onClick={() =>
                       toast.error("Insufficient access rights to create a lead")
                     }
-                    className="flex-1 sm:flex-none theme-view text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm md:text-base opacity-50 cursor-not-allowed"
+                    className={`flex-1 sm:flex-none ${bgColors.primary} ${hoverColors.primary} text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm md:text-base opacity-50 cursor-not-allowed`}
                   >
                     <Plus size={16} className="mr-1 md:mr-2" />
                     <span className="hidden sm:inline">Create Lead</span>
@@ -455,7 +455,7 @@ const LeadView = () => {
                 ) : (
                   <Link
                     to="/app/first"
-                    className="flex-1 sm:flex-none theme-view text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm md:text-base"
+                    className={`flex-1 sm:flex-none ${bgColors.primary} ${hoverColors.primary} text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm md:text-base`}
                   >
                     <Plus size={16} className="mr-1 md:mr-2" />
                     <span className="hidden sm:inline">Create Lead</span>
@@ -975,7 +975,7 @@ const LeadView = () => {
                     closeLeadDetails();
                     getEachRecordHandler(selectedLead.id);
                   }}
-                  className="w-full mt-6 py-2 theme-view text-white rounded-lg transition-colors"
+                  className={`w-full mt-6 py-2 ${bgColors.primary} ${hoverColors.primary} text-white rounded-lg transition-colors`}
                 >
                   View Full Profile
                 </button>

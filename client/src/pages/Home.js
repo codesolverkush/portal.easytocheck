@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
 import UnauthorizedModal from "../component/errorPages/UnauthorizedModal";
 import { openSupportPopup } from "../utils/supportTrigger";
+import { gradient } from "../config/colors";
 
 const recentLeads = [
   { name: "John Smith", company: "ABC Corp", value: "$12,500", date: "2025-02-15" },
@@ -470,7 +471,7 @@ const HomePage = () => {
       <Navbar accessData={accessData} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Premium Welcome Banner */}
-        <div className="bg-gradient-to-r from-indigo-800 to-purple-900 rounded-xl shadow-xl mb-8 overflow-hidden">
+        <div className={`bg-gradient-to-r ${gradient.formGradient} rounded-xl shadow-xl mb-8 overflow-hidden`}>
           <div className="relative px-6 py-10 sm:px-10">
             <div className="absolute inset-0 opacity-10">
               <svg className="h-full w-full" viewBox="0 0 678 600" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -837,7 +838,7 @@ const HomePage = () => {
         <div className="space-y-6">
           {/* Recent Leads Card */}
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 flex justify-between items-center">
+            <div className={`px-6 py-4 bg-gradient-to-r ${gradient.formGradient} flex justify-between items-center`}>
               <h3 className="text-md font-semibold text-white">Recent Leads</h3>
               <span className="bg-blue-500 text-white text-xs py-1 px-2 rounded-full">{leads.length} total</span>
             </div>

@@ -4,6 +4,7 @@ import { FileText, Filter, Plus, X, Download, MoreHorizontal } from 'lucide-reac
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import EnhancedTaskLoading from '../../ui/EnhancedTaskLoading';
+import { bgColors, hoverColors } from '../../../config/colors';
 
 const AttachmentCard = ({ attachment }) => {
 
@@ -330,7 +331,7 @@ const ShowContactAttachement = ({ contactId, cachedData, setCachedData, dataLoad
             </div>
             <button 
               onClick={() => setIsUploadModalOpen(true)}
-              className="flex items-center px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className={`flex items-center px-3 py-1.5 text-sm ${bgColors.primary} text-white rounded-md ${hoverColors.primary}`}
             >
               <Plus className="w-4 h-4 mr-2" />
               <span>Upload File</span>
@@ -361,7 +362,7 @@ const ShowContactAttachement = ({ contactId, cachedData, setCachedData, dataLoad
             </p>
             <button 
               onClick={() => setIsUploadModalOpen(true)} 
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className={`px-4 py-2 ${bgColors.primary} text-white rounded-md ${hoverColors.primary}`}
             >
               Upload New File
             </button>
@@ -415,7 +416,7 @@ const ShowContactAttachement = ({ contactId, cachedData, setCachedData, dataLoad
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+                  className={`px-4 py-2 ${bgColors.primary} text-white rounded-lg ${hoverColors.primary} disabled:opacity-50`}
                   disabled={!selectedFile || uploadLoading}
                 >
                   {uploadLoading ? "Uploading..." : "Upload File"}

@@ -5,6 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Search, ArrowUp, ArrowDown, X, Plus, ChevronLeft, ChevronRight, Calendar, Settings } from "lucide-react";
 import toast from "react-hot-toast";
 import moment from 'moment';
+import { bgColors, hoverColors, textColors } from "../../../config/colors";
 
 const statusColors = {
   PLANNED: "bg-blue-200 text-blue-700",
@@ -279,6 +280,7 @@ const MeetingView = () => {
     setStartDate("");
     setEndDate("");
     setIsDateRangeActive(false);
+    setIsFilterOpen(false);
   };
 
   const isDateInRange = (dateStr) => {
@@ -462,13 +464,14 @@ const MeetingView = () => {
           {/* Header section */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
             <div className="flex flex-col sm:flex-row w-full justify-between mb-4 md:mb-0 mr-5">
-              <h1 className="text-2xl font-bold text-gray-800 mb-3 sm:mb-0">
+              <h1 className={`text-2xl font-bold ${textColors.primary} mb-3 sm:mb-0`}>
                 Meeting Management
               </h1>
               <div className="flex flex-wrap gap-2 sm:gap-4">
+
                 <button
                   onClick={hardSync}
-                  className="flex-1 sm:flex-none bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors text-sm md:text-base"
+                  className={`flex-1 sm:flex-none ${bgColors.primary} text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center ${hoverColors.primary} transition-colors text-sm md:text-base`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -497,16 +500,14 @@ const MeetingView = () => {
 
                 <button
                   onClick={() => setIsCreateModalOpen(true)}
-                  className="flex-1 sm:flex-none bg-blue-500 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors text-sm md:text-base"
+                  className={`flex-1 sm:flex-none ${bgColors.primary} text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center ${hoverColors.primary} transition-colors text-sm md:text-base`}
                 >
                   <Plus size={16} className="mr-1 md:mr-2" />
                   <span className="hidden sm:inline">Create Meeting</span>
                   <span className="sm:hidden">Create</span>
                 </button>
-              </div>
-            </div>
-            <div className="w-full md:w-auto flex flex-col md:flex-row gap-3">
-              <div className="relative w-full md:w-64">
+
+                <div className="relative w-full md:w-64">
                 <input
                   type="text"
                   placeholder="Search meetings..."
@@ -535,7 +536,7 @@ const MeetingView = () => {
                         type="date"
                         value={startDate}
                         onChange={handleStartDateChange}
-                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800"
                       />
                     </div>
                     <div className="mb-4">
@@ -544,7 +545,7 @@ const MeetingView = () => {
                         type="date"
                         value={endDate}
                         onChange={handleEndDateChange}
-                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-800"
                       />
                     </div>
                     <div className="flex justify-between">
@@ -556,7 +557,7 @@ const MeetingView = () => {
                       </button>
                       <button
                         onClick={applyDateRangeFilter}
-                        className="px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm"
+                        className={`px-3 py-1.5 ${bgColors.primary} text-white rounded-lg ${hoverColors.primary} text-sm`}
                       >
                         Apply Filter
                       </button>
@@ -564,16 +565,18 @@ const MeetingView = () => {
                   </div>
                 )}
               </div>
+
+              </div>
             </div>
           </div>
 
           {isDateRangeActive && (
             <div className="mb-4 flex items-center gap-2 bg-blue-50 p-2 rounded-lg">
-              <span className="text-blue-700 font-medium">Date range filter:</span>
-              <span className="text-blue-600">{formatDateRange()}</span>
+              <span className={`${textColors.primary} font-medium`}>Date range filter:</span>
+              <span className={`${textColors.primary}`}>{formatDateRange()}</span>
               <button
                 onClick={clearDateRangeFilter}
-                className="ml-2 text-blue-500 hover:text-blue-700"
+                className={`ml-2 ${textColors.primary} ${hoverColors.primary}`}
               >
                 <X size={16} />
               </button>

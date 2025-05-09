@@ -34,7 +34,7 @@ app.use(cors());
 
 
 
-const allowedOrigins = ['http://localhost:3000c','https://etcportal-873555691.development.catalystserverless.com'];
+const allowedOrigins = ['http://localhost:3000','https://etcportal-873555691.development.catalystserverless.com','https://portal.easytocheck.com'];
 
 
 app.use(cors({

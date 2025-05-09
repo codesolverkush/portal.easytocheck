@@ -37,9 +37,21 @@ export const uiColors = {
   info: "bg-blue-400 text-white",
 };
 
+// Navbar colors
+
+export const navbarColors = {
+  primary: "bg-blue-900 text-white",
+  secondary: "bg-gray-800 text-white",
+  success: "bg-green-800 text-white",
+  danger: "bg-red-800 text-white",
+  warning: "bg-yellow-800 text-white",
+  info: "bg-blue-500 text-white",
+};
+
 // Hover states
 export const hoverColors = {
   primary: "hover:bg-blue-900",
+  textPrimary: "hover:text-blue-900",
   secondary: "hover:bg-gray-600",
   success: "hover:bg-green-600",
   danger: "hover:bg-red-600",
@@ -68,3 +80,13 @@ export const bgColors = {
   warning: "bg-yellow-50",
   info: "bg-blue-50",
 }; 
+
+export const gradient ={
+  formGradient: "from-indigo-800 to-blue-800"
+}
+
+export const focus = {
+  ring: "focus:ring-blue-800",
+  border:"focus:border-blue-800",
+  text: "text-indigo-800"
+}

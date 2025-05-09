@@ -4,6 +4,7 @@ import axios from 'axios';
 import Navbar from '../../common/Navbar';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { bgColors, hoverColors, textColors } from '../../../config/colors';
 
 const priorityColors = {
   High: "bg-red-200 text-red-700",
@@ -203,7 +204,7 @@ return (
             <h2 className="text-xl font-bold text-gray-800">Tasks</h2>
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="bg-blue-500 text-white px-3 py-2 rounded-lg flex items-center text-sm hover:bg-blue-600"
+              className={`${bgColors.primary} text-white px-3 py-2 rounded-lg flex items-center text-sm ${hoverColors.primary}`}
             >
               <Plus size={16} className="mr-1" />
               New Task
@@ -269,7 +270,7 @@ return (
                   <div className="flex justify-between items-center">
                     <Link
                       to="#"
-                      className="text-blue-600 hover:text-blue-800 text-xl"
+                      className={`${textColors.primary} ${hoverColors.textPrimary} text-xl`}
                       onClick={(e) => e.preventDefault()}
                     >
                       {selectedTask.data[0].What_Id !== null ? selectedTask.data[0].What_Id.name : "Not Associated"}
@@ -280,7 +281,7 @@ return (
                     <div className="flex gap-2">
                       <button
                         onClick={handleEditClick}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center"
+                        className={`px-4 py-2 ${bgColors.primary} text-white rounded-lg ${hoverColors.primary} flex items-center`}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
                           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -511,7 +512,7 @@ return (
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                className={`px-4 py-2 ${bgColors.primary} text-white rounded-lg ${hoverColors.primary}`}
               >
                 Create Task
               </button>
@@ -599,7 +600,7 @@ return (
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                className={`px-4 py-2 ${bgColors.primary} text-white rounded-lg ${hoverColors.primary}`}
               >
                 Update Task
               </button>

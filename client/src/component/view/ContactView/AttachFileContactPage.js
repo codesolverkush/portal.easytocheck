@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { bgColors, hoverColors } from "../../../config/colors";
 
 const  AttachFileContactPage = ({contactId}) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -60,7 +61,7 @@ const  AttachFileContactPage = ({contactId}) => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            className={`w-full ${bgColors.primary} text-white py-2 rounded-lg ${hoverColors.primary} disabled:opacity-50`}
             disabled={loading}
           >
             {loading ? "Uploading..." : "Upload File"}

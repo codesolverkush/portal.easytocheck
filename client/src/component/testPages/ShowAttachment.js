@@ -3,6 +3,7 @@ import { FileText, Filter, Plus, X, Download, MoreHorizontal } from 'lucide-reac
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import EnhancedTaskLoading from '../ui/EnhancedTaskLoading';
+import { bgColors, hoverColors, textColors } from '../../config/colors';
 
 const AttachmentCard = ({ attachment }) => {
   const handleDownload = async (attachmentId, fileName) => {
@@ -67,7 +68,7 @@ const AttachmentCard = ({ attachment }) => {
         </div>
         <div className="flex space-x-2">
           <button 
-            className="flex items-center text-blue-600 hover:text-blue-800 text-sm"
+            className={`flex items-center ${textColors.primary} ${hoverColors.primary} text-sm`}
             onClick={() => handleDownload(attachment.id, attachment.File_Name)}
           >
             <Download className="w-4 h-4 mr-1" />
@@ -377,8 +378,8 @@ const ShowAttachment = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
             </div>
             <button 
               onClick={() => setIsUploadModalOpen(true)}
-              className="flex items-center px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
+              className={`flex items-center px-3 py-1.5 text-sm ${bgColors.primary} ${hoverColors.primary} text-white rounded-md `}
+            > 
               <Plus className="w-4 h-4 mr-2" />
               <span>Upload File</span>
             </button>
@@ -394,7 +395,7 @@ const ShowAttachment = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
             <p className="text-red-500 mb-4">{error}</p>
             <button 
               onClick={refreshAttachments}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className={`px-4 py-2 ${bgColors.primary} text-white rounded-md ${hoverColors.primary}`}
             >
               Retry
             </button>
@@ -408,7 +409,7 @@ const ShowAttachment = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
             </p>
             <button 
               onClick={() => setIsUploadModalOpen(true)} 
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className={`px-4 py-2 ${bgColors.primary} text-white rounded-md ${hoverColors.primary}`}
             >
               Upload New File
             </button>
@@ -462,7 +463,7 @@ const ShowAttachment = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+                  className={`px-4 py-2 ${bgColors.primary} text-white rounded-lg ${hoverColors.primary} disabled:opacity-50`}
                   disabled={!selectedFile || uploadLoading}
                 >
                   {uploadLoading ? "Uploading..." : "Upload File"}

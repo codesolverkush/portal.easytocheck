@@ -4,7 +4,7 @@ const registerOrganization = async (req, res) => {
     try {
         const userId = req?.currentUser?.user_id;
 
-        const { domain, orgName, street, city, state, country, zip, displayname, crmdomain, isactive, activationdate, activationEndDate, superadminEmail } = req.body;
+        const { domain, orgName, street, city, state, country, zip, displayname, crmdomain, activationdate, activationEndDate, superadminEmail } = req.body;
 
         const { catalyst } = res.locals;
         const table1 = catalyst.datastore().table('usermanagement')
@@ -46,8 +46,8 @@ const registerOrganization = async (req, res) => {
             }
 
             const insertOrgQuery = `
-                INSERT INTO Organization (domain, orgname, street, city, state, country, zip, displayname, crmdomain, isactive, activationdate, activationEndDate, superadminEmail) 
-                VALUES ('${domain}', '${orgName}', '${street}', '${city}', '${state}', '${country}', '${zip}', '${displayname}', '${crmdomain}', '${isactive}', '${activationdate}', '${activationEndDate}', '${superadminEmail}')
+                INSERT INTO Organization (domain, orgname, street, city, state, country, zip, displayname, crmdomain,  activationdate, activationEndDate, superadminEmail) 
+                VALUES ('${domain}', '${orgName}', '${street}', '${city}', '${state}', '${country}', '${zip}', '${displayname}', '${crmdomain}', '${activationdate}', '${activationEndDate}', '${superadminEmail}')
             `;
             
             await zcql

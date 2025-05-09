@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../common/Navbar";
+import { bgColors, focus, gradient, hoverColors } from "../../config/colors";
 
 const CACHE_NAME = "crm-cache";
 
@@ -352,7 +353,7 @@ export default function CreateLeadForm() {
             value={formData[field.api_name] || ""}
             onChange={handleChange}
             required={isRequired}
-            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className={`w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 ${focus.ring} ${focus.border}`}
           >
             <option value="">Select {fieldName}</option>
             {field.pick_list_values.map((option) => (
@@ -369,7 +370,7 @@ export default function CreateLeadForm() {
               name={field.api_name}
               checked={formData[field.api_name] || false}
               onChange={handleChange}
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className={`h-4 w-4 ${focus.text} ${focus.border} border-gray-300 rounded`}
             />
             <label
               htmlFor={field.api_name}
@@ -386,7 +387,7 @@ export default function CreateLeadForm() {
             onChange={handleChange}
             required={isRequired}
             placeholder={`Enter ${fieldName}`}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 ${focus.ring} ${focus.border}`}
           />
         )}
       </div>
@@ -397,10 +398,10 @@ export default function CreateLeadForm() {
   const LoadingSpinner = () => (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r from-indigo-50 to-blue-50">
       <div className="relative">
-        <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-        <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-b-indigo-600 rounded-full animate-ping opacity-50"></div>
+        <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-800 rounded-full animate-spin"></div>
+        <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-b-indigo-800 rounded-full animate-ping opacity-50"></div>
       </div>
-      <p className="text-indigo-800 mt-4 text-lg font-medium">
+      <p className={`${focus.text} mt-4 text-lg font-medium`}>
         Loading Lead Form...
       </p>
     </div>
@@ -416,7 +417,7 @@ export default function CreateLeadForm() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-lg shadow-xl overflow-hidden">
               {/* Header */}
-              <div className="bg-gradient-to-r from-indigo-600 to-blue-500 px-6 py-4">
+              <div className={`bg-gradient-to-r ${gradient.formGradient} px-6 py-4`}>
                 <h2 className="text-2xl font-bold text-white flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -449,13 +450,13 @@ export default function CreateLeadForm() {
                     <button
                       type="button"
                       onClick={() => navigate("/app/leadview")}
-                      className="px-5 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className={`px-5 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${focus.ring}`}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-5 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center"
+                      className={`px-5 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${bgColors.primary} ${hoverColors.primary} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center`}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

@@ -36,6 +36,7 @@ import ShimmerPage from "../ui/ContactFormShimmer";
 import DetailsShimmer from "../ui/DetailsShimmer";
 import ConvertLead from "../forms/ConvertLead";
 import CheckInModal from "../confirmbox/CheckInModal";
+import {bgColors, focus, hoverColors} from '../../config/colors';
 
 const statusColors = {
   Contacted: "bg-green-200 text-green-700",
@@ -219,7 +220,7 @@ const AddNoteModal = ({ isOpen, onClose, leadId, username, onNoteAdded }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className={`px-4 py-2 text-sm font-medium text-white ${bgColors.primary} rounded-md ${hoverColors.primary} focus:outline-none focus:ring-2 ${focus.ring} focus:ring-offset-2`}
             >
               {isSubmitting ? "Adding..." : "Add Note"}
             </button>
@@ -475,6 +476,9 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
 
   const [activeStatus, setActiveStatus] = useState(lead?.Lead_Status || "");
 
+    const [leadStatusOptions, setLeadStatusOptions] = useState([]);
+  
+
   useEffect(() => {
     fetchCRMFields();
   }, []);
@@ -548,6 +552,20 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
         )
     );
 
+
+      // Extract Lead Status picklist values for dynamic buttons
+      const leadStatusField = filteredFields.find(field => field.api_name === "Lead_Status");
+      if (leadStatusField && leadStatusField.pick_list_values) {
+        const leadStatusValues = leadStatusField.pick_list_values
+          .map(option => option.display_value || option.actual_value || option)
+          .filter(
+            v => v && v !== "-None-" && v !== "Select Lead Status"
+          );
+        setLeadStatusOptions(leadStatusValues);
+      } else {
+        setLeadStatusOptions([]);
+      }
+
     // add created time and by field in end
 
     setFields(filteredFields);
@@ -560,6 +578,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
       }, {})
     );
   }
+  
 
   // Function to handle input changes when editing
   const handleInputChange = (field, value) => {
@@ -832,7 +851,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
     }
     // Default display
     return (
-      <span className={`text-sm sm:text-base font-medium ${specialClass}`}>
+      <span className={`text-sm sm:text-base text-gray-700 font-medium ${specialClass}`}>
         {safeRenderValue(fieldValue)}
       </span>
     );
@@ -1092,50 +1111,12 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
       }
 
       return (
-        // <div key={category} className="mb-8">
-        //   <h3 className="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2 mb-4">
-        //     {category}
-        //   </h3>
-        //   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        //     {groupedFields[category].map((field) => (
-        //       <div key={field.api_name} className="flex items-start">
-        //         <div className="w-28 sm:w-36 text-xs sm:text-sm text-gray-500">
-        //           {field.display_label || field.api_name}
-        //         </div>
-        //         <div className="flex-1">
-        //           {isEditing &&
-        //           field.api_name !== "id" &&
-        //           field.data_type !== "lookup" &&
-        //           field.data_type !== "ownerlookup" ? (
-        //             renderFormField(field, field)
-        //           ) : field.api_name === "Mobile" ||
-        //             field.api_name === "Phone" ? (
-        //             <div className="flex items-center">
-        //               <span className="bg-green-100 rounded-full p-1 mr-2">
-        //                 <Phone className="w-3 h-3 text-green-600" />
-        //               </span>
-        //               {renderFieldDisplay(field.api_name)}
-        //             </div>
-        //           ) : field.api_name === "Email" ||
-        //             field.api_name === "Secondary_Email" ? (
-        //             renderFieldDisplay(
-        //               field.api_name,
-        //               "text-blue-600"
-        //             )
-        //           ) : (
-        //             renderFieldDisplay(field.api_name)
-        //           )}
-        //         </div>
-        //       </div>
-        //     ))}
-        //   </div>
-        // </div>
         <div
           key={category}
           className="mb-12 rounded-lg shadow-md bg-white p-6 transition-all duration-300 hover:shadow-lg"
         >
-          <h3 className="text-xl font-semibold text-gray-800 border-b border-gray-200 pb-3 mb-6 flex items-center">
-            <span className="mr-2">{category}</span>
+          <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-3 mb-6 flex items-center">
+            <span className="mr-2 font-bold">{category}</span>
             {isEditing && (
               <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2.5 py-0.5 rounded-full ml-2">
                 Editing
@@ -1143,28 +1124,30 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
             )}
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2">
             {groupedFields[category].map((field) => (
               <div
                 key={field.api_name}
-                className={`flex flex-col sm:flex-row items-start p-3 rounded-lg ${
+                className={`flex flex-col sm:flex-row items-center justify-between p-3 rounded-lg gap-2 ${
                   isEditing &&
                   field.api_name !== "id" &&
                   field.data_type !== "lookup" &&
                   field.data_type !== "ownerlookup"
-                    ? "bg-blue-50 border border-blue-100"
+                    ? "hover:bg-gray-50"
                     : "hover:bg-gray-50"
                 } transition-colors duration-200`}
               >
-                <div className="w-full sm:w-36 text-sm font-medium text-gray-600 mb-1 sm:mb-0">
+                                {/* className={`flex flex-row items-start p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200`} */}
+
+                <div className="w-full sm:w-1/3 font-semibold text-black mb-1 sm:mb-0">
                   {field.display_label || field.api_name}
                 </div>
 
-                <div className="flex-1 w-full">
+                <div className="flex-1 w-full sm:w-2/3">
                   {isEditing &&
                   field.api_name !== "id" &&
                   field.data_type !== "lookup" &&
-                  field.data_type !== "ownerlookup" ? (
+                  field.data_type !== "ownerlookup" && field.api_name !== "Modified_Time" && field.api_name !== "Created_Time" ? (
                     <div className="w-full focus-within:ring-2 focus-within:ring-blue-300 rounded transition-all duration-200">
                       {renderFormField(field, field)}
                     </div>
@@ -1263,7 +1246,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
       className="py-1.5 px-2.5 mr-2 text-xs rounded-md bg-gray-50 hover:bg-gray-100 flex items-center shadow-sm transition-all duration-200 lg:hidden"
       onClick={() => navigate("/app/leadview")}
     >
-      <ArrowLeft className="w-4 h-4 mr-1 text-gray-600" />
+      <ArrowLeft className="w-4 h-4 mr-1 text-blue-800" />
     </button>
 
     {/* Lead avatar and info with improved spacing and styling */}
@@ -1276,16 +1259,16 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
         <div className="absolute bottom-0 right-2 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
       </div>
       <div className="overflow-hidden">
-        <h1 className="text-base sm:text-xl font-semibold truncate text-gray-800">
+        <h1 className="text-base sm:text-xl font-bold truncate text-blue-800">
           {safeRenderValue(lead?.Full_Name) ||
-            "Mr. Kushal Pratap Singh"}
+            "_"}
         </h1>
         <div className="flex items-center text-xs sm:text-sm text-gray-500">
           <span className="truncate">
             {safeRenderValue(lead?.Company) || "Easytocheck Software Solutions"}
           </span>
           <span className="mx-1.5 text-gray-400">•</span>
-          <span className="text-blue-600 font-medium">Lead</span>
+          <span className="text-blue-800 font-medium">Lead</span>
         </div>
       </div>
     </div>
@@ -1446,84 +1429,15 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
     </div>
   </div>
   
-  {/* Status bar - new element */}
-  {/* <div className="flex items-center px-3 sm:px-6 pb-2 text-xs font-medium">
-    <div className="flex items-center gap-1 text-green-600">
-      <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
-      <span>Active</span>
-    </div>
-    <span className="mx-2 text-gray-300">|</span>
-    <div className="flex items-center gap-1 text-gray-500">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-      </svg>
-      <span>Last updated 2 days ago</span>
-    </div>
-    <span className="mx-2 text-gray-300">|</span>
-    <div className="flex items-center gap-1 text-gray-500">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-      </svg>
-      <span>Owner: Aditya</span>
-    </div>
-  </div> */}
+  
 </header>
-
-            {/* Tabs */}
-            {/* <div className="border-b border-gray-200 bg-white">
-              <div className="px-3 sm:px-6 py-2">
-                <div className="flex space-x-4 sm:space-x-8 overflow-x-auto">
-                  <button
-                    className={`px-2 sm:px-3 py-2 text-sm font-medium whitespace-nowrap ${
-                      activeTab === "overview"
-                        ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                    onClick={() => handleTabSwitch("overview")}
-                  >
-                    Overview
-                  </button>
-                  <button
-                    className={`px-2 sm:px-3 py-2 text-sm font-medium whitespace-nowrap ${
-                      activeTab === "notes"
-                        ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                    onClick={() => handleTabSwitch("notes")}
-                  >
-                    Notes
-                  </button>
-                  <button
-                    className={`px-2 sm:px-3 py-2 text-sm font-medium whitespace-nowrap ${
-                      activeTab === "attachments"
-                        ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                    onClick={() => handleTabSwitch("attachments")}
-                  >
-                    Attachments
-                  </button>
-                  <button
-                    className={`px-2 sm:px-3 py-2 text-sm font-medium whitespace-nowrap ${
-                      activeTab === "openActivity"
-                        ? "border-b-2 border-blue-500 text-blue-600"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                    onClick={() => handleTabSwitch("openActivity")}
-                  >
-                    Activities
-                  </button>
-                </div>
-              </div>
-            </div> */}
-
           <div className="bg-white border-b border-gray-200">
             <div className="px-4 sm:px-8 pt-1">
               {/* Tab Container with slight shadow */}
               <div className="flex space-x-1 sm:space-x-2 overflow-x-auto pb-1 scrollbar-hide relative">
                 {/* Overview Tab */}
                 <button
-                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-medium whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
+                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-bold whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
                     activeTab === "overview"
                       ? "text-blue-600 bg-gradient-to-b from-blue-50 to-white"
                       : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
@@ -1551,7 +1465,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
 
                 {/* Notes Tab */}
                 <button
-                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-medium whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
+                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-bold whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
                     activeTab === "notes"
                       ? "text-blue-600 bg-gradient-to-b from-blue-50 to-white"
                       : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
@@ -1577,7 +1491,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
 
                 {/* Attachments Tab */}
                 <button
-                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-medium whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
+                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-bold whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
                     activeTab === "attachments"
                       ? "text-blue-600 bg-gradient-to-b from-blue-50 to-white"
                       : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
@@ -1603,7 +1517,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
 
                 {/* Activities Tab */}
                 <button
-                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-medium whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
+                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-bold whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
                     activeTab === "openActivity"
                       ? "text-blue-600 bg-gradient-to-b from-blue-50 to-white"
                       : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
@@ -1637,141 +1551,68 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
             <div className="flex-1 p-3 sm:p-6 overflow-y-auto">
               {activeTab === "overview" && (
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                  {/* <div className="p-3 sm:p-6 overflow-auto">
-                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden p-4">
-                      <div className="grid grid-cols-2 sm:flex sm:flex-nowrap gap-4 justify-center items-center">
-                        <button
-                          onClick={() => handleClick("Contacted")}
-                          className="group relative px-6 py-3 text-sm font-semibold text-white rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-lg hover:shadow-xl"
-                        >
-                          <span className="relative z-10 flex items-center justify-center">
-                            <span className="mr-2">✓</span>
-                            Contacted
-                          </span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        </button>
-
-                        <button
-                          onClick={() => handleClick("Not Contacted")}
-                          className="group relative px-6 py-3 text-sm font-semibold text-white rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 shadow-lg hover:shadow-xl"
-                        >
-                          <span className="relative z-10 flex items-center justify-center">
-                            Not Contacted
-                          </span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-gray-400 to-gray-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        </button>
-
-                        <button
-                          onClick={() => handleClick("Junk Lead")}
-                          className="group relative px-6 py-3 text-sm font-semibold text-white rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 shadow-lg hover:shadow-xl"
-                        >
-                          <span className="relative z-10 flex items-center justify-center">
-                            <span className="mr-2">⚠</span>
-                            Junk Lead
-                          </span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        </button>
-
-                        <button
-                          onClick={() => handleClick("Not Qualified")}
-                          className="group relative px-6 py-3 text-sm font-semibold text-white rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 shadow-lg hover:shadow-xl"
-                        >
-                          <span className="relative z-10 flex items-center justify-center">
-                            <span className="mr-2">!</span>
-                            Not Qualified
-                          </span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        </button>
-                      </div>
-                    </div>
-                  </div> */}
-                   <div className="p-3 sm:p-6 overflow-auto">
+                 
+                 <div className="p-3 sm:p-6 overflow-auto">
       <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-0.5 p-1">
-          <button
-            onClick={() => handleClick("Contacted")}
-            className={`relative group flex items-center justify-center px-4 py-3 text-sm font-medium transition-all duration-300 ease-out hover:transform hover:scale-105 active:scale-95 rounded-lg ${
-              activeStatus === "Contacted" 
-                ? "bg-gradient-to-br from-green-400 to-emerald-600 text-white" 
-                : "bg-white text-green-600 hover:bg-green-50"
-            }`}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-green-300 to-emerald-400 opacity-0 group-hover:opacity-10 rounded-lg transition-opacity"></div>
-            <CheckCircle className={`w-4 h-4 mr-2 ${activeStatus === "Contacted" ? "text-white" : "text-green-500"}`} />
-            <span>Contacted</span>
-            {activeStatus === "Contacted" && (
-              <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-              </span>
-            )}
-          </button>
-          
-          <button
-            onClick={() => handleClick("Not Contacted")}
-            className={`relative group flex items-center justify-center px-4 py-3 text-sm font-medium transition-all duration-300 ease-out hover:transform hover:scale-105 active:scale-95 rounded-lg ${
-              activeStatus === "Not Contacted" 
-                ? "bg-gradient-to-br from-gray-500 to-slate-700 text-white" 
-                : "bg-white text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-300 to-slate-400 opacity-0 group-hover:opacity-10 rounded-lg transition-opacity"></div>
-            <XCircle className={`w-4 h-4 mr-2 ${activeStatus === "Not Contacted" ? "text-white" : "text-gray-500"}`} />
-            <span>Not Contacted</span>
-            {activeStatus === "Not Contacted" && (
-              <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-              </span>
-            )}
-          </button>
-          
-          <button
-            onClick={() => handleClick("Junk Lead")}
-            className={`relative group flex items-center justify-center px-4 py-3 text-sm font-medium transition-all duration-300 ease-out hover:transform hover:scale-105 active:scale-95 rounded-lg ${
-              activeStatus === "Junk Lead" 
-                ? "bg-gradient-to-br from-red-400 to-rose-600 text-white" 
-                : "bg-white text-red-600 hover:bg-red-50"
-            }`}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-red-300 to-rose-400 opacity-0 group-hover:opacity-10 rounded-lg transition-opacity"></div>
-            <AlertTriangle className={`w-4 h-4 mr-2 ${activeStatus === "Junk Lead" ? "text-white" : "text-red-500"}`} />
-            <span>Junk Lead</span>
-            {activeStatus === "Junk Lead" && (
-              <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-              </span>
-            )}
-          </button>
-          
-          <button
-            onClick={() => handleClick("Not Qualified")}
-            className={`relative group flex items-center justify-center px-4 py-3 text-sm font-medium transition-all duration-300 ease-out hover:transform hover:scale-105 active:scale-95 rounded-lg ${
-              activeStatus === "Not Qualified" 
-                ? "bg-gradient-to-br from-orange-400 to-amber-600 text-white" 
-                : "bg-white text-orange-600 hover:bg-orange-50"
-            }`}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-300 to-amber-400 opacity-0 group-hover:opacity-10 rounded-lg transition-opacity"></div>
-            <AlertCircle className={`w-4 h-4 mr-2 ${activeStatus === "Not Qualified" ? "text-white" : "text-orange-500"}`} />
-            <span>Not Qualified</span>
-            {activeStatus === "Not Qualified" && (
-              <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-              </span>
-            )}
-          </button>
+        <div className="grid grid-cols-3 sm:grid-cols-8 gap-0.5 p-1">
+          {leadStatusOptions.map((status) => {
+            let icon = null;
+            let btnClass = "";
+            // Choose icon and color based on status
+            if (status === "Contacted") {
+              icon = <CheckCircle className={`w-4 h-4 mr-2 ${activeStatus === status ? "text-white" : "text-green-500"}`} />;
+              btnClass = activeStatus === status
+                ? "bg-gradient-to-br from-green-400 to-emerald-600 text-white"
+                : "bg-white text-green-600 hover:bg-green-50";
+            } else if (status === "Not Contacted") {
+              icon = <XCircle className={`w-4 h-4 mr-2 ${activeStatus === status ? "text-white" : "text-gray-500"}`} />;
+              btnClass = activeStatus === status
+                ? "bg-gradient-to-br from-gray-500 to-slate-700 text-white"
+                : "bg-white text-gray-600 hover:bg-gray-50";
+            } else if (status === "Junk Lead") {
+              icon = <AlertTriangle className={`w-4 h-4 mr-2 ${activeStatus === status ? "text-white" : "text-red-500"}`} />;
+              btnClass = activeStatus === status
+                ? "bg-gradient-to-br from-red-400 to-rose-600 text-white"
+                : "bg-white text-red-600 hover:bg-red-50";
+            } else if (status === "Not Qualified") {
+              icon = <AlertCircle className={`w-4 h-4 mr-2 ${activeStatus === status ? "text-white" : "text-orange-500"}`} />;
+              btnClass = activeStatus === status
+                ? "bg-gradient-to-br from-orange-400 to-amber-600 text-white"
+                : "bg-white text-orange-600 hover:bg-orange-50";
+            } else {
+              // Default icon and color for other statuses
+              icon = <Tag className={`w-4 h-4 mr-2 ${activeStatus === status ? "text-white" : "text-gray-400"}`} />;
+              btnClass = activeStatus === status
+                ? "bg-gradient-to-br from-blue-400 to-blue-700 text-white"
+                : "bg-white text-gray-700 hover:bg-gray-50";
+            }
+            return (
+              <button
+                key={status}
+                onClick={() => handleClick(status)}
+                className={`relative group flex items-center justify-center px-4 py-3 text-sm font-medium transition-all duration-300 ease-out hover:transform hover:scale-105 active:scale-95 rounded-lg ${btnClass}`}
+              >
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-10 rounded-lg transition-opacity"></div>
+                {icon}
+                <span className="font-bold">{status}</span>
+                {activeStatus === status && (
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
                   <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex justify-between items-center">
-                    <h2 className="text-base sm:text-lg font-medium text-gray-800">
+                    <h2 className="text-xl text-blue-800 font-bold">
                       Lead Information
                     </h2>
                     <button
-                      className="text-blue-600 text-xs sm:text-sm hover:underline"
+                      className="text-blue-800 text-xs font-bold sm:text-sm hover:underline"
                       onClick={toggleDetails}
                     >
                       {showDetails ? "Hide Details" : "Show Details"}
@@ -1805,7 +1646,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
                         Notes ({notes?.length || 0})
                       </h2>
                       <button
-                        className="text-blue-600 text-sm hover:underline"
+                        className="text-blue-800 text-sm hover:underline"
                         onClick={() => setIsAddNoteModalOpen(true)}
                       >
                         Add Note
@@ -1906,7 +1747,6 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
 };
 
 export default LeadInformationPage;
-
 
 
 // import React, { useState, useEffect, useRef } from "react";
@@ -4969,3 +4809,4 @@ export default LeadInformationPage;
 // // };
 
 // // export default LeadInformationPage;
+

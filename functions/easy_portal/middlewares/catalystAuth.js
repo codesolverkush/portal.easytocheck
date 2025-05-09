@@ -18,47 +18,47 @@
 //     time_zone: 'America/Los_Angeles'
 //   }
   
-// const hardcodedUser = {
-//     zuid: '10097563637',
-//     zaaid: '10097563636',
-//     org_id: '10097563636',
-//     status: 'ACTIVE',
-//     is_confirmed: false,
-//     email_id: 'kushal@easytocheck.com',
-//     first_name: 'kushal Pratap ',
-//     last_name: 'Singh',
-//     created_time: 'Mar 27, 2025 11:09 AM',
-//     modified_time: 'Mar 27, 2025 11:09 AM',
-//     invited_time: 'Mar 27, 2025 11:09 AM',
-//     role_details: { role_name: 'App User', role_id: '4340000000043024' },
-//     user_type: 'App User',
-//     source: 'Email',
-//     user_id: '4340000000085001',
-//     locale: 'us|en_us|America/Los_Angeles',
-//     time_zone: 'America/Los_Angeles'
-    
-//   }
-
-
 const hardcodedUser = {
-    zuid: '10098946402',
-    zaaid: '10098946401',
-    org_id: '10098946401',
+    zuid: '10097563637',
+    zaaid: '10097563636',
+    org_id: '10097563636',
     status: 'ACTIVE',
-    is_confirmed: true,
-    email_id: 'lskfujinh@gmail.com',
-    first_name: 'Aditya',
-    last_name: 'Keshari',
-    created_time: 'May 02, 2025 12:36 AM',
-    modified_time: 'May 02, 2025 12:36 AM',
-    invited_time: 'May 02, 2025 12:36 AM',
+    is_confirmed: false,
+    email_id: 'kushal@easytocheck.com',
+    first_name: 'kushal Pratap ',
+    last_name: 'Singh',
+    created_time: 'Mar 27, 2025 11:09 AM',
+    modified_time: 'Mar 27, 2025 11:09 AM',
+    invited_time: 'Mar 27, 2025 11:09 AM',
     role_details: { role_name: 'App User', role_id: '4340000000043024' },
     user_type: 'App User',
     source: 'Email',
-    user_id: '4340000000105010',
+    user_id: '4340000000085001',
     locale: 'us|en_us|America/Los_Angeles',
     time_zone: 'America/Los_Angeles'
+    
   }
+
+
+// const hardcodedUser = {
+//     zuid: '10098946402',
+//     zaaid: '10098946401',
+//     org_id: '10098946401',
+//     status: 'ACTIVE',
+//     is_confirmed: true,
+//     email_id: 'lskfujinh@gmail.com',
+//     first_name: 'Aditya',
+//     last_name: 'Keshari',
+//     created_time: 'May 02, 2025 12:36 AM',
+//     modified_time: 'May 02, 2025 12:36 AM',
+//     invited_time: 'May 02, 2025 12:36 AM',
+//     role_details: { role_name: 'App User', role_id: '4340000000043024' },
+//     user_type: 'App User',
+//     source: 'Email',
+//     user_id: '4340000000105010',
+//     locale: 'us|en_us|America/Los_Angeles',
+//     time_zone: 'America/Los_Angeles'
+//   }
 
 
   const catalystAuth = async (req, res, next) => {

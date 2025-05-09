@@ -15,6 +15,7 @@ import {
   Edit,
   Save,
   Clipboard,
+  Handshake,
 } from "lucide-react";
 import axios from "axios";
 import Navbar from "../../common/Navbar";
@@ -29,6 +30,7 @@ import TaskDetailsContactPage from "./TaskDetailsContactPage";
 import DetailsShimmer from "../../ui/DetailsShimmer";
 import AssociatedDealWithContact from "./AssociatedDealWithContact";
 import CheckInModal from "../../confirmbox/CheckInModal";
+import { textColors } from "../../../config/colors";
 
 const leadSourceColors = {
   "External Referral": "bg-purple-200 text-purple-700",
@@ -512,7 +514,7 @@ const ContactDetails = ({ accessScore, data, username }) => {
 
     // Default display
     return (
-      <span className={`text-sm sm:text-base font-medium ${specialClass}`}>
+      <span className={`text-sm sm:text-base text-gray-700 font-medium ${specialClass}`}>
         {safeRenderValue(fieldValue)}
       </span>
     );
@@ -875,10 +877,10 @@ const ContactDetails = ({ accessScore, data, username }) => {
 
       return (
         <div key={category} className="mb-8">
-          <h3 className="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2 mb-4">
-            {category}
+          <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2 mb-4">
+          <span className="mr-2 font-bold">{category}</span>
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2">
             {groupedFields[category].map((field) => renderField(field))}
           </div>
         </div>
@@ -902,12 +904,12 @@ const ContactDetails = ({ accessScore, data, username }) => {
     return (
       <div
         key={field.api_name}
-        className="flex items-start p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+        className="flex flex-col sm:flex-row items-center justify-between p-3 rounded-lg gap-2 hover:bg-gray-50 transition-colors duration-200"
       >
-        <div className="w-28 sm:w-36 text-xs sm:text-sm font-medium text-gray-600">
+        <div className="w-full sm:w-1/3 font-semibold text-black mb-1 sm:mb-0">
           {field.display_label || field.api_name}
         </div>
-        <div className="flex-1">
+        <div className="flex-1 w-full sm:w-2/3">
           {isEditing &&
           field.api_name !== "id" &&
           field.data_type !== "lookup" &&
@@ -1009,75 +1011,95 @@ const ContactDetails = ({ accessScore, data, username }) => {
                       : "K"}
                   </div>
                   <div className="overflow-hidden">
-                    <h1 className="text-base sm:text-lg font-medium truncate">
+                    <h1 className="text-base sm:text-lg font-bold text-blue-800 truncate">
                       {safeRenderValue(selectedContact?.data[0]?.Full_Name) ||
-                        "Mr. Kushal Pratap Singh"}
+                        "-"}
                     </h1>
                   </div>
                 </div>
 
                 <div className="ml-auto flex space-x-1 sm:space-x-2">
                   {isEditing ? (
-                    <>
-                      <button
-                        className="border border-gray-300 px-2 sm:px-4 py-1 sm:py-2 rounded-md hover:bg-gray-50 text-sm sm:text-base"
-                        onClick={toggleEditMode}
-                        disabled={isSaving}
-                      >
-                        <span className="hidden sm:inline">Cancel</span>
-                        <X className="w-4 h-4 inline sm:hidden" />
-                      </button>
-                      <button
-                        className="border border-blue-500 bg-blue-500 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-md hover:bg-blue-600 text-sm sm:text-base"
-                        onClick={saveLead}
-                        disabled={isSaving}
-                      >
-                        {isSaving ? (
-                          <span className="hidden sm:inline">Saving...</span>
-                        ) : (
-                          <>
-                            <span className="hidden sm:inline">Save</span>
-                            <Save className="w-4 h-4 inline sm:hidden" />
-                          </>
-                        )}
-                      </button>
-                    </>
+                     <>
+                     <button
+                       className="border border-gray-300 px-3 sm:px-4 py-1.5 sm:py-2 rounded-md hover:bg-gray-50 text-sm transition-colors duration-200 flex items-center gap-1.5"
+                       onClick={toggleEditMode}
+                       disabled={isSaving}
+                     >
+                       <X className="w-4 h-4" />
+                       <span className="hidden sm:inline">Cancel</span>
+                     </button>
+                     <button
+                       className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-md hover:from-blue-600 hover:to-blue-700 text-sm transition-all duration-200 flex items-center gap-1.5 shadow-sm"
+                       onClick={saveLead}
+                       disabled={isSaving}
+                     >
+                       {isSaving ? (
+                         <>
+                           <svg
+                             className="animate-spin h-4 w-4 text-white"
+                             xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                           >
+                             <circle
+                               className="opacity-25"
+                               cx="12"
+                               cy="12"
+                               r="10"
+                               stroke="currentColor"
+                               strokeWidth="4"
+                             ></circle>
+                             <path
+                               className="opacity-75"
+                               fill="currentColor"
+                               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                             ></path>
+                           </svg>
+                           <span className="hidden sm:inline">Saving...</span>
+                         </>
+                       ) : (
+                         <>
+                           <Save className="w-4 h-4" />
+                           <span className="hidden sm:inline">Save Changes</span>
+                         </>
+                       )}
+                     </button>
+                   </>
                   ) : (
                     <div className="flex items-center gap-3">
                       <button
-                        className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
-    ${
-      accessScore < 3
-        ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
-        : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 active:bg-gray-100"
-    }`}
-                        onClick={toggleCheckIn}
-                        disabled={accessScore < 3}
-                      >
-                        <div className="relative h-4 w-4 flex-shrink-0">
-                          {/* Location pin with checkmark icon */}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M12 21C12 21 19 14.5 19 9C19 5.13401 15.866 2 12 2C8.13401 2 5 5.13401 5 9C5 14.5 12 21 12 21Z"
-                              fill={accessScore < 3 ? "#D1D5DB" : "#E63946"}
-                              stroke="none"
-                            />
-                            <path
-                              d="M9 9L11 11L15 7"
-                              stroke="white"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-                        <span className="hidden sm:inline">CheckIn</span>
-                      </button>
+            className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+              ${accessScore < 3
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
+                : "bg-white text-red-600 border border-red-200 hover:bg-red-50 hover:border-red-300 active:bg-red-100 shadow-sm"
+              }`}
+            onClick={toggleCheckIn}
+            disabled={accessScore < 3}
+          >
+            <div className="relative h-4 w-4 flex-shrink-0">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-4 w-4" 
+                viewBox="0 0 24 24" 
+                fill="none"
+              >
+                <path 
+                  d="M12 21C12 21 19 14.5 19 9C19 5.13401 15.866 2 12 2C8.13401 2 5 5.13401 5 9C5 14.5 12 21 12 21Z" 
+                  fill={accessScore < 3 ? "#D1D5DB" : "#E63946"} 
+                  stroke="none"
+                />
+                <path 
+                  d="M9 9L11 11L15 7" 
+                  stroke="white" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <span className="hidden sm:inline">CheckIn</span>
+          </button>
 
                       <button
                         className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
@@ -1106,7 +1128,7 @@ const ContactDetails = ({ accessScore, data, username }) => {
             </header>
 
             {/* Tabs */}
-            <div className="border-b border-gray-200 bg-white">
+            {/* <div className="border-b border-gray-200 bg-white">
               <div className="px-3 sm:px-6 py-2">
                 <div className="flex space-x-4 sm:space-x-8 overflow-x-auto">
                   <button
@@ -1162,18 +1184,163 @@ const ContactDetails = ({ accessScore, data, username }) => {
                   </button>
                 </div>
               </div>
+            </div> */}
+
+<div className="bg-white border-b border-gray-200">
+            <div className="px-4 sm:px-8 pt-1">
+              {/* Tab Container with slight shadow */}
+              <div className="flex space-x-1 sm:space-x-2 overflow-x-auto pb-1 scrollbar-hide relative">
+                {/* Overview Tab */}
+                <button
+                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-bold whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
+                    activeTab === "overview"
+                      ? "text-blue-600 bg-gradient-to-b from-blue-50 to-white"
+                      : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+                  }`}
+                  onClick={() => handleTabSwitch("overview")}
+                >
+                  <div className="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                      <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+                    </svg>
+                    <span>Overview</span>
+                  </div>
+                  {activeTab === "overview" && (
+                    <>
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-blue-600"></span>
+                      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                    </>
+                  )}
+                  {/* Hover effect dot for inactive tabs */}
+                  {activeTab !== "overview" && (
+                    <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full bg-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                  )}
+                </button>
+
+                {/* Notes Tab */}
+                <button
+                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-bold whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
+                    activeTab === "notes"
+                      ? "text-blue-600 bg-gradient-to-b from-blue-50 to-white"
+                      : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+                  }`}
+                  onClick={() => handleTabSwitch("notes")}
+                >
+                  <div className="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Notes</span>
+                  </div>
+                  {activeTab === "notes" && (
+                    <>
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-blue-600"></span>
+                      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                    </>
+                  )}
+                  {activeTab !== "notes" && (
+                    <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full bg-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                  )}
+                </button>
+
+                {/* Attachments Tab */}
+                <button
+                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-bold whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
+                    activeTab === "attachments"
+                      ? "text-blue-600 bg-gradient-to-b from-blue-50 to-white"
+                      : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+                  }`}
+                  onClick={() => handleTabSwitch("attachments")}
+                >
+                  <div className="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clipRule="evenodd" />
+                    </svg>
+                    <span>Attachments</span>
+                  </div>
+                  {activeTab === "attachments" && (
+                    <>
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-blue-600"></span>
+                      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                    </>
+                  )}
+                  {activeTab !== "attachments" && (
+                    <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full bg-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                  )}
+                </button>
+
+                {/* Activities Tab */}
+                <button
+                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-bold whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
+                    activeTab === "openActivity"
+                      ? "text-blue-600 bg-gradient-to-b from-blue-50 to-white"
+                      : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+                  }`}
+                  onClick={() => handleTabSwitch("openActivity")}
+                >
+                  <div className="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                    </svg>
+                    <span>Activities</span>
+                  </div>
+                  {activeTab === "openActivity" && (
+                    <>
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-blue-600"></span>
+                      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                    </>
+                  )}
+                  {activeTab !== "openActivity" && (
+                    <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full bg-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                  )}
+                </button>  
+
+                <button
+                  className={`relative px-4 sm:px-5 py-2.5 text-sm font-bold whitespace-nowrap rounded-t-lg transition-all duration-200 group ${
+                    activeTab === "deal"
+                      ? "text-blue-600 bg-gradient-to-b from-blue-50 to-white"
+                      : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+                  }`}
+                  onClick={() => handleTabSwitch("deals")}
+                >
+                  <div className="flex items-center gap-2">
+                    {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                      <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+                    </svg> */}
+
+                    <Handshake width={18}/>
+                    <span>Deals</span>
+                  </div>
+                  {activeTab === "deals" && (
+                    <>
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-blue-600"></span>
+                      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                    </>
+                  )}
+                  {/* Hover effect dot for inactive tabs */}
+                  {activeTab !== "deals" && (
+                    <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full bg-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                  )}
+                </button>
+              </div>
             </div>
+            
+            {/* Subtle gradient line for design flair */}
+            <div className="h-0.5 bg-gradient-to-r from-blue-100 via-gray-200 to-blue-100"></div>
+          </div>
 
             {/* Main Content */}
             <div className="flex-1 p-3 sm:p-6 overflow-y-auto">
               {activeTab === "overview" && (
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                   <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex justify-between items-center">
-                    <h2 className="text-base sm:text-lg font-medium text-gray-800">
+                    <h2 className="text-xl font-bold text-blue-800">
                       Contact Information
                     </h2>
                     <button
-                      className="text-blue-600 text-xs sm:text-sm hover:underline"
+                      className="text-blue-800 text-xs sm:text-sm font-bold hover:underline"
                       onClick={toggleDetails}
                     >
                       {showDetails ? "Hide Details" : "Show Details"}
@@ -1236,7 +1403,7 @@ const ContactDetails = ({ accessScore, data, username }) => {
                         Notes ({notes?.length || 0})
                       </h2>
                       <button
-                        className="text-blue-600 text-sm hover:underline"
+                        className={`${textColors.primary} text-sm hover:underline`}
                         onClick={() => setIsAddNoteModalOpen(true)}
                       >
                         Add Note

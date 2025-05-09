@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { X } from 'lucide-react';
 import { useState } from 'react';
+import { bgColors, focus, hoverColors } from '../../../config/colors';
 
 const AddDealNoteModal = ({ isOpen, onClose, dealId, username, onNoteAdded }) => {
 
@@ -97,7 +98,7 @@ const AddDealNoteModal = ({ isOpen, onClose, dealId, username, onNoteAdded }) =>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className={`px-4 py-2 text-sm font-medium text-white ${bgColors.primary} rounded-md ${hoverColors.primary} focus:outline-none focus:ring-2 ${focus.ring} focus:ring-offset-2`}
               >
                 {isSubmitting ? 'Adding...' : 'Add Note'}
               </button>

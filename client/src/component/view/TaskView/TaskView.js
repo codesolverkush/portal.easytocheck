@@ -528,10 +528,8 @@ const TaskView = () => {
                   <span className="hidden sm:inline">Create Task</span>
                   <span className="sm:hidden">Create</span>
                 </button>
-              </div>
-            </div>
-            <div className="w-full md:w-auto flex flex-col md:flex-row gap-3">
-              <div className="relative w-full md:w-64">
+
+                <div className="relative w-full md:w-64">
                 <input
                   type="text"
                   placeholder="Search tasks..."
@@ -598,18 +596,20 @@ const TaskView = () => {
                   </div>
                 )}
               </div>
+
+              </div>
             </div>
           </div>
 
           {isDateRangeActive && (
             <div className="mb-4 flex items-center gap-2 bg-blue-50 p-2 rounded-lg">
-              <span className="text-blue-700 font-medium">
+              <span className={`${textColors.primary} font-medium`}>
                 Date range filter:
               </span>
-              <span className="text-blue-600">{formatDateRange()}</span>
+              <span className={`${textColors.primary}`}>{formatDateRange()}</span>
               <button
                 onClick={clearDateRangeFilter}
-                className="ml-2 theme-view"
+                className={`ml-2 ${textColors.primary}`}
               >
                 <X size={16} />
               </button>

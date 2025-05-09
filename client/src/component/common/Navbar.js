@@ -25,6 +25,7 @@ import TrobleShoot from "../confirmbox/TrobleShoot";
 import { Globe, Handshake } from "lucide-react";
 import { CompanyLogo } from "./CompanyLogo";
 import "./NavLink.css";
+import { gradient, navbarColors, textColors } from "../../config/colors";
 
 const Navbar = ({ accessData }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -164,8 +165,10 @@ const Navbar = ({ accessData }) => {
 
   return (
     <>
-<nav className="bg-blue-900 border-b shadow-md fixed top-0 left-0 right-0 z-40">
-<div className="container mx-auto px-4 py-2">
+      <nav
+        className={`${navbarColors.primary} border-b shadow-md fixed top-0 left-0 right-0 z-40`}
+      >
+        <div className="container mx-auto px-4 py-2">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <button
@@ -175,7 +178,7 @@ const Navbar = ({ accessData }) => {
                 <MdMenu className="text-white text-2xl" />
               </button>
 
-              <CompanyLogo color="text-white"/>
+              <CompanyLogo color="text-white" />
             </div>
 
             <div className="hidden md:flex items-center space-x-6">
@@ -353,7 +356,9 @@ const Navbar = ({ accessData }) => {
               : "translate-y-4 md:translate-y-0 md:translate-x-4 opacity-0 scale-95"
           }`}
         >
-          <div className="relative bg-gradient-to-r from-blue-600 to-indigo-700 px-4 pt-5 pb-16 sm:p-6 sm:pb-16">
+          <div
+            className={`relative bg-gradient-to-r ${gradient.formGradient} px-4 pt-5 pb-16 sm:p-6 sm:pb-16`}
+          >
             <button
               onClick={() => setIsProfileOpen(false)}
               className="absolute top-3 right-3 rounded-full p-1.5 text-white hover:bg-white/20 transition-colors"
@@ -427,7 +432,7 @@ const Navbar = ({ accessData }) => {
                   <h3 className="text-lg font-medium text-gray-900 mb-1">
                     Account Details
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className={`text-sm ${textColors.primary}`}>
                     {userData?.email || "user@example.com"}
                   </p>
                 </div>

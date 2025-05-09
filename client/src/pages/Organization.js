@@ -20,7 +20,6 @@ const Organization = () => {
     zip: '',
     displayname: '',
     crmdomain: '',
-    isactive: false,
     activationdate: new Date().toISOString().split('T')[0],
     activationEndDate: new Date(new Date().getTime() + 15*24*60*60*1000).toISOString().split('T')[0] ,
     superadminEmail: ''
@@ -103,7 +102,6 @@ const Organization = () => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_APP_API}/org/register`, {
         ...formData,
-        isactive: formData.isactive.toString()
       });
       
       if (response.status === 200) {
@@ -186,9 +184,10 @@ const Organization = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Organization Already Registered</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Organization Registered Successfully!</h2>
               <p className="text-gray-600 mb-6">
-                You already have a registered organization. You can visit your organization profile to view  its details.
+                You Organization have been registered successfully. Now, You can visit your organization profile to view its details and.
+                <span className="font-semibold text-blue-900">Connect with zoho crm</span>
               </p>
               <button
                 onClick={handleGoToProfile}
@@ -408,7 +407,7 @@ const Organization = () => {
                       />
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    {/* <div className="flex items-center space-x-2">
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
@@ -419,7 +418,7 @@ const Organization = () => {
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         <span className="ml-3 text-sm font-medium text-gray-700">Active Status</span>
                       </label>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 

@@ -3,6 +3,7 @@ import { Calendar, Clock, CheckCircle, AlertCircle, Plus, Filter, X } from 'luci
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import EnhancedTaskLoading from '../../ui/EnhancedTaskLoading'
+import { bgColors, hoverColors } from '../../../config/colors';
 
 // Confirmation Modal Component
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
@@ -369,7 +370,7 @@ const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoad
               )}
             </div>
             <button onClick={() => setIsCreateModalOpen(true)}
-              className="flex items-center px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className={`flex items-center px-3 py-1.5 text-sm ${bgColors.primary} text-white rounded-md ${hoverColors.primary}`}
             >
               <Plus className="w-4 h-4 mr-2" />
               <span>Add Task</span>
@@ -388,7 +389,7 @@ const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoad
                 ? "No activities found for this lead." 
                 : `No ${filter !== 'all' ? filter : ''} activities found.`}
             </p>
-            <button onClick={() => setIsCreateModalOpen(true)} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            <button onClick={() => setIsCreateModalOpen(true)} className={`px-4 py-2 ${bgColors.primary} text-white rounded-md ${hoverColors.primary}`}>
               Create New Task
             </button>
           </div>
@@ -482,7 +483,7 @@ const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoad
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  className={`px-4 py-2 ${bgColors.primary} text-white rounded-lg ${hoverColors.primary}`}
                 >
                   Create Task
                 </button>

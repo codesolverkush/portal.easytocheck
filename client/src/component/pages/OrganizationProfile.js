@@ -612,7 +612,7 @@ const OrganizationProfile = () => {
                   )}
                 </div>
                 
-                {isAuthorized && (
+                {isAuthorized && role === "superadmin" && (
                   <Link 
                     to="/app/webtab"
                     className="bg-blue-800 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-900 transition-all font-medium flex items-center"
