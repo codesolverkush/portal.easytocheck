@@ -426,6 +426,7 @@ const createNewUser = async (req, res) => {
           orgid: orgId,
           username: Name,
           email: easyportal__User_Email,
+          domain:domain,
           crmuserid: crmResult.data[0]?.details?.id
         };
   

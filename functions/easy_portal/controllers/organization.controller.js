@@ -346,7 +346,7 @@ const requestRefreshToken = async (req, res) => {
       // Make a request to Zoho's token endpoint
     
       const tokenResponse = await axios.post(
-        `https://accounts.zoho.${domain}/oauth/v2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${authCode}&grant_type=authorization_code&redirect_uri=https://portal.easytocheck.com`,
+        `https://accounts.zoho.${domain}/oauth/v2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${authCode}&grant_type=authorization_code&redirect_uri=http://localhost:3000/app`,
         null, null
       );
       
