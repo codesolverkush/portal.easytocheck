@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 [debug] [2025-05-09T04:53:58.836Z] : 
 [debug] [2025-05-09T04:53:58.838Z] : ----------------------------------------------------------------------
 [debug] [2025-05-09T04:53:58.838Z] : Command:      C:\Program Files\nodejs\node.exe C:\Users\Dell5490\AppData\Roaming\npm\node_modules\zcatalyst-cli\lib\bin\catalyst.js serve
@@ -23443,3 +23444,5 @@ src\pages\Navbar2.js
 Search for the keywords to learn more about each warning.
 [info] [2025-05-12T06:44:51.347Z] : [react-plugin]: To ignore, add // eslint-disable-next-line to the line before.
 
+=======
+>>>>>>> Stashed changes

@@ -1,4 +1,6 @@
 const axios = require('axios');
+const refreshAccessToken = require('../utils/genaccestoken');
+const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
 
 const registerOrganization = async (req, res) => {
     try {
@@ -424,4 +426,55 @@ const makeconnection = async (req, res) => {
     }
 }
 
-module.exports = {registerOrganization,organizationExists,getOrganizationDetails,getOrgDetails,checkAuthorization,makeconnection,requestRefreshToken};
+// check for extension if downloaded or not
+
+const checkForExtension = async (req, res) => {
+    try {
+        const userId = req.currentUser?.user_id;
+                
+        if (!userId) {
+            return res.status(404).json({ message: "User ID not found." });
+        }
+
+        const { catalyst } = res.locals;
+        const zcql = catalyst.zcql();
+        const userQuery = `SELECT orgid,domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
+        const user = await zcql.executeZCQLQuery(userQuery);
+        const orgId = user[0]?.usermanagement?.orgid;
+        const domain = user[0]?.usermanagement?.domain;
+
+        if (!orgId) {
+            return res.status(404).json({ message: "Organization ID not found." });
+        }
+
+        let token = await getAccessToken(orgId, req, res);
+        const url = `https://www.zohoapis.${domain}/crm/v7/settings/modules/easyportal__Portal_User`;
+
+        try {
+            const data = await handleZohoRequest(url, 'get', null, token);
+            return res.status(200).json({ success: true, data });
+        } catch (error) {
+            if (error.message === "TOKEN_EXPIRED") {
+                try {
+                    token = await refreshAccessToken(req, res);
+                    const data = await handleZohoRequest(url, 'get', null, token);
+                    return res.status(200).json({ success: true, data });
+                } catch (refreshError) {
+                    return res.status(500).json({ success: false, message: refreshError.message });
+                }
+            } else if (error.status === 204) {
+                // Module doesn't exist - return empty data with success true
+                return res.status(200).json({ success: true, data: null, moduleExists: false });
+            } else {
+                throw error;
+            }
+        }
+    } catch (error) {
+        if (!res.headersSent) {
+            return res.status(500).json({ success: false, message: error.message });
+        }
+    }
+};
+
+
+module.exports = {registerOrganization,organizationExists,getOrganizationDetails,getOrgDetails,checkAuthorization,makeconnection,requestRefreshToken, checkForExtension};
