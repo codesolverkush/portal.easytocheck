@@ -14,6 +14,7 @@ import CryptoJS from "crypto-js";
 import UnauthorizedModal from "../component/errorPages/UnauthorizedModal";
 import { openSupportPopup } from "../utils/supportTrigger";
 import { gradient } from "../config/colors";
+import ChangesDone from "../component/confirmbox/ChangesDone";
 
 const recentLeads = [
   { name: "John Smith", company: "ABC Corp", value: "$12,500", date: "2025-02-15" },
@@ -44,6 +45,9 @@ const HomePage = () => {
   // Connection variable
   const [isUnauthorizedModalOpen, setIsUnauthorizedModalOpen] = useState(false);
   const [showFeaturePopup, setShowFeaturePopup] = useState(false);
+
+  const [changesDone,setChangesDone] = useState(false);
+  const [isConfirmTrobleShoot, setIsConfirmTrobleShoot] = useState(false);
 
 
 
@@ -260,21 +264,58 @@ const HomePage = () => {
     }
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await axios.get(`${process.env.REACT_APP_APP_API}/special/fetching`);
-      if (response.status === 200) {
-        setAccessData({ Leads: response?.data?.user?.Leads || 4, Contacts: response?.data?.user?.Contacts || 4, Deals: response?.data?.user?.Deals || 4 })
-      } else {
-        setAccessData({ Leads: 4, Contacts: 4, Deals: 4 });
-      }
-    }
-    fetchAllData();
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const response = await axios.get(`${process.env.REACT_APP_APP_API}/special/fetching`);
+  //     if (response.status === 200) {
+  //       setAccessData({ Leads: response?.data?.user?.Leads || 4, Contacts: response?.data?.user?.Contacts || 4, Deals: response?.data?.user?.Deals || 4 });
+  //       setChangesDone(response?.data?.user?.changesDone);
+  //     } else {
+  //       setAccessData({ Leads: 4, Contacts: 4, Deals: 4 });
+  //     }
+  //   }
+  //   fetchAllData();
+  //   fetchData();
+  // }, []);
 
 
   // Connection function for checking...
+
+  
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_APP_API}/special/fetching`);
+        if (response.status === 200) {
+          const userData = {
+            Leads: response?.data?.user?.Leads || 4, 
+            Contacts: response?.data?.user?.Contacts || 4, 
+            Deals: response?.data?.user?.Deals || 4
+          };
+          setAccessData(userData);
+          
+          // Check changesDone and update state only if it's different
+          const newChangesDone = response?.data?.user?.changesDone || false;
+          if (newChangesDone !== changesDone) {
+            setChangesDone(newChangesDone);
+            
+            // If changesDone is true, open TroubleShoot
+            if (newChangesDone) {
+              setIsConfirmTrobleShoot(true);
+            }
+          }
+        } else {
+          setAccessData({ Leads: 4, Contacts: 4, Deals: 4 });
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setAccessData({ Leads: 4, Contacts: 4, Deals: 4 });
+      }
+    }
+
+    fetchAllData();
+    fetchData();
+  }, []);
 
   const handleConnectOrganization = () => {
     // Navigate to organization connection page or open connection modal
@@ -282,6 +323,9 @@ const HomePage = () => {
     setIsUnauthorizedModalOpen(false);
   };
 
+  const openConfirmPopup = () => {
+    setIsConfirmTrobleShoot(true);
+  };
 
 
   const salesData = {
@@ -465,6 +509,9 @@ const HomePage = () => {
       setShowFeaturePopup(false);
     }, 3000);
   };
+
+
+ 
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
@@ -955,11 +1002,18 @@ const HomePage = () => {
             </div>
           </div>
         )}
+
+      <ChangesDone
+        isOpen={isConfirmTrobleShoot}
+        setIsOpen={setIsConfirmTrobleShoot}
+      />
       </div>
   );
 };
 
 export default HomePage;
+
+
 
 
 
@@ -978,7 +1032,7 @@ export default HomePage;
 // import CryptoJS from "crypto-js";
 // import UnauthorizedModal from "../component/errorPages/UnauthorizedModal";
 // import { openSupportPopup } from "../utils/supportTrigger";
-// import SupportPopup from "../component/forms/SupportPopup";
+// import { gradient } from "../config/colors";
 
 // const recentLeads = [
 //   { name: "John Smith", company: "ABC Corp", value: "$12,500", date: "2025-02-15" },
@@ -1006,8 +1060,6 @@ export default HomePage;
 //   const [leads, setLeads] = useState(recentLeads);
 //   const [task, setTask] = useState(upcomingTasks);
 //   const [accessData, setAccessData] = useState({});
-//   const [isOpenpopup,setIsOpenpopup] = useState(false);
-//   const [userData, setUserData] = useState(null);
 //   // Connection variable
 //   const [isUnauthorizedModalOpen, setIsUnauthorizedModalOpen] = useState(false);
 //   const [showFeaturePopup, setShowFeaturePopup] = useState(false);
@@ -1031,13 +1083,6 @@ export default HomePage;
 //     loadingContacts: false,
 //     loadingDeals: false,
 //   });
-
-
-//   // Support PopUP
-
-//   const openPopup = () => {
-//     setIsOpenpopup(true);
-//   };
 
 //   // Helper function to check and retrieve cache
 //   const getFromCache = async (key) => {
@@ -1114,7 +1159,6 @@ export default HomePage;
 //       setMetrics(prev => ({ ...prev, loadingLeads: false }));
 //     }
 //   };
-
 //   // Fetch tasks data (revenue)
 //   const fetchTasks = async (skipCache = false) => {
 //     setMetrics(prev => ({ ...prev, loadingTasks: true }));
@@ -1145,7 +1189,6 @@ export default HomePage;
 //       setMetrics(prev => ({ ...prev, loadingTasks: false }));
 //     }
 //   };
-
 //   // Fetch contacts data (closing orders)
 //   const fetchContacts = async (skipCache = false) => {
 //     setMetrics(prev => ({ ...prev, loadingContacts: true }));
@@ -1161,7 +1204,7 @@ export default HomePage;
 //         }
       
 
-//       const contactsResponse = await axios.get(`${process.env.REACT_APP_APP_API}/get/contact`);
+//       const contactsResponse = await axios.get(`${process.env.REACT_APP_APP_API}/get/meetings`);
 //       contactsCount = contactsResponse?.data?.data?.info?.count || 0;
 //       await saveToCache('/api/contacts', contactsCount);
 
@@ -1195,7 +1238,6 @@ export default HomePage;
 //       setMetrics(prev => ({ ...prev, loadingDeals: false }));
 //     }
 //   };
-
 //   // Fetch all data
 //   const fetchAllData = async (skipCache = false) => {
 //     setMetrics(prev => ({ ...prev, isLoading: true }));
@@ -1236,24 +1278,6 @@ export default HomePage;
 //       toast.error(`Error refreshing ${component}:`, error);
 //     }
 //   };
-
-//   // Refresh all data manually - force new API calls
-//   const refreshAllData = async () => {
-//     try {
-//       // Clear all cache
-//       const cache = await caches.open('dashboard-cache');
-//       await cache.delete('/api/leads');
-//       await cache.delete('/api/tasks');
-//       await cache.delete('/api/contacts');
-//       await cache.delete('/api/deals');
-
-//       // Fetch fresh data
-//       fetchAllData(true);
-//     } catch (error) {
-//       toast.error("Something went wrong!");
-//     }
-//   };
-
 
 //   useEffect(() => {
 //     async function fetchData() {
@@ -1344,26 +1368,6 @@ export default HomePage;
 //       return null;
 //     }
 //   };
-
-//     useEffect(() => {
-      
-//         // setLoading(true);
-//         setTimeout(() => {
-//           const user = getUserDetails();
-//           if (user) {
-//             setUserData({
-//               userId: user.user_id,
-//               name: `${user.first_name} ${user.last_name}`,
-//               email: user.email_id || "Not provided",
-//               plan: user.subscription_plan || "PREMIUM",
-//               isActive: user.is_active !== undefined ? user.is_active : true,
-//               profileImage: user.profile_image || null,
-//             });
-//           }
-//           // setLoading(false);
-//         }, 100);
-      
-//     }, []);
 
 //   const getLocation = async () => {
 //     try {
@@ -1486,7 +1490,7 @@ export default HomePage;
 //       <Navbar accessData={accessData} />
 //       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 //         {/* Premium Welcome Banner */}
-//         <div className="bg-gradient-to-r from-indigo-800 to-purple-900 rounded-xl shadow-xl mb-8 overflow-hidden">
+//         <div className={`bg-gradient-to-r ${gradient.formGradient} rounded-xl shadow-xl mb-8 overflow-hidden`}>
 //           <div className="relative px-6 py-10 sm:px-10">
 //             <div className="absolute inset-0 opacity-10">
 //               <svg className="h-full w-full" viewBox="0 0 678 600" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1530,19 +1534,17 @@ export default HomePage;
 //                 </Link>
 
 //                 <Link
-//                   to="#"
+//                   to="/app/contactform"
 //                   title={accessData?.Contacts < 2 ? "You do not have enough access to create a contact" : ""}
 //                   className={`flex flex-col items-center p-3 rounded-lg transition-all duration-200 ${accessData?.Contacts < 2
 //                     ? "bg-gray-100 bg-opacity-20 cursor-not-allowed"
 //                     : "bg-white bg-opacity-20 hover:bg-opacity-30"
 //                     }`}
-//                   onClick={(e) => {
-//                     if (accessData?.Contacts < 2) {
-//                       e.preventDefault();
-//                       toast.error("Insufficient access rights to create a contact");
-//                     } else {
-//                       setIsContactModalOpen(true);
-//                     }
+//                     onClick={(e) => {
+//                       if (accessData?.Contacts < 2) {
+//                         e.preventDefault();
+//                         toast.error("Insufficient access rights to create a contact");
+//                       }
 //                   }}
 //                 >
 //                   <FilePlus className="h-6 w-6 text-white mb-2" />
@@ -1781,103 +1783,6 @@ export default HomePage;
 //                   </div>
 //                 </div>
 //               </div>
-//               {/* <div className="bg-white p-6 rounded-xl shadow-md">
-//                 <div className="flex justify-between items-center mb-6">
-//                   <h3 className="text-lg font-semibold text-gray-900">Sales Performance</h3>
-//                   <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-200">
-//                     <option>This Year</option>
-//                     <option>Last Year</option>
-//                     <option>All Time</option>
-//                   </select>
-//                 </div>
-//                 <div className="h-80">
-//                   <Bar
-//                     data={salesData}
-//                     options={{
-//                       responsive: true,
-//                       maintainAspectRatio: false,
-//                       plugins: {
-//                         legend: {
-//                           position: 'top',
-//                           labels: {
-//                             boxWidth: 12,
-//                             usePointStyle: true,
-//                             pointStyle: 'circle'
-//                           }
-//                         },
-//                         tooltip: {
-//                           backgroundColor: 'rgba(53, 71, 125, 0.8)',
-//                           titleColor: 'white',
-//                           bodyColor: 'white',
-//                           padding: 12,
-//                           cornerRadius: 8
-//                         }
-//                       },
-//                       scales: {
-//                         x: {
-//                           grid: {
-//                             display: false
-//                           }
-//                         },
-//                         y: {
-//                           grid: {
-//                             color: 'rgba(0, 0, 0, 0.05)'
-//                           }
-//                         }
-//                       }
-//                     }}
-//                   />
-//                 </div>
-//               </div>
-//               <div className="bg-white p-6 rounded-xl shadow-md">
-//                 <div className="flex justify-between items-center mb-6">
-//                   <h3 className="text-lg font-semibold text-gray-900">Sales Performance</h3>
-//                   <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-200">
-//                     <option>This Year</option>
-//                     <option>Last Year</option>
-//                     <option>All Time</option>
-//                   </select>
-//                 </div>
-//                 <div className="h-80">
-//                   <Bar
-//                     data={salesData}
-//                     options={{
-//                       responsive: true,
-//                       maintainAspectRatio: false,
-//                       plugins: {
-//                         legend: {
-//                           position: 'top',
-//                           labels: {
-//                             boxWidth: 12,
-//                             usePointStyle: true,
-//                             pointStyle: 'circle'
-//                           }
-//                         },
-//                         tooltip: {
-//                           backgroundColor: 'rgba(53, 71, 125, 0.8)',
-//                           titleColor: 'white',
-//                           bodyColor: 'white',
-//                           padding: 12,
-//                           cornerRadius: 8
-//                         }
-//                       },
-//                       scales: {
-//                         x: {
-//                           grid: {
-//                             display: false
-//                           }
-//                         },
-//                         y: {
-//                           grid: {
-//                             color: 'rgba(0, 0, 0, 0.05)'
-//                           }
-//                         }
-//                       }
-//                     }}
-//                   />
-//                 </div>
-//               </div> */}
-
 //             </>
 //           )}
   
@@ -1952,7 +1857,7 @@ export default HomePage;
 //         <div className="space-y-6">
 //           {/* Recent Leads Card */}
 //           <div className="bg-white rounded-xl shadow-md overflow-hidden">
-//             <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 flex justify-between items-center">
+//             <div className={`px-6 py-4 bg-gradient-to-r ${gradient.formGradient} flex justify-between items-center`}>
 //               <h3 className="text-md font-semibold text-white">Recent Leads</h3>
 //               <span className="bg-blue-500 text-white text-xs py-1 px-2 rounded-full">{leads.length} total</span>
 //             </div>
@@ -2017,7 +1922,7 @@ export default HomePage;
 //                 <div className="p-6">
 //                   <h3 className="text-xl font-bold mb-4">Need Help?</h3>
 //                   <p className="mb-6 text-indigo-100">Our support team is available 24/7 to assist you with any questions.</p>
-//                   <button onClick={openPopup} className="bg-white text-indigo-600 px-4 py-2 rounded-md font-medium hover:bg-indigo-50 transition-colors">
+//                   <button onClick={openSupportPopup} className="bg-white text-indigo-600 px-4 py-2 rounded-md font-medium hover:bg-indigo-50 transition-colors">
 //                     Contact Support
 //                   </button>
 //                 </div>
@@ -2035,20 +1940,14 @@ export default HomePage;
 //           }}
 //         />
   
-//         <CreateContactForm
+//         {/* <CreateContactForm
 //           isOpen={isContactModelOpen}
 //           onClose={() => setIsContactModalOpen(false)}
 //           onTaskCreated={() => {
 //             setIsContactModalOpen(false);
 //             // Add any refresh logic here if needed
 //           }}
-//         />
-
-//         <SupportPopup
-//           isOpen={isOpenpopup} 
-//           setIsOpen={setIsOpenpopup}
-//           userData={userData}
-//         />
+//         /> */}
   
 //         <UnauthorizedModal
 //           isOpen={isUnauthorizedModalOpen}
@@ -2080,3 +1979,5 @@ export default HomePage;
 // };
 
 // export default HomePage;
+
+

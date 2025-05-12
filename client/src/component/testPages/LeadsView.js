@@ -401,8 +401,9 @@ const LeadView = () => {
 
   return (
     <>
+     <Navbar />
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Navbar />
+       
         <div className="flex-1 p-4 max-w-7xl mx-auto w-full flex flex-col">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
             <div className="flex flex-col sm:flex-row w-full justify-between mb-4 md:mb-0 mr-5">

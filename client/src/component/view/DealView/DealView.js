@@ -204,6 +204,7 @@ const DealView = () => {
         await cache.put("/deals", newResponse);
       }
     } catch (error) {
+      console.log(error)
       if (
         error.response &&
         error.response.data &&
@@ -238,6 +239,7 @@ const DealView = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_APP_API}/get/dealdetails`
       );
+      
       if (response.status === 200) {
         const data = response.data || [];
         setDeals(data);
@@ -251,6 +253,7 @@ const DealView = () => {
         await cache.put("/deals", newResponse);
       }
     } catch (error) {
+      console.log(error);
       toast.error("Error fetching deals!");
     } finally {
       setLoading(false);

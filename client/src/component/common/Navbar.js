@@ -22,7 +22,7 @@ import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
 import SupportPopup from "../forms/SupportPopup";
 import TrobleShoot from "../confirmbox/TrobleShoot";
-import { Globe, Handshake } from "lucide-react";
+import { Globe, Handshake } from "lucide-react"; 
 import { CompanyLogo } from "./CompanyLogo";
 import "./NavLink.css";
 import { gradient, navbarColors, textColors } from "../../config/colors";

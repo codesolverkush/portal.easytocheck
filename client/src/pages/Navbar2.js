@@ -77,9 +77,9 @@ const Navbar2 = () => {
           <div className="flex justify-between items-center h-16">
             {/* Logo section */}
             <div className="flex items-center">
-              <div className="flex items-center space-x-2 group">
+              {/* <div className="flex items-center space-x-2 group"> */}
                 <img className='w-32 h-10' src={logoimage}/>
-              </div>
+              {/* </div> */}
             </div>
 
             {/* Desktop menu */}

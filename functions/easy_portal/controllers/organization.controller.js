@@ -448,7 +448,7 @@ const checkForExtension = async (req, res) => {
         }
 
         let token = await getAccessToken(orgId, req, res);
-        const url = `https://www.zohoapis.${domain}/crm/v7/settings/modules/easyportal__Portal_User`;
+        const url = `https://www.zohoapis.${domain}/crm/v7/settings/modules/easyportal__Portal_Users`;
 
         try {
             const data = await handleZohoRequest(url, 'get', null, token);

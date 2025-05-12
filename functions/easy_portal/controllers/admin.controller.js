@@ -171,7 +171,7 @@ const updateUserAccess = async (req, res) => {
   try {
     const { userId, section, accessLevel } = req.body;
 
-
+ 
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql();
 
@@ -192,10 +192,7 @@ const updateUserAccess = async (req, res) => {
       // Execute the update query
       const updateResult = await zcql.executeZCQLQuery(updateQuery);
 
-      // // Check if any rows were updated
-      // if (updateResult.affectedRows === 0) {
-      //     // write ksfn
-      // }
+  
 
 
       // Fetch the updated user permissions
@@ -427,6 +424,71 @@ const personalizedUpdate = async (req, res) => {
         success: false,
         message: "Something went wrong!"
     })
+  }
+};
+
+
+const changesDoneStatus = async (req, res) => {
+  try {
+    const { userId, section, accessLevel } = req.body;
+
+ 
+    const { catalyst } = res.locals;
+    const zcql = catalyst.zcql();
+
+    // Validate input
+    if (!userId || !section || !accessLevel) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required parameters",
+      });
+    }
+
+    // Prepare the update query
+    const updateQuery = `
+            UPDATE usermanagement SET ${section}='${accessLevel}' WHERE userid='${userId}'
+        `;
+
+    try {
+      // Execute the update query
+      const updateResult = await zcql.executeZCQLQuery(updateQuery);
+
+  
+
+
+      // Fetch the updated user permissions
+      const fetchQuery = `
+                SELECT * FROM usermanagement
+                WHERE userid = '${userId}'
+            `;
+      const fetchResult = await zcql.executeZCQLQuery(fetchQuery);
+
+
+      res.status(200).json({
+        success: true,
+        message: "User access updated successfully",
+        data: {
+          userId,
+          section,
+          accessLevel,
+          updatedPermissions: fetchResult[0]?.user_permissions || null,
+        },
+      });
+    } catch (updateError) {
+      // console.error("Update Error:", updateError);
+      res.status(500).json({
+        success: false,
+        message: "Failed to update user access",
+        error: updateError.message,
+      });
+    }
+  } catch (error) {
+    // console.error("Error in updateUserAccess:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
