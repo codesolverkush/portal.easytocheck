@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import { Globe, X, Menu, ArrowRight } from 'lucide-react';
+import logoimage from '../images/portallogo.jpg';
 
 const Navbar2 = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -77,12 +78,7 @@ const Navbar2 = () => {
             {/* Logo section */}
             <div className="flex items-center">
               <div className="flex items-center space-x-2 group">
-                <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center transform group-hover:rotate-6 transition-transform duration-300">
-                  <Globe className="text-white" size={20} />
-                </div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  Easy Portal
-                </h1>
+                <img className='w-32 h-10' src={logoimage}/>
               </div>
             </div>
 

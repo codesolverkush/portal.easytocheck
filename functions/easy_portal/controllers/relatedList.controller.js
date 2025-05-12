@@ -364,11 +364,14 @@ const createOpenActivity = async (req, res) => {
                     Status: req.body.Status,
                     Due_Date: req.body.Due_Date,
                     $se_module: req.body.$se_module,
+                    Description: req.body.Description,
                     Who_Id: req.body.Who_Id,
                     What_Id: req.body.What_Id
                 }
             ]
         };
+
+        console.log(taskData);
 
 
         let token = await getAccessToken(orgId,req,res);
@@ -376,6 +379,7 @@ const createOpenActivity = async (req, res) => {
 
         try {
             const data = await handleZohoRequest(url, 'post', taskData, token);
+            console.log(data);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {
@@ -412,7 +416,7 @@ const updateTask = async (req, res) => {
         const user = await zcql.executeZCQLQuery(userQuery);
         const orgId = user[0]?.usermanagement?.orgid;
         const domain = user[0]?.usermanagement?.domain;
-        const {id,Status} = req.body;
+        const {id,Status,Subject,Description,Priority} = req.body;
 
         if (!orgId) {
             return res.status(404).json({ success: false, message: "Organization ID not found." });
@@ -423,7 +427,10 @@ const updateTask = async (req, res) => {
             data: [
                 {
                   id: id,
-                  Status: Status
+                  Status: Status,
+                  Subject: Subject,
+                  Description:Description,
+                  Priority: Priority
                 }
             ]
         };

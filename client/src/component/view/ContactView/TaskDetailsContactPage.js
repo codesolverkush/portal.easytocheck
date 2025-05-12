@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, CheckCircle, AlertCircle, Plus, Filter, X } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, AlertCircle, Plus, Filter, X, MoreVertical } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import EnhancedTaskLoading from '../../ui/EnhancedTaskLoading'
+import EnhancedTaskLoading from '../../ui/EnhancedTaskLoading';
 import { bgColors, hoverColors } from '../../../config/colors';
 
 // Confirmation Modal Component
@@ -33,8 +33,112 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
   );
 };
 
+// Edit Task Modal Component
+const EditTaskModal = ({ isOpen, onClose, task, onTaskUpdate }) => {
+  const [editedTask, setEditedTask] = useState({
+    Subject: task.Subject,
+    Status: task.Status,
+    Priority: task.Priority,
+    Description: "",
+  });
+
+  useEffect(() => {
+    setEditedTask(task);
+  }, [task]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await onTaskUpdate(task.id, editedTask);
+      onClose();
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg w-full max-w-md">
+        <div className="flex justify-between items-center p-4 border-b">
+          <h2 className="text-lg font-bold">Edit Task</h2>
+          <button onClick={onClose} className="text-gray-500">
+            <X size={20} />
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="p-4">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+              <input
+                type="text"
+                value={editedTask.Subject}
+                onChange={(e) => setEditedTask({ ...editedTask, Subject: e.target.value })}
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select
+                value={editedTask.Status}
+                onChange={(e) => setEditedTask({ ...editedTask, Status: e.target.value })}
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="New">New</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+              <select
+                value={editedTask.Priority}
+                onChange={(e) => setEditedTask({ ...editedTask, Priority: e.target.value })}
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Highest">Highest</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea
+                value={editedTask.Description}
+                onChange={(e) => setEditedTask({ ...editedTask, Description: e.target.value })}
+                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+                placeholder="Enter task description..."
+              />
+            </div>
+          </div>
+          <div className="mt-6 flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-600 border rounded-lg hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className={`px-4 py-2 ${bgColors.primary} text-white rounded-lg ${hoverColors.primary}`}
+            >
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 const TaskCard = ({ task, onTaskUpdate }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   
   const getPriorityBadge = (priority) => {
     const colors = {
@@ -113,6 +217,30 @@ const TaskCard = ({ task, onTaskUpdate }) => {
     }
   };
 
+  const handleEditTask = async (taskId, updatedTask) => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_APP_API}/related/updateTask`,
+        {
+          id: taskId,
+          ...updatedTask
+        }
+      );
+      
+      if (response?.status === 200) {
+        // Update the task locally with the new data
+        onTaskUpdate(taskId, updatedTask);
+        toast.success("Task updated successfully!");
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error updating task:', error);
+      toast.error("Failed to update task");
+      throw error;
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4 hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start">
@@ -142,15 +270,28 @@ const TaskCard = ({ task, onTaskUpdate }) => {
             )}
           </div>
         </div>
-        {task.Status !== 'Completed' && (
-          <button 
-            onClick={handleMarkAsCompletedClick}
-            className="text-gray-400 hover:text-green-600 transition-colors"
-            title="Mark as completed"
-          >
-            <CheckCircle className="w-5 h-5" />
-          </button>
-        )}
+        <div className="flex items-center space-x-2 gap-5">
+          {task.Status !== 'Completed' && (
+            <button 
+              onClick={handleMarkAsCompletedClick}
+              className="text-gray-400 hover:text-green-600 transition-colors"
+              title="Mark as completed"
+            >
+              <CheckCircle className="w-5 h-5" />
+            </button>
+          )}
+          
+          <button
+                  onClick={() => {
+                    setShowEditModal(true);
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm text-white rounded ${bgColors.primary} ${hoverColors.primary}`}
+                >
+                  Edit
+                </button>
+           
+          
+        </div>
       </div>
       
       {/* Confirmation Modal */}
@@ -161,11 +302,19 @@ const TaskCard = ({ task, onTaskUpdate }) => {
         title="Complete Task"
         message={`Are you sure you want to mark "${task.Subject}" as completed?`}
       />
+
+      {/* Edit Modal */}
+      <EditTaskModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        task={task}
+        onTaskUpdate={handleEditTask}
+      />
     </div>
   );
 };
 
-const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoaded  }) => {
+const TaskDetailsPage = ({ contactId, cachedData, setCachedData, dataLoaded }) => {
   const [tasks, setTasks] = useState(cachedData || []);
   const [isLoading, setIsLoading] = useState(!dataLoaded);
   const [filter, setFilter] = useState('all');
@@ -175,7 +324,8 @@ const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoad
     Subject: "",
     Status: "New",
     Due_Date: "",
-    Priority: "Medium"
+    Priority: "Medium",
+    Description: ""
   });
 
    
@@ -187,10 +337,10 @@ const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoad
       
       try {
         const response = await axios.get(`${process.env.REACT_APP_APP_API}/related/openactivities`,  
-         { params:{
+         { params: {
           $se_module: "Contacts",
-          Who_Id: contactId,
-          What_Id: null
+          What_Id: null,
+          Who_Id: contactId
         }});
         const fetchedTasks = response?.data?.data?.data || [];
   
@@ -224,20 +374,31 @@ const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoad
     return true;
   });
 
-  const updateTaskStatus = async (taskId, newStatus) => {
+  const updateTaskStatus = async (taskId, updatedData) => {
     try {
-      const response = await axios.put(
-        `${process.env.REACT_APP_APP_API}/related/updateTask`,
-        {
-          id: taskId,
-          Status: newStatus
+      // If updatedData is a string, it's a status update
+      if (typeof updatedData === 'string') {
+        const response = await axios.put(
+          `${process.env.REACT_APP_APP_API}/related/updateTask`,
+          {
+            id: taskId,
+            Status: updatedData
+          }
+        );
+        
+        if (response?.status === 200) {
+          // Update the local task list
+          const updatedTasks = tasks.map(task => 
+            task.id === taskId ? { ...task, Status: updatedData } : task
+          );
+          setTasks(updatedTasks);
+          if (setCachedData) setCachedData(updatedTasks);
+          return true;
         }
-      );
-      
-      if (response?.status === 200) {
-        // Update the local task list
+      } else {
+        // It's a full task update
         const updatedTasks = tasks.map(task => 
-          task.id === taskId ? { ...task, Status: newStatus } : task
+          task.id === taskId ? { ...task, ...updatedData } : task
         );
         setTasks(updatedTasks);
         if (setCachedData) setCachedData(updatedTasks);
@@ -256,11 +417,10 @@ const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoad
 
       const taskPayload = {
         ...newTask,
-        $se_module: "Leads",
+        $se_module: "Contacts",
         Who_Id: contactId,
         What_Id: null
-      };
-  
+      };  
 
       const response = await axios.post(
         `${process.env.REACT_APP_APP_API}/related/createTask`,
@@ -380,7 +540,7 @@ const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoad
 
         {isLoading ? (
           <div className="text-center text-gray-500 py-8">
-             <EnhancedTaskLoading/>
+             <EnhancedTaskLoading name="Task"/>
           </div>
         ) : filteredTasks.length === 0 ? (
           <div className="text-center text-gray-500 py-8">
@@ -496,17 +656,47 @@ const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoad
   );
 };
 
-export default TaskDetailsContactPage;
+export default TaskDetailsPage;
 
 
 // import React, { useState, useEffect } from 'react';
-// import { Calendar, Clock, CheckCircle, AlertCircle, MoreHorizontal, Plus, Filter, X } from 'lucide-react';
+// import { Calendar, Clock, CheckCircle, AlertCircle, Plus, Filter, X } from 'lucide-react';
 // import toast from 'react-hot-toast';
 // import axios from 'axios';
-// import EnhancedTaskLoading from '../../ui/EnhancedTaskLoading';
+// import EnhancedTaskLoading from '../../ui/EnhancedTaskLoading'
+// import { bgColors, hoverColors } from '../../../config/colors';
 
+// // Confirmation Modal Component
+// const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
+//   if (!isOpen) return null;
+  
+//   return (
+//     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+//       <div className="bg-white rounded-lg w-full max-w-md p-6 shadow-xl">
+//         <h3 className="text-lg font-medium text-gray-900 mb-3">{title}</h3>
+//         <p className="text-gray-600 mb-6">{message}</p>
+//         <div className="flex justify-end space-x-3">
+//           <button
+//             onClick={onClose}
+//             className="px-4 py-2 text-gray-600 border rounded-lg hover:bg-gray-50"
+//           >
+//             Cancel
+//           </button>
+//           <button
+//             onClick={onConfirm}
+//             className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+//           >
+//             Confirm
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
-// const TaskCard = ({ task }) => {
+// const TaskCard = ({ task, onTaskUpdate }) => {
+//   const [showConfirmation, setShowConfirmation] = useState(false);
+  
 //   const getPriorityBadge = (priority) => {
 //     const colors = {
 //       'High': 'bg-red-100 text-red-800',
@@ -561,6 +751,29 @@ export default TaskDetailsContactPage;
 //     }
 //   };
 
+//   // Open the confirmation modal
+//   const handleMarkAsCompletedClick = () => {
+//     setShowConfirmation(true);
+//   };
+  
+//   // Close the confirmation modal
+//   const handleCloseConfirmation = () => {
+//     setShowConfirmation(false);
+//   };
+  
+//   // Handle actual task completion after confirmation
+//   const handleConfirmCompletion = async () => {
+//     try {
+//       await onTaskUpdate(task.id, "Completed");
+//       toast.success("Task marked as completed!");
+//       setShowConfirmation(false);
+//     } catch (error) {
+//       console.error("Error updating task status:", error);
+//       toast.error("Failed to update task status");
+//       setShowConfirmation(false);
+//     }
+//   };
+
 //   return (
 //     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4 hover:shadow-md transition-shadow">
 //       <div className="flex justify-between items-start">
@@ -590,15 +803,30 @@ export default TaskDetailsContactPage;
 //             )}
 //           </div>
 //         </div>
-//         <button className="text-gray-400 hover:text-gray-600">
-//           <MoreHorizontal className="w-5 h-5" />
-//         </button>
+//         {task.Status !== 'Completed' && (
+//           <button 
+//             onClick={handleMarkAsCompletedClick}
+//             className="text-gray-400 hover:text-green-600 transition-colors"
+//             title="Mark as completed"
+//           >
+//             <CheckCircle className="w-5 h-5" />
+//           </button>
+//         )}
 //       </div>
+      
+//       {/* Confirmation Modal */}
+//       <ConfirmationModal
+//         isOpen={showConfirmation}
+//         onClose={handleCloseConfirmation}
+//         onConfirm={handleConfirmCompletion}
+//         title="Complete Task"
+//         message={`Are you sure you want to mark "${task.Subject}" as completed?`}
+//       />
 //     </div>
 //   );
 // };
 
-// const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoaded }) => {
+// const TaskDetailsContactPage = ({ contactId, cachedData, setCachedData, dataLoaded  }) => {
 //   const [tasks, setTasks] = useState(cachedData || []);
 //   const [isLoading, setIsLoading] = useState(!dataLoaded);
 //   const [filter, setFilter] = useState('all');
@@ -610,7 +838,8 @@ export default TaskDetailsContactPage;
 //     Due_Date: "",
 //     Priority: "Medium"
 //   });
-  
+
+   
 //   useEffect(() => {
 //     const fetchTasks = async () => {
 //       if (cachedData !== undefined) return; // Prevent unnecessary API calls if data is already cached
@@ -618,13 +847,12 @@ export default TaskDetailsContactPage;
 //       setIsLoading(true);
       
 //       try {
-//         const response = await axios.get(`${process.env.REACT_APP_APP_API}/related/openactivities`,
-//           { params: {
-//             $se_module: "Contacts",
-//             Who_Id: contactId,
-//             What_Id: null
-//           }}
-//         );
+//         const response = await axios.get(`${process.env.REACT_APP_APP_API}/related/openactivities`,  
+//          { params:{
+//           $se_module: "Contacts",
+//           Who_Id: contactId,
+//           What_Id: null
+//         }});
 //         const fetchedTasks = response?.data?.data?.data || [];
   
 //         if (fetchedTasks.length === 0) {
@@ -657,64 +885,77 @@ export default TaskDetailsContactPage;
 //     return true;
 //   });
 
+//   const updateTaskStatus = async (taskId, newStatus) => {
+//     try {
+//       const response = await axios.put(
+//         `${process.env.REACT_APP_APP_API}/related/updateTask`,
+//         {
+//           id: taskId,
+//           Status: newStatus
+//         }
+//       );
+      
+//       if (response?.status === 200) {
+//         // Update the local task list
+//         const updatedTasks = tasks.map(task => 
+//           task.id === taskId ? { ...task, Status: newStatus } : task
+//         );
+//         setTasks(updatedTasks);
+//         if (setCachedData) setCachedData(updatedTasks);
+//         return true;
+//       }
+//       return false;
+//     } catch (error) {
+//       console.error('Error updating task:', error);
+//       throw error;
+//     }
+//   };
 
-
-
-//   // Toggle filter menu
-  
 //   const handleCreateTask = async (e) => {
 //     e.preventDefault();
-    
 //     try {
-     
-//       // Create task object before setting state
+
 //       const taskPayload = {
 //         ...newTask,
-//         $se_module: "Contacts",
+//         $se_module: "Leads",
 //         Who_Id: contactId,
 //         What_Id: null
 //       };
   
-//       // Send taskPayload instead of newTask to ensure correct data is sent
+
 //       const response = await axios.post(
 //         `${process.env.REACT_APP_APP_API}/related/createTask`,
 //         taskPayload
 //       );
-  
-  
 //       if (response?.status === 200) {
 //         toast.success("Task Created Successfully!");
-  
-//         const newTaskAdded = {
+//           const newTaskAdded = {
 //           id: response?.data?.data?.data[0]?.details.id || Date.now(), // Use response ID or fallback
 //           Subject: taskPayload.Subject,
 //           Status: taskPayload?.Status,
 //           Due_Date: taskPayload?.Due_Date,
 //           Priority: taskPayload?.Priority
 //         };
-  
+
 //         const updatedTasks = [...tasks, newTaskAdded];
 //         setTasks(updatedTasks);
 //         if (setCachedData) setCachedData(updatedTasks);
-  
-//         // ✅ Close modal only after success
-//         setIsCreateModalOpen(false);
-  
-//         // ✅ Reset newTask state after success
-//         setNewTask({
-//           Subject: "",
-//           Status: "New",
-//           Due_Date: "",
-//           Priority: "Medium"
-//         });
 //       }
 //     } catch (error) {
 //       console.error("Error creating task:", error);
 //       toast.error(error?.response?.data?.error?.data[0]?.message);
 //     }
+//     setIsCreateModalOpen(false);
+//     setNewTask({
+//       Subject: "",
+//       Status: "New",
+//       Due_Date: "",
+//       Priority: "Medium"
+//     });
 //   };
-  
 
+
+//   // Toggle filter menu
 //   const toggleFilterMenu = () => {
 //     setShowFilterMenu(!showFilterMenu);
 //   };
@@ -790,7 +1031,7 @@ export default TaskDetailsContactPage;
 //               )}
 //             </div>
 //             <button onClick={() => setIsCreateModalOpen(true)}
-//             className="flex items-center px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+//               className={`flex items-center px-3 py-1.5 text-sm ${bgColors.primary} text-white rounded-md ${hoverColors.primary}`}
 //             >
 //               <Plus className="w-4 h-4 mr-2" />
 //               <span>Add Task</span>
@@ -806,17 +1047,21 @@ export default TaskDetailsContactPage;
 //           <div className="text-center text-gray-500 py-8">
 //             <p className="mb-4">
 //               {tasks.length === 0 
-//                 ? "No activities found for this contact." 
+//                 ? "No activities found for this lead." 
 //                 : `No ${filter !== 'all' ? filter : ''} activities found.`}
 //             </p>
-//             <button onClick={() => setIsCreateModalOpen(true)} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+//             <button onClick={() => setIsCreateModalOpen(true)} className={`px-4 py-2 ${bgColors.primary} text-white rounded-md ${hoverColors.primary}`}>
 //               Create New Task
 //             </button>
 //           </div>
 //         ) : (
 //           <div className="space-y-4">
 //             {filteredTasks.map((task) => (
-//               <TaskCard key={task.id || task._id} task={task} />
+//               <TaskCard 
+//                 key={task.id || task._id} 
+//                 task={task} 
+//                 onTaskUpdate={updateTaskStatus}
+//               />
 //             ))}
 //           </div>
 //         )}
@@ -899,7 +1144,7 @@ export default TaskDetailsContactPage;
 //                 </button>
 //                 <button
 //                   type="submit"
-//                   className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+//                   className={`px-4 py-2 ${bgColors.primary} text-white rounded-lg ${hoverColors.primary}`}
 //                 >
 //                   Create Task
 //                 </button>
@@ -908,9 +1153,9 @@ export default TaskDetailsContactPage;
 //           </div>
 //         </div>
 //       )}
-
 //     </div>
 //   );
 // };
 
 // export default TaskDetailsContactPage;
+

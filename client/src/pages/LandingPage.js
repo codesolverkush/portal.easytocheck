@@ -23,6 +23,7 @@ import IconZ from "../component/ui/Icons";
 import { openSupportPopup } from "../utils/supportTrigger";
 import supportLogo from '../images/support1.png'
 import toast from "react-hot-toast";
+import logoimage from "../images/portallogo.jpg";
 
 const LandingPage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -695,10 +696,7 @@ const LandingPage = () => {
       {/* Brand section */}
       <div className="lg:col-span-5">
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform hover:rotate-6 transition-transform duration-300">
-            <Globe className="text-white" size={28} />
-          </div>  
-          <h4 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">Easy Portal</h4>
+          <img className="w-32 bg-white p-1 rounded-md shadow-md mt-1" src={logoimage} />
         </div>
         
         <p className="mt-6 text-gray-300 max-w-md text-lg">

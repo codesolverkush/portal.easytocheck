@@ -26,7 +26,8 @@ import DealStageBar from "../../common/DealStageBar";
 import AddDealNoteModal from "./AddDealNoteModal";
 import AttachFileDealPage from "./AttachFileDealPage";
 import ShowDealAttachement from "./ShowDealAttachment";
-import TaskDetailsContactPage from "../ContactView/TaskDetailsContactPage";
+// import TaskDetailsContactPage from "../ContactView/TaskDetailsContactPage";
+import TaskDetailsDealPage from './TaskDetailsDealPage';
 import CheckInModal from "../../confirmbox/CheckInModal";
 import { textColors } from "../../../config/colors";
 
@@ -722,7 +723,7 @@ const DealDetails = ({ accessScore, data, username }) => {
   // Create a cached version of TaskDetailsPage
   const CachedTaskDetailsPage = () => {
     return (
-      <TaskDetailsContactPage
+      <TaskDetailsDealPage
         dealId={selectedDealId}
         cachedData={tasks}
         setCachedData={setTasks}

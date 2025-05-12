@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import Navbar3 from "../common/Navbar3";
 import IconZ from "../ui/Icons";
 import dashboardImage from "../../images/aboutus.png";
+import logoimage from '../../images/portallogo.jpg';
 
 export default function AboutUs() {
   const [isHovered, setIsHovered] = useState(false);
@@ -357,10 +358,7 @@ export default function AboutUs() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
             <div className="col-span-2">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Globe className="text-white" size={20} />
-                </div>
-                <h4 className="text-xl md:text-2xl font-bold text-white">Easy Portal</h4>
+              <img className='w-32 bg-white p-1 rounded-md shadow-md mt-1' src={logoimage}/>
               </div>
               <p className="mt-3 md:mt-4 text-gray-400 max-w-md text-sm md:text-base">
                 Transform your business with our powerful CRM solution.

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import { Globe, X, Menu, ArrowRight } from 'lucide-react';
+import logoimage from '../../images/portallogo.jpg';
 
 const Navbar3 = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -77,12 +78,7 @@ const Navbar3 = () => {
             {/* Logo section */}
             <div className="flex items-center">
               <div className="flex items-center space-x-2 group">
-                <div className="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center transform group-hover:rotate-6 transition-transform duration-300">
-                  <Globe className="text-white" size={20} />
-                </div>
-                <Link to="/app/signup" className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  Easy Portal
-                </Link>
+                <img className='w-32'  src={logoimage}/>
               </div>
             </div>
 
@@ -162,10 +158,7 @@ const Navbar3 = () => {
           {/* Mobile menu header */}
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <Globe className="text-white" size={18} />
-              </div>
-              <span className="font-semibold text-gray-800">Easy Portal</span>
+             <img className='w-32' src={logoimage}/>
             </div>
             <button 
               onClick={() => setMobileMenuOpen(false)}

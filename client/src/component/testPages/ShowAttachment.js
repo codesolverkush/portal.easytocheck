@@ -388,7 +388,7 @@ const ShowAttachment = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
 
         {isLoading ? (
           <div className="text-center text-gray-500 py-8">
-             <EnhancedTaskLoading/>
+             <EnhancedTaskLoading name="Attachments"/>
           </div>
         ) : error ? (
           <div className="text-center py-6">
