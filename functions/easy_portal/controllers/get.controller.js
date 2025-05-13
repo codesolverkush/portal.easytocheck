@@ -197,7 +197,7 @@ const totalContacts = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: `SELECT Full_Name,Email,Lead_Source,Phone,Date_of_Birth,Mailing_Street,Mailing_State,Mailing_Country,Mailing_City,Mailing_Zip,Other_Phone,Secondary_Email,Skype_ID from Contacts WHERE easyportal__Client_User = ${crmuserid} ORDER BY Created_Time DESC`
+            select_query: `SELECT Full_Name,Email,Lead_Source,Phone,Date_of_Birth,Mailing_Street,Mailing_State,Mailing_Country,Mailing_City,Mailing_Zip,Other_Phone,Secondary_Email,Skype_ID from Contacts WHERE (((easyportal__Client_User = ${crmuserid}) or (Mark_as_Public = true))) ORDER BY Created_Time DESC`
         };
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
@@ -240,7 +240,7 @@ const leadDetails = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: `SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Lead_Status,Created_Time FROM Leads WHERE easyportal__Client_User = ${crmuserid} ORDER BY Created_Time DESC LIMIT 1000`
+            select_query: `SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Lead_Status,Created_Time FROM Leads WHERE (((easyportal__Client_User = ${crmuserid}) or (Mark_as_Public	= true))) ORDER BY Created_Time DESC LIMIT 1000`
         };
            
         try {
@@ -302,7 +302,7 @@ const dealDetails = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: `SELECT id,Deal_Name,Closing_Date,Contact_Name,Account_Name,Stage,Pipeline,Created_Time FROM Deals WHERE easyportal__Portal_User = ${crmuserid} ORDER BY Created_Time DESC LIMIT 2000 `
+            select_query: `SELECT id,Deal_Name,Closing_Date,Contact_Name,Account_Name,Stage,Pipeline,Created_Time FROM Deals WHERE (((easyportal__Portal_User = ${crmuserid}) or (Mark_as_Public = true))) ORDER BY Created_Time DESC LIMIT 2000 `
         };
            
         try {
@@ -336,4 +336,53 @@ const dealDetails = async (req, res) => {
     }
 };
 
-module.exports = {totalLead,totalTask,totalMeeting,totalDeals,leadDetails,totalContacts,dealDetails};
+const accountDetails = async (req, res) => {
+    try {    
+        const accessScore = req.userDetails[0].usermanagement?.Deals;
+        const crmuserid = req.userDetails[0]?.usermanagement?.crmuserid;
+        const orgId = req.userDetails[0]?.usermanagement?.orgid;
+        const domain = req.userDetails[0]?.usermanagement?.domain;
+
+        if (!orgId) {
+            return res.status(404).json({ message: "Organization ID not found." });
+        }
+
+        let token = await getAccessToken(orgId,req, res);
+        const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
+
+        const requestData = {
+            select_query: `SELECT id,Account_Name,Account_Type,Phone,Ownership,Created_Time FROM Accounts WHERE (((easyportal__Portal_User = ${crmuserid}) or (Mark_as_Public = true))) ORDER BY Created_Time DESC LIMIT 2000 `
+        };
+           
+        try {
+            const data = await handleZohoRequest(url, 'post', requestData, token);
+            console.log(data);
+            return res.status(200).json({ success: true, data, accessScore });
+
+
+        } catch (error) {
+            console.log(error)
+            if (error.message === "TOKEN_EXPIRED") {
+                // Refresh token without ending the response
+                try {
+                    token = await refreshAccessToken(req, res);
+                   
+                    const data = await handleZohoRequest(url, 'post', requestData, token);
+                
+                    return res.status(200).json({ success: true, data, accessScore });
+                } catch (refreshError) {
+                    return res.status(500).json({ success: false, message:refreshError });
+                }
+            } else {
+                throw error;
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        if (!res.headersSent) {
+            return res.status(500).json({ success: false, message: error });
+        }
+    }
+};
+
+module.exports = {totalLead,totalTask,totalMeeting,totalDeals,leadDetails,totalContacts,dealDetails,accountDetails};

@@ -18,6 +18,8 @@ const LeadProfile = () => {
 
   const [username,setUsername] = useState("Username");
   const [data, setData] = useState(null); // state to store the lead data
+
+  console.log("leaddata",data)
   useEffect(() => {
     const fetchProfileData = async () => {
         try {

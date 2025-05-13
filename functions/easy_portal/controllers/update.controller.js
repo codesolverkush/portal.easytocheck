@@ -12,14 +12,14 @@ const updateData = async (req, res) => {
     const domain = req.userDetails[0]?.usermanagement?.domain;
     const orgId = req.userDetails[0]?.usermanagement?.orgid;
 
-    if (accessScore < 2) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: `Insufficient access rights to update a ${module}`,
-        });
-    }
+    // if (accessScore < 2) {
+    //   return res
+    //     .status(403)
+    //     .json({
+    //       success: false,
+    //       message: `Insufficient access rights to update a ${module}`,
+    //     });
+    // }
 
     if (!userId) {
       return res

@@ -13,6 +13,7 @@ import MeetingProfile from './component/view/MeetingView/MeetingProfile.js';
 import AuthorizedPage from './component/errorPages/AuthorizedPage.js';
 import Webtab2 from './component/testPages/Webtab2.js';
 import DragDropComponent from './component/testPages/DragDropComponent.js';
+import AccountProfile from './component/view/AccountView/AccountProfile.js';
 
 
 // Lazy loaded components (same as before)
@@ -44,6 +45,7 @@ const Webtab = lazy(() => import('./pages/Webtab.js'));
 const CreateDealForm = lazy(() => import('./component/forms/CreateDealForm.js'));
 const DealView = lazy(() => import('./component/view/DealView/DealView.js'));
 const DealProfile = lazy(()=> import('./component/view/DealView/DealProfile.js'));
+const AccountView = lazy(() => import('./component/view/AccountView/AccountView.js'));
 const AboutUs = lazy(()=> import('./component/landingComponent/AboutUs.js'));
 
 // Enhanced Loader Component
@@ -223,6 +225,26 @@ function App() {
 
           {/* Lead route end */}
 
+          {/* Account route start */}
+          <Route
+            path="/app/accountview"
+            element={
+              <ProtectedRouteWithLicense>
+                <AccountView />
+              </ProtectedRouteWithLicense>
+            }
+          />
+          <Route
+            path="/app/accountprofile"
+            element={
+              <ProtectedRouteWithLicense> 
+                <AccountProfile />
+              </ProtectedRouteWithLicense>
+            }
+          />
+
+          {/* Account route end */}
+
           {/* Deal route Start */}
           <Route
             path="/app/dealCreate"
@@ -383,7 +405,7 @@ function App() {
           />
 
           <Route 
-          path='/app/web'
+          path='/app/webtab2'
           element={
             <Webtab2/>
           }

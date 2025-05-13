@@ -94,19 +94,19 @@ const hardcodedUser = {
             });
         }
 
-        // const userManagement = catalyst.userManagement();
+        const userManagement = catalyst.userManagement();
 
-        // const currentUser = await userManagement.getCurrentUser();   
+        const currentUser = await userManagement.getCurrentUser();   
 
-        // if (!currentUser) {
-        //     return res.status(401).json({
-        //         success: false,
-        //         message: "User not authenticated",
-        //     });
-        // }
+        if (!currentUser) {
+            return res.status(401).json({
+                success: false,
+                message: "User not authenticated",
+            });
+        }
         
-        // req.currentUser = currentUser;         
-        req.currentUser = hardcodedUser;        
+        req.currentUser = currentUser;         
+        // req.currentUser = hardcodedUser;        
         next();
         
     } catch (error) {

@@ -201,6 +201,14 @@ const Navbar = ({ accessData }) => {
                 text="Contacts"
                 currentPath={location.pathname}
               />
+
+              <NavLink
+                 to="/app/accountview"
+                icon={<Globe />}
+                text="Accounts"
+                currentPath={location.pathname}
+              />
+              
               <NavLink
                 to="/app/dealView"
                 icon={<Handshake />}

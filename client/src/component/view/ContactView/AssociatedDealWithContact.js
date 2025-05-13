@@ -1,7 +1,7 @@
 import React from "react";
 import { Calendar, DollarSign, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import EnhancedShimmer from "../../ui/EnhancedTaskLoading";
+import EnhancedTaskLoading from "../../ui/EnhancedTaskLoading";
 
 const AssociatedDealWithContact = ({ deals, loading = false }) => {
   const navigate = useNavigate();
@@ -40,9 +40,7 @@ const AssociatedDealWithContact = ({ deals, loading = false }) => {
   if (loading) {
     return (
       <div className="space-y-4">
-        <EnhancedShimmer />
-        <EnhancedShimmer />
-        <EnhancedShimmer />
+        <EnhancedTaskLoading name="Deals" />
       </div>
     );
   }

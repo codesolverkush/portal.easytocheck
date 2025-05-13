@@ -17,8 +17,9 @@ const getDataById = async (req, res) => {
     const zcql = catalyst.zcql();
 
    
-    const { orgId, domain } = await getOrgDetails(userId, zcql);
-  
+    const orgId = req.userDetails[0]?.usermanagement?.orgid;
+    const domain = req.userDetails[0]?.usermanagement?.domain;
+    const accessscore = req.userDetails[0]?.usermanagement?.[module];  
 
     if (!orgId) {
       return res
@@ -43,6 +44,7 @@ const getDataById = async (req, res) => {
           success: true,
           data,
           username: req.currentUser.first_name + " " + req.currentUser.last_name,
+          accessscore
         });
     } catch (error) {
       if (error.message === "TOKEN_EXPIRED") {
@@ -57,6 +59,7 @@ const getDataById = async (req, res) => {
               success: true,
               data,
               username: req.currentUser.first_name + req.currentUser.last_name,
+              accessscore
             });
         } catch (refreshError) {
           return res
