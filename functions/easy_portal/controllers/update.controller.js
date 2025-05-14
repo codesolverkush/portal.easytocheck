@@ -2,7 +2,7 @@ const { executeZohoRequest } = require("../utils/authUtils");
 const { getAccessToken } = require("../utils/zohoUtils");
 
 const updateData = async (req, res) => {
-  try {
+  try {c
     const userId = req.currentUser?.user_id;
     const { module } = req.params;
 

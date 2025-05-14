@@ -108,7 +108,7 @@
 const axios = require('axios');
 
 // Modified to only return the access token without sending HTTP responses
-const refreshAccessToken = async (req, res) => {
+const  refreshAccessToken = async (req, res) => {
     try {
         const userId = req.currentUser?.user_id;
         const { catalyst } = res?.locals;

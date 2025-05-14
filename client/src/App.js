@@ -14,6 +14,7 @@ import AuthorizedPage from './component/errorPages/AuthorizedPage.js';
 import Webtab2 from './component/testPages/Webtab2.js';
 import DragDropComponent from './component/testPages/DragDropComponent.js';
 import AccountProfile from './component/view/AccountView/AccountProfile.js';
+import AdminPage from './component/testPages/AdminPage.js';
 
 
 // Lazy loaded components (same as before)
@@ -410,6 +411,14 @@ function App() {
             <Webtab2/>
           }
           />
+          
+          <Route 
+          path='/app/adminpanel'
+          element={
+            <AdminPage/>
+          }
+          />
+
           <Route  
           path='/app/drag'
           element={

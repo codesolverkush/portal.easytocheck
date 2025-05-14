@@ -2,7 +2,7 @@ const express = require('express');
 const catalystSDK = require('zcatalyst-sdk-node');
 const userRouter = require('./routes/user.route');
 const orgRouter = require('./routes/organization.route');
-const testRouter = require('./routes/test.routes');
+const catalystRouter = require('./routes/catalyst.routes');
 const leadRouter = require('./routes/lead.routes');
 const dealRouter = require('./routes/deal.routes');
 const getRouter = require('./routes/get.routes');
@@ -19,6 +19,7 @@ const updateRouter = require('./routes/update.routes');
 const lookupRouter = require('./routes/lookup.routes');
 const metadataRouter = require('./routes/metadata.routes');
 const supportRouter = require('./routes/support.routes');
+const testRouter = require('./routes/test.routes');
 
 const cors = require('cors');
 
@@ -34,7 +35,7 @@ app.use(cors());
 
 
 
-const allowedOrigins = ['http://localhost:3000','https://easyportal-704392036.development.catalystserverless.com','https://portal.easytocheck.com'];
+const allowedOrigins = ['http://localhost:3000','https://crm.zoho.com','https://easyportal-704392036.development.catalystserverless.com','https://portal.easytocheck.com'];
 
 
 app.use(cors({
@@ -43,6 +44,15 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'], 
     credentials: true 
 }));
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'ALLOWALL');  // OR 'SAMEORIGIN'
+  next();
+});
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "frame-ancestors 'self' https://*.zoho.com");
+  next();
+});
+
 
 app.use((req, res, next) => { 
     const catalyst = catalystSDK.initialize(req);
@@ -54,7 +64,7 @@ app.use((req, res, next) => {
 app.use('/users', userRouter);
 app.use('/org',orgRouter); 
 app.use('/userRegistration',registrationRouter);
-app.use('/test',testRouter);
+app.use('/test',catalystRouter);
 app.use('/lead',leadRouter);
 app.use('/attendance', attendanceRouter);
 app.use('/get',getRouter);
@@ -71,6 +81,11 @@ app.use('/lookup',lookupRouter);
 
 app.use('/getmetadata',metadataRouter);
 app.use('/support',supportRouter);
+
+
+// admin webtab api
+
+app.use('/webtab',testRouter);
 
 
 
@@ -93,7 +108,7 @@ module.exports = app;
 // // Routes imports
 // const userRouter = require('./routes/user.route');
 // const orgRouter = require('./routes/organization.route');
-// const testRouter = require('./routes/test.routes');
+// const catalystRouter = require('./routes/test.routes');
 // const leadRouter = require('./routes/lead.routes');
 // const getRouter = require('./routes/get.routes');
 // const adminRouter = require('./routes/admin.routes');
@@ -179,7 +194,7 @@ module.exports = app;
 // app.use('/users', userRouter);
 // app.use('/org', orgRouter); 
 // app.use('/userRegistration', registrationRouter);
-// app.use('/test', testRouter);
+// app.use('/test', catalystRouter);
 // app.use('/lead', leadRouter);
 // app.use('/attendance', attendanceRouter);
 // app.use('/get', getRouter);

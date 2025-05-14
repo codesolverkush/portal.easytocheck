@@ -616,7 +616,7 @@ const createTicket = async (req, res) => {
       const emailService = catalyst.email();
 
       const mailOptions = {
-        from_email: "kushal@easytocheck.com",
+        from_email: "portal@easytocheck.com",
         to_email: "kushalpratapsingh17@gmail.com",
         subject: emailSubject,
         content: emailContent,

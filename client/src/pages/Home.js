@@ -44,6 +44,7 @@ const HomePage = () => {
   // Connection variable
   const [isUnauthorizedModalOpen, setIsUnauthorizedModalOpen] = useState(false);
   const [showFeaturePopup, setShowFeaturePopup] = useState(false);
+  const [role, setRole] = useState("appUser");
 
 
 
@@ -274,6 +275,29 @@ const HomePage = () => {
   }, []);
 
 
+   const checkRole = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_APP_API}/users/check-role`
+      );
+
+      if (response.status === 200) {
+        setRole(response?.data?.role || "appUser");
+      } else {
+        throw new Error("No data found.");
+      }
+    } catch (err) {
+    //   toast.success("Welcome to Organization Profile!");
+    } 
+  };
+
+  useEffect(() => {
+    checkRole();
+  }, []);
+
+  console.log("Role:", role);
+
+
   // Connection function for checking...
 
   const handleConnectOrganization = () => {
@@ -468,7 +492,7 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      <Navbar accessData={accessData} />
+      <Navbar accessData={accessData} role={role} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Premium Welcome Banner */}
         <div className={`bg-gradient-to-r ${gradient.formGradient} rounded-xl shadow-xl mb-8 overflow-hidden`}>
@@ -740,13 +764,7 @@ const HomePage = () => {
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 w-full">
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
                   <h3 className="text-xl font-semibold text-gray-800">External Analytics</h3>
-                  <select 
-                    className="text-sm border border-gray-300 rounded-lg px-4 py-2 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                  >
-                    <option>View 1</option>
-                    <option>View 2</option>
-                    <option>View 3</option>
-                  </select>
+                  <p className="text-gray-500 text-sm">View your sales performance and analytics</p>
                 </div>
 
                 <div className="overflow-hidden w-full flex justify-center items-center">

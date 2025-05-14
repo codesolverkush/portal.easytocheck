@@ -806,6 +806,7 @@ import { setLicenseStatus } from "../../redux/reducers/auth";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
+import Authorized from "../errorPages/AuthorizedPage";
 
 const OrganizationProfile = () => {
   const location = useLocation();
@@ -956,7 +957,7 @@ const OrganizationProfile = () => {
     );
   }
 
-  return (
+  return role !== "superadmin" ? <Authorized/> : (
     <div>
       <Navbar />
       <div className="min-h-screen bg-gradient-to-r from-indigo-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
