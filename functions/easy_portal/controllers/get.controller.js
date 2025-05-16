@@ -229,7 +229,6 @@ const leadDetails = async (req, res) => {
         const domain = req.userDetails[0]?.usermanagement?.domain;
         const accessScore = req.userDetails[0]?.usermanagement?.Leads;
 
-        console.log(crmuserid);
 
 
         if (!orgId) {
@@ -307,12 +306,10 @@ const dealDetails = async (req, res) => {
            
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
-            console.log(data);
             return res.status(200).json({ success: true, data, accessScore });
 
 
         } catch (error) {
-            console.log(error)
             if (error.message === "TOKEN_EXPIRED") {
                 // Refresh token without ending the response
                 try {
@@ -329,7 +326,6 @@ const dealDetails = async (req, res) => {
             }
         }
     } catch (error) {
-        console.log(error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error.message });
         }
@@ -356,12 +352,10 @@ const accountDetails = async (req, res) => {
            
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
-            console.log(data);
             return res.status(200).json({ success: true, data, accessScore });
 
 
         } catch (error) {
-            console.log(error)
             if (error.message === "TOKEN_EXPIRED") {
                 // Refresh token without ending the response
                 try {
@@ -378,7 +372,6 @@ const accountDetails = async (req, res) => {
             }
         }
     } catch (error) {
-        console.log(error);
         if (!res.headersSent) {
             return res.status(500).json({ success: false, message: error });
         }

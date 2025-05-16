@@ -327,6 +327,21 @@ const AdminPage = () => {
   // User Access State
   const [userAccessData, setUserAccessData] = useState([]);
 
+  // For handling which user creation method to use
+const [addUserMethod, setAddUserMethod] = useState('email');
+
+// For contact search functionality
+const [contactSearchEmail, setContactSearchEmail] = useState('');
+const [isSearching, setIsSearching] = useState(false);
+const [contactSearchStatus, setContactSearchStatus] = useState(''); // 'found'
+
+
+// Add these new state variables to the AdminPage component
+const [contactSuggestions, setContactSuggestions] = useState([]);
+const [isShowingSuggestions, setIsShowingSuggestions] = useState(false);
+
+
+
   // Utility Functions
   const getDaysLeft = (endDate) => {
     const end = new Date(endDate);
@@ -501,59 +516,7 @@ const AdminPage = () => {
       closeConfirmModal();
     }
   };
-  // Submit New User
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setIsSubmitting(true);
 
-  //   try {
-  //     const response = await axios.post(`${process.env.REACT_APP_APP_API}/test/adduser`, formData);
-  //     if(response.status === 200){
-  //       // easyportal__User_Id:response.data.data.user_id,
-  //       console.log(response);
-  //        // Optimistic Update: Add new user to local state
-  //     const crmresponse = await axios.post(`${process.env.REACT_APP_APP_API}/create/createnewuser/easyportal__Portal_Users`,{
-  //       crmuserid: response.data.data.user_id,
-  //       easyportal__User_Email: formData.email_id,
-  //       Name: `${formData.first_name} ${formData.last_name}`,
-  //       easyportal__Status: "Active"
-  //     })
-
-  //     console.log(crmresponse);
-  //       if(crmresponse.status === 200){
-  //         const newUser = {
-  //           usermanagement: {
-  //             userid: response.data.data.user_id, // Assuming API returns new user ID
-  //             username: `${formData.first_name} ${formData.last_name}`,
-  //             email: formData.email_id
-  //           }
-  //         };
-
-  //         console.log("New User added",newUser);
-    
-  //         setUserDetails([...userDetails, newUser]);
-    
-  //         // Reset form and show success
-  //         setFormData({
-  //           email_id: "",
-  //           first_name: "",
-  //           last_name: ""
-  //         });
-  //         setShowModal(false);
-    
-  //         // Refresh overall data to update license counts
-  //         fetchUserDetails();
-    
-  //         toast.success('User added successfully');
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error(error.response?.data?.message || "Failed to add user");
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -601,6 +564,132 @@ const AdminPage = () => {
       setIsSubmitting(false);
     } 
   };
+
+
+
+
+// Replace the existing searchContactByEmail function with this enhanced version
+const searchContactByEmail = async () => {
+  if (!contactSearchEmail) return;
+  
+  setIsSearching(true);
+  setContactSearchStatus('');
+  setContactSuggestions([]);
+  
+  try {
+    const response = await axios.get(`${process.env.REACT_APP_APP_API}/webtab/searchcontact`, {
+      params: {
+        email: contactSearchEmail,
+        orgId: orgid,
+        searchType: 'partial' // Add this parameter to get partial matches
+      }
+    });
+    
+    if (response.status === 200 && response.data.success) {
+      // Check if we have multiple suggestions
+      if (response.data.data.data && response.data.data.data.length > 0) {
+        const contacts = response.data.data.data;
+        
+        if (contacts.length === 1) {
+          // Only one contact found, auto-fill the form
+          const contactData = contacts[0];
+          setFormData({
+            email_id: contactData.Email || contactSearchEmail,
+            first_name: contactData.First_Name || '',
+            last_name: contactData.Last_Name || ''
+          });
+          setContactSearchStatus('found');
+          setIsShowingSuggestions(false);
+        } else {
+          // Multiple contacts found, show suggestions
+          setContactSuggestions(contacts);
+          setIsShowingSuggestions(true);
+          setContactSearchStatus('suggestions');
+        }
+      } else {
+        // No contacts found
+        setContactSearchStatus('not_found');
+        setIsShowingSuggestions(false);
+      }
+    } else {
+      // API call successful but no results
+      setContactSearchStatus('not_found');
+      setIsShowingSuggestions(false);
+    }
+  } catch (error) {
+    console.error("Error searching contact:", error);
+    toast.error("Failed to search for contact");
+    setContactSearchStatus('not_found');
+    setIsShowingSuggestions(false);
+  } finally {
+    setIsSearching(false);
+  }
+};
+
+// Add this new function to handle suggestion selection
+const handleSelectSuggestion = (contact) => {
+  setFormData({
+    email_id: contact.Email || contactSearchEmail,
+    first_name: contact.First_Name || '',
+    last_name: contact.Last_Name || ''
+  });
+  setContactSearchEmail(contact.Email || '');
+  setContactSearchStatus('found');
+  setIsShowingSuggestions(false);
+};
+
+// Add this function to handle input changes for the search field
+const handleSearchInputChange = (e) => {
+  setContactSearchEmail(e.target.value);
+  
+  // Clear suggestions if input is empty
+  if (!e.target.value) {
+    setIsShowingSuggestions(false);
+    setContactSuggestions([]);
+    setContactSearchStatus('');
+  }
+};
+
+// Add this function to close the suggestions dropdown
+const closeSuggestions = () => {
+  setIsShowingSuggestions(false);
+};
+
+// Add this useEffect to handle clicks outside the suggestions dropdown
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    const suggestionsContainer = document.getElementById('suggestions-container');
+    if (suggestionsContainer && !suggestionsContainer.contains(event.target)) {
+      setIsShowingSuggestions(false);
+    }
+  };
+
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, []);
+
+// Add this helper function to highlight matching text in suggestions
+const highlightMatch = (text, query) => {
+  if (!query || !text) return text;
+  
+  const regex = new RegExp(`(${query})`, 'gi');
+  const parts = text.split(regex);
+  
+  return parts.map((part, index) => 
+    regex.test(part) ? 
+      <span key={index} className="bg-yellow-200 font-medium">{part}</span> : 
+      <span key={index}>{part}</span>
+  );
+};
+
+// Add this function to handle the submit when using the contact form
+const handleContactSubmit = async (e) => {
+  e.preventDefault();
+  // You can use the same handleSubmit function since the formData structure is the same
+  handleSubmit(e);
+};
   
 
   // Initial Data Fetch
@@ -726,51 +815,6 @@ const AdminPage = () => {
           Add User
         </button>
       </div>
-
-      {/* Tabs */}
-      {/* <div className="mb-6 border-b border-gray-200">
-        <nav className="-mb-px flex space-x-4">
-          <button
-            onClick={() => setActiveTab('userDetails')}
-            className={`
-                    py-3 px-4 flex items-center 
-                    ${activeTab === 'userDetails'
-                ? 'border-b-2 border-indigo-600 text-indigo-600'
-                : 'text-gray-500 hover:text-gray-700'}
-                    font-medium text-sm transition-colors
-                  `}
-          >
-            <FaUsers className="mr-2" />
-            User Details
-          </button>
-          <button
-            onClick={() => setActiveTab('scopesPermissions')}
-            className={`
-                    py-3 px-4 flex items-center 
-                    ${activeTab === 'scopesPermissions'
-                ? 'border-b-2 border-indigo-600 text-indigo-600'
-                : 'text-gray-500 hover:text-gray-700'}
-                    font-medium text-sm transition-colors
-                  `}
-          >
-            <FaLock className="mr-2" />
-            Scopes & Permissions
-          </button>
-          <button
-            onClick={() => setActiveTab('personalized')}
-            className={`
-                    py-3 px-4 flex items-center 
-                    ${activeTab === 'personalized'
-                ? 'border-b-2 border-indigo-600 text-indigo-600'
-                : 'text-gray-500 hover:text-gray-700'}
-                    font-medium text-sm transition-colors
-                  `}
-          >
-            <FaEdit className="mr-2" />
-            Personalization
-          </button>
-        </nav>
-      </div> */}
 
       {/* Tabs - Horizontally Scrollable */}
 <div className="mb-6 border-b border-gray-200">
@@ -996,118 +1040,326 @@ const AdminPage = () => {
         </div>
       )}
 
-      {/* Add User Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+{showModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+      onClick={() => setShowModal(false)}
+    ></div>
+    <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden transform transition-all">
+      {/* Modal Header */}
+      <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-xl font-bold text-white flex items-center">
+            <FaUserPlus className="mr-2" />
+            Add New User
+          </h3>
+          <button
             onClick={() => setShowModal(false)}
-          ></div>
-          <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden transform transition-all">
-            {/* Modal Header */}
-            <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold text-white flex items-center">
-                  <FaUserPlus className="mr-2" />
-                  Add New User
-                </h3>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="text-white hover:text-indigo-200 transition-colors"
-                >
-                  <IoMdClose className="w-6 h-6" />
-                </button>
+            className="text-white hover:text-indigo-200 transition-colors"
+          >
+            <IoMdClose className="w-6 h-6" />
+          </button>
+        </div>
+      </div>
+
+      {/* Toggle Buttons */}
+      <div className="flex border-b border-gray-200">
+        <button
+          onClick={() => setAddUserMethod('email')}
+          className={`flex-1 py-3 px-4 text-center ${
+            addUserMethod === 'email'
+              ? 'text-indigo-600 border-b-2 border-indigo-600 font-medium'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Add By Email
+        </button>
+        <button
+          onClick={() => {
+            setAddUserMethod('contact');
+            setContactSearchStatus('');
+          }}
+          className={`flex-1 py-3 px-4 text-center ${
+            addUserMethod === 'contact'
+              ? 'text-indigo-600 border-b-2 border-indigo-600 font-medium'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Add From Contacts
+        </button>
+      </div>
+
+      {/* Modal Body */}
+      <div className="px-6 py-5">
+        {addUserMethod === 'email' ? (
+          <form onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="email_id" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email_id"
+                  name="email_id"
+                  value={formData.email_id}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  placeholder="Enter email address"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  id="first_name"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  placeholder="Enter first name"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="last_name"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  placeholder="Enter last name"
+                />
               </div>
             </div>
 
-            {/* Modal Body */}
-            <div className="px-6 py-5">
-              <form onSubmit={handleSubmit}>
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="email_id" className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      id="email_id"
-                      name="email_id"
-                      value={formData.email_id}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                      placeholder="Enter email address"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      id="first_name"
-                      name="first_name"
-                      value={formData.first_name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                      placeholder="Enter first name"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      id="last_name"
-                      name="last_name"
-                      value={formData.last_name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                      placeholder="Enter last name"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`
-                      w-full 
-                      bg-indigo-600 
-                      hover:bg-indigo-700 
-                      text-white 
-                      py-3 
-                      rounded-lg 
-                      transition 
-                      duration-300 
-                      font-medium 
-                      flex 
-                      items-center 
-                      justify-center 
-                      ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}
-                    `}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                        Processing...
-                      </>
-                    ) : (
-                      "Add User"
-                    )}
-                  </button>
-                </div>
-              </form>
+            <div className="mt-6">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`
+                  w-full 
+                  bg-indigo-600 
+                  hover:bg-indigo-700 
+                  text-white 
+                  py-3 
+                  rounded-lg 
+                  transition 
+                  duration-300 
+                  font-medium 
+                  flex 
+                  items-center 
+                  justify-center 
+                  ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}
+                `}
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Processing...
+                  </>
+                ) : (
+                  "Add User"
+                )}
+              </button>
             </div>
-          </div>
+          </form>
+        ) : (
+          <div className="mb-6 relative" id="suggestions-container">
+  <label htmlFor="contact_email" className="block text-sm font-medium text-gray-700 mb-1">
+    Search Contact by Email or Name
+  </label>
+  <div className="flex space-x-2">
+    <div className="flex-1 relative">
+      <input
+        type="text"
+        id="contact_email"
+        value={contactSearchEmail}
+        onChange={handleSearchInputChange}
+        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+        placeholder="Enter contact email or name"
+        autoComplete="off"
+      />
+      
+      {/* Suggestions Dropdown */}
+      {isShowingSuggestions && contactSuggestions.length > 0 && (
+        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+          {contactSuggestions.map((contact, index) => (
+            <div
+              key={index}
+              onClick={() => handleSelectSuggestion(contact)}
+              className="cursor-pointer hover:bg-indigo-50 py-2 px-4 border-b border-gray-100 last:border-b-0"
+            >
+              <div className="font-medium text-gray-900">
+                {highlightMatch(contact.First_Name || '', contactSearchEmail)} {highlightMatch(contact.Last_Name || '', contactSearchEmail)}
+              </div>
+              <div className="text-sm text-gray-500">
+                {highlightMatch(contact.Email || '', contactSearchEmail)}
+              </div>
+              {contact.Account_Name && (
+                <div className="text-xs text-gray-400 mt-1">
+                  Company: {contact.Account_Name}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
+    </div>
+    <button
+      type="button"
+      onClick={searchContactByEmail}
+      disabled={isSearching || !contactSearchEmail}
+      className={`
+        px-4 py-2 
+        bg-indigo-600 
+        text-white 
+        rounded-lg 
+        hover:bg-indigo-700 
+        transition-colors
+        ${(isSearching || !contactSearchEmail) ? 'opacity-70 cursor-not-allowed' : ''}
+      `}
+    >
+      {isSearching ? (
+        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+      ) : (
+        "Search"
+      )}
+    </button>
+  </div>
+  
+  <p className="mt-2 text-xs text-gray-500">
+    Search by email, first name, or last name to find existing contacts
+  </p>
+</div>
+
+        )}
+        
+{contactSearchStatus === 'not_found' && (
+  <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+    <p className="text-yellow-700 text-sm flex items-center">
+      <FaExclamationTriangle className="mr-2" />
+      No contacts found matching your search.
+    </p>
+  </div>
+)}
+
+{contactSearchStatus === 'suggestions' && (
+  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+    <p className="text-blue-700 text-sm flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      Multiple contacts found. Select one from the dropdown or refine your search.
+    </p>
+  </div>
+)}
+
+{contactSearchStatus === 'found' && (
+  <>
+    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+      <p className="text-green-700 text-sm flex items-center mb-2">
+        <FaUsers className="mr-2" />
+        Contact found! Review details below.
+      </p>
+    </div>
+
+    <form onSubmit={handleContactSubmit}>
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="contact_email_id" className="block text-sm font-medium text-gray-700 mb-1">
+            Email Address
+          </label>
+          <input
+            type="email"
+            id="contact_email_id"
+            name="email_id"
+            value={formData.email_id}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="contact_first_name" className="block text-sm font-medium text-gray-700 mb-1">
+            First Name
+          </label>
+          <input
+            type="text"
+            id="contact_first_name"
+            name="first_name"
+            value={formData.first_name}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="contact_last_name" className="block text-sm font-medium text-gray-700 mb-1">
+            Last Name
+          </label>
+          <input
+            type="text"
+            id="contact_last_name"
+            name="last_name"
+            value={formData.last_name}
+            onChange={handleInputChange}
+            required
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+          />
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={`
+            w-full 
+            bg-indigo-600 
+            hover:bg-indigo-700 
+            text-white 
+            py-3 
+            rounded-lg 
+            transition 
+            duration-300 
+            font-medium 
+            flex 
+            items-center 
+            justify-center 
+            ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}
+          `}
+        >
+          {isSubmitting ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+              Processing...
+            </>
+          ) : (
+            "Add User"
+          )}
+        </button>
+      </div>
+    </form>
+  </>
+)}
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Confirmation Modal */}
       {showConfirmModal && userToDelete && (

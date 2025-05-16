@@ -777,7 +777,7 @@ const LandingPage = () => {
             </h4>
             <ul className="space-y-4">
               {[
-                { name: "About", to: "#about", action: (e) => scrollToDemo("about", e) },
+                { name: "About", to: "/app/about-us"},
                 { name: "Careers", to: "#", action: null },
                 { name: "Contact", to: "#contact", action: (e) => scrollToDemo("contact", e) }
               ].map((item) => (

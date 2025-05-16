@@ -1,0 +1,39 @@
+[debug] [2025-05-16T06:02:33.507Z] : 
+[debug] [2025-05-16T06:02:33.522Z] : ----------------------------------------------------------------------
+[debug] [2025-05-16T06:02:33.522Z] : Command:      C:\Program Files\nodejs\node.exe C:\Users\Dell5490\AppData\Roaming\npm\node_modules\zcatalyst-cli\lib\bin\catalyst.js serve
+[debug] [2025-05-16T06:02:33.522Z] : CLI Version:  1.17.6
+[debug] [2025-05-16T06:02:33.523Z] : Platform:     win32
+[debug] [2025-05-16T06:02:33.523Z] : Node Version: v22.12.0
+[debug] [2025-05-16T06:02:33.524Z] : Time:         Fri May 16 2025 11:32:33 GMT+0530 (India Standard Time)
+[debug] [2025-05-16T06:02:33.524Z] : ----------------------------------------------------------------------
+[debug] [2025-05-16T06:02:33.524Z] : 
+[debug] [2025-05-16T06:02:35.358Z] : > authorizing via signed-in user option
+[debug] [2025-05-16T06:02:35.358Z] : > command requires scopes: ["ZohoCatalyst.projects.ALL","ZohoCatalyst.functions.ALL","ZohoCatalyst.functions.EXECUTE","ZohoCatalyst.webapp.ALL","ZohoCatalyst.pdfshot.execute","ZohoCatalyst.authentication.CREATE"]
+[debug] [2025-05-16T06:02:35.382Z] : > refreshing access token <
+[debug] [2025-05-16T06:02:35.384Z] : >>>> HTTP REQUEST : POST https://accounts.zoho.com/oauth/v2/token 
+<request body omitted>
+
+[debug] [2025-05-16T06:02:36.437Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 16 May 2025 06:02:36 GMT","content-type":"application/json;charset=UTF-8","content-length":"1980","connection":"keep-alive","set-cookie":["zalb_b266a5bf57=a7f15cb1555106de5ac96d088b72e7c8; Path=/; Secure; HttpOnly","iamcsr=5a284478-5c80-48ff-9b49-549c60ebdfa7;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=5a284478-5c80-48ff-9b49-549c60ebdfa7;path=/;SameSite=Strict;Secure;priority=high"],"cache-control":"no-store","x-content-type-options":"nosniff","pragma":"no-cache","x-frame-options":"SAMEORIGIN","vary":"accept-encoding","content-language":"en-US","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-16T06:02:36.454Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006 
+
+[debug] [2025-05-16T06:02:37.479Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 16 May 2025 06:02:37 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=b14009a6059feb83ee8aa1c715a015c5; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=1b562948-e4f2-420f-a2f9-47ed37630ba3;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=1b562948-e4f2-420f-a2f9-47ed37630ba3;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-16T06:02:37.482Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006/environment 
+
+[debug] [2025-05-16T06:02:37.822Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 16 May 2025 06:02:37 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=bbdfb771565421abbe10f7a180903d28; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=30e3856f-e632-4cab-bcf9-f6c8ac5a6e8c;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=30e3856f-e632-4cab-bcf9-f6c8ac5a6e8c;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-16T06:02:38.395Z] : >>>> HTTP REQUEST : GET https://api.catalyst.zoho.com/baas/v1/project/4340000000043006/function 
+Query params: {"type":"basicio,event,cron,applogic,integration,browser_logic"}
+
+[debug] [2025-05-16T06:02:38.714Z] : <<<< HTTP RESPONSE : 200
+Response Headers: {"server":"ZGS","date":"Fri, 16 May 2025 06:02:38 GMT","content-type":"application/vnd.catalyst.v2+json","transfer-encoding":"chunked","connection":"keep-alive","set-cookie":["zalb_46512fd555=4ead9897700827f973c0f7dbded7f673; Path=/; Secure; HttpOnly","ZD_CSRF_TOKEN=5b43cfa6-3ca9-4cbc-8d23-62278ce69088;path=/;SameSite=None;Secure;priority=high","_zcsr_tmp=5b43cfa6-3ca9-4cbc-8d23-62278ce69088;path=/;SameSite=Strict;Secure;priority=high"],"x-content-type-options":"nosniff","cache-control":"private,no-cache,no-store,max-age=0,must-revalidate","pragma":"no-cache","expires":"Thu, 01 Jan 1970 00:00:00 GMT","x-frame-options":"DENY","strict-transport-security":"max-age=64072000; includeSubDomains; preload"}
+
+[debug] [2025-05-16T06:02:38.719Z] : unknown eol undefined hence skipping check
+[info] [2025-05-16T06:02:46.054Z] : 
+[info] [2025-05-16T06:02:46.054Z] :  >>>>>>>>>>>>> AdvancedIO <<<<<<<<<<<< 
+[info] [2025-05-16T06:02:46.055Z] : i easy_portal: http://localhost:3000/server/easy_portal/
+[info] [2025-05-16T06:02:46.055Z] : 

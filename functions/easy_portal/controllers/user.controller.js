@@ -130,4 +130,65 @@ const checkRole = async (req, res) => {
   }
 };
 
-module.exports = { logoutHandler, trobleShootHandler, checkRole };
+
+const generateToken = async (req, res) => {
+  try {
+    const { catalyst } = res.locals;
+    const userManagement = catalyst.userManagement();
+    const zcql = catalyst.zcql();
+ 
+    // const { email_id } = req.body;
+    const email_id = "test45demo@gmail.com";
+ 
+    if (!email_id) {
+      return res.status(400).json({
+        success: false,
+        message: "Email ID is required to login.",
+      });
+    }
+ 
+    // 🔍 Fetch all users and check if email exists
+    const allUsers = await userManagement.getAllUsers();
+    const user = allUsers.find((u) => u.email_id === email_id);
+ 
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found. Please register first.",
+      });
+    }
+ 
+    const { first_name, last_name, phone_number, country_code, org_id } = user;
+ 
+    // ✅ Generate new custom token for login
+    const tokenResponse = await userManagement.generateCustomToken({
+      type: "web",
+      user_details: {
+        email_id,
+        first_name,
+        last_name,
+        phone_number,
+        country_code,
+        org_id,
+        role_name: "App User",
+      },
+    });
+ 
+    res.status(200).json({
+      success: true,
+      message: "Login token generated successfully.",
+      token: tokenResponse,
+      userDetails: user,
+    });
+ 
+  } catch (error) {
+    console.error("Error in generateToken:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to generate login token.",
+      error: error.message || error,
+    });
+  }
+};
+
+module.exports = { logoutHandler, trobleShootHandler, checkRole, generateToken };

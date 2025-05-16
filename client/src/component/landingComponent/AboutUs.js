@@ -15,6 +15,10 @@ import Navbar3 from "../common/Navbar3";
 import IconZ from "../ui/Icons";
 import dashboardImage from "../../images/aboutus.png";
 import logoimage from '../../images/portallogo.jpg';
+import supportLogo from '../../images/support1.png'
+
+import { openSupportPopup } from "../../utils/supportTrigger";
+
 
 export default function AboutUs() {
   const [isHovered, setIsHovered] = useState(false);
@@ -353,7 +357,7 @@ export default function AboutUs() {
       </div>
 
       {/* Footer - More responsive */}
-      <footer className="bg-gray-900 text-white py-12 md:py-16">
+      {/* <footer className="bg-gray-900 text-white py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
             <div className="col-span-2">
@@ -504,8 +508,174 @@ export default function AboutUs() {
             </div>
           </div>
         </div>
-      </footer>
+      </footer> */}
+    <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white py-20 relative overflow-hidden">
+  {/* Animated background elements */}
+  <div className="absolute inset-0 overflow-hidden opacity-10">
+    <div className="absolute -top-24 -left-24 w-96 h-96 bg-indigo-600 rounded-full blur-3xl"></div>
+    <div className="absolute bottom-0 right-0 w-80 h-80 bg-purple-600 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div className="max-w-7xl mx-auto px-6 relative z-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12">
+      {/* Brand section */}
+      <div className="lg:col-span-5">
+        <div className="flex items-center space-x-3">
+          <img className="w-32 bg-white p-1 rounded-md shadow-md mt-1" src={logoimage} />
+        </div>
+        
+        <p className="mt-6 text-gray-300 max-w-md text-lg">
+          Experience our powerful Easy Portal with enhanced features and an intuitive user interface designed for modern professionals.
+        </p>
+        
+        <div className="mt-8 flex space-x-5">
+          {[
+            {
+              name: "zoho",
+              icon: IconZ,
+              url: "https://www.zoho.com/partners/find-partner-profile.html?partnerid=baf0b46ef74ed349968c06eeef3a9022",
+            },
+            {
+              name: "facebook",
+              icon: Facebook,
+              url: "https://www.facebook.com/easytocheck",
+            },
+            {
+              name: "linkedin",
+              icon: Linkedin,
+              url: "https://www.linkedin.com/company/easytocheck-software-solutions",
+            },
+            {
+              name: "website",
+              icon: Globe,
+              url: "https://easytocheck.com",
+            },
+          ].map((social) => (
+            <a
+              key={social.name}
+              href={social.url}
+              className="group"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={social.name}
+            >
+              <div className="w-12 h-12 rounded-xl bg-gray-800 flex items-center justify-center group-hover:bg-indigo-600 transition-all duration-300 transform group-hover:-translate-y-1 shadow-lg">
+                <social.icon className="w-6 h-6 text-white" />
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
 
+      {/* Navigation columns */}
+      <div className="lg:col-span-7">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+          <div className="space-y-8">
+            <h4 className="text-xl font-bold text-white relative inline-block">
+              Product
+              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-indigo-500 rounded-full"></span>
+            </h4>
+            <ul className="space-y-4">
+              {[
+                { name: "Features", to: "/app/signup" },
+                { name: "Pricing", to: "/app/signup"},
+                { name: "Security", to: "/app/signup", action: null }
+              ].map((item) => (
+                <li key={item.name} className="transform hover:translate-x-2 transition-transform duration-300">
+                  <Link
+                    to={item.to}
+                    onClick={item.action}
+                    className="text-gray-300 hover:text-white transition-colors flex items-center space-x-2 group"
+                  >
+                    <span className="w-0 group-hover:w-4 h-0.5 bg-indigo-500 transition-all duration-300"></span>
+                    <span>{item.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="space-y-8">
+            <h4 className="text-xl font-bold text-white relative inline-block">
+              Company
+              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-purple-500 rounded-full"></span>
+            </h4>
+            <ul className="space-y-4">
+              {[
+                { name: "About", to: "#",action: null },
+                { name: "Careers", to: "#", action: null },
+                { name: "Contact", to: "/app/signup", }
+              ].map((item) => (
+                <li key={item.name} className="transform hover:translate-x-2 transition-transform duration-300">
+                  <Link
+                    to={item.to}
+                    onClick={item.action}
+                    className="text-gray-300 hover:text-white transition-colors flex items-center space-x-2 group"
+                  >
+                    <span className="w-0 group-hover:w-4 h-0.5 bg-purple-500 transition-all duration-300"></span>
+                    <span>{item.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="space-y-8">
+            <h4 className="text-xl font-bold text-white relative inline-block">
+              Legal
+              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-indigo-400 rounded-full"></span>
+            </h4>
+            <ul className="space-y-4">
+              {[
+                { name: "Privacy Policy", to: "#", action: null },
+                { name: "Terms of Service", to: "#", action: null },
+                { name: "Cookie Policy", to: "#", action: null }
+              ].map((item) => (
+                <li key={item.name} className="transform hover:translate-x-2 transition-transform duration-300">
+                  <Link
+                    to={item.to}
+                    onClick={item.action}
+                    className="text-gray-300 hover:text-white transition-colors flex items-center space-x-2 group"
+                  >
+                    <span className="w-0 group-hover:w-4 h-0.5 bg-indigo-400 transition-all duration-300"></span>
+                    <span>{item.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    {/* Bottom section */}
+    <div className="mt-12 pt-8 border-t border-gray-800">
+      <div className="flex flex-col md:flex-row justify-between items-center">
+        <div className="mt-4 md:mt-0 order-2 md:order-1">
+          <button
+            onClick={openSupportPopup}
+            className="group relative transition-all duration-300"
+            aria-label="Support"
+          >
+            <div className="absolute inset-0  rounded-full blur-md opacity-75 group-hover:opacity-100 transition-opacity"></div>
+            <img
+              src={supportLogo}
+              alt="Support"
+              className="w-16 h-16 relative z-10 transform group-hover:scale-110 transition-transform duration-300"
+            />
+          </button>
+        </div>
+        
+        <div className="flex flex-col items-center md:items-end space-y-4 order-1 md:order-2">
+          <p className="text-gray-400">
+            © 2025 Easy Portal. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
       <style jsx>{`
         @keyframes pendulum {
           0% { transform: rotate(-5deg); }

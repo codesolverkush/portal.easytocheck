@@ -1,7 +1,9 @@
 const genaccesstokenadmin = require("../utils/genaccesstokenadmin");
 const { getAccessToken, handleZohoRequest } = require("../utils/zohoUtils");
+const dotenv = require("dotenv");
+dotenv.config();
 
-const webtabHander = async (req, res) => {
+const webtabHandler = async (req, res) => {
   try {
     const { orgid,email } = req.query;
     const { catalyst } = res.locals;
@@ -12,12 +14,6 @@ const webtabHander = async (req, res) => {
     console.log("orgid", orgid);
     console.log("email", email);
 
-    
-    //   const orgQuery = `
-    //          SELECT orgid FROM usermanagement WHERE orgid = '${orgid}' 
-    //         `;
-    //   const orgDetail = await zcql.executeZCQLQuery(orgQuery);
-    //   const orgId = orgDetail[0]?.usermanagement?.orgid;
 
       if (!orgid) {
         return res.status(404).json({
@@ -53,6 +49,7 @@ const webtabHander = async (req, res) => {
                `;
 
         const userDetails = await zcql.executeZCQLQuery(selectUserQuery);
+        console.log("userDetails", userDetails);
 
         users.push(userDetails);
 
@@ -581,7 +578,11 @@ const getAdminDetails = async (req, res) => {
     try {
         const { catalyst } = res.locals;
         const zcql = catalyst.zcql();
-        const {crmorgid,email} = req.query;
+        const {crmorgid,email,key} = req.query;
+        console.log("key",key);
+
+        if(key !== process.env.CHECKMAC) return res.status(401).json({message:"Unauthorized access!"});
+        
         console.log("crmorgid",crmorgid);   
         console.log("email",email);
 
@@ -608,12 +609,70 @@ const getAdminDetails = async (req, res) => {
     }
 }
 
+
+const searchContactData = async (req, res) => {
+    let catalyst;
+    try {
+
+      const {orgId,email} = req.query;
+
+      console.log("orgId", orgId);
+      console.log("email", email);
+  
+      catalyst = res.locals.catalyst;
+      const zcql = catalyst.zcql();
+  
+      if (!orgId) {
+        return res.status(400).json({ success: false, message: "Organization ID not found." });
+      }
+  
+      // Get domain
+      const orgDetailsQuery = `SELECT crmdomain FROM Organization WHERE ROWID = '${orgId}' LIMIT 1`;
+      const orgDetails = await zcql.executeZCQLQuery(orgDetailsQuery);
+      if (!orgDetails || orgDetails.length === 0) {
+        return res.status(404).json({ success: false, message: "Organization not found." });
+      }
+      const domain = orgDetails[0]?.Organization?.crmdomain;
+      if (!domain) {
+        return res.status(404).json({ success: false, message: "Domain not found." });
+      }
+
+      if (!email) {
+        return res.status(400).json({ success: false, message: "Email is required." });
+      }
+  
+      const token = await getAccessToken(orgId, req, res);
+      const searchUrl = `https://www.zohoapis.${domain}/crm/v7/coql`;
+  
+      const query = {
+        select_query: `select id,First_Name,Last_Name,Account_Name from Contacts where ((Email = '${email}') or (First_Name = '${email}') or (Last_Name = '${email}') or (Full_Name = '${email}')) limit 10`
+      };
+      const contactDataSearch = await handleZohoRequest(searchUrl, 'post', query, token);
+      console.log("contactDataSearch", contactDataSearch);
+  
+      return res.status(200).json({
+        success: true,
+        data: contactDataSearch
+      });
+  
+    } catch (error) {
+      console.error("Error searching contact data:", error.message);
+  
+      return res.status(error.status || 500).json({
+        success: false,
+        message: "Failed to search contact data.",
+        error: error.message || error
+      });
+    }
+  };
+
 module.exports = {
     getAdminDetails,
-    webtabHander,
+    webtabHandler,
     updateUserAccess,
     registerNewUser,
     createNewUser,
     removeUser,
-    updatePortalUser
+    updatePortalUser,
+    searchContactData
 };

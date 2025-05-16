@@ -179,7 +179,7 @@ const getOrganizationDetails = async(req,res)=>{
 
     if(userId){
         const selectFindQuery = `
-        SELECT orgName, street, city, state, zip, country, displayname,crmdomain,isactive,activationdate,activationEndDate,superadminEmail
+        SELECT orgName, street, city, state, zip, country, displayname,crmdomain,isactive,activationdate,activationEndDate,superadminEmail,crmorgid
         FROM Organization 
         WHERE ROWID = '${orgId}' 
         LIMIT 1
@@ -228,7 +228,7 @@ const getOrgDetails = async(req,res)=>{
         
 
          const selectFindQuery = `
-         SELECT ROWID, orgname, street, city, state, zip, country, displayname,crmdomain,isactive,activationdate,activationEndDate,superadminEmail
+         SELECT ROWID, orgname, street, city, state, zip, country, displayname,crmdomain,isactive,activationdate,activationEndDate,superadminEmail,crmorgid
          FROM Organization 
          WHERE ROWID = '${orgId}' 
          LIMIT 1
@@ -348,7 +348,7 @@ const requestRefreshToken = async (req, res) => {
       // Make a request to Zoho's token endpoint
     
       const tokenResponse = await axios.post(
-        `https://accounts.zoho.${domain}/oauth/v2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${authCode}&grant_type=authorization_code&redirect_uri=http://localhost:3000/app`,
+        `https://accounts.zoho.${domain}/oauth/v2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${authCode}&grant_type=authorization_code&redirect_uri=https://portal.easytocheck.com`,
         null, null
       );
       
@@ -477,4 +477,118 @@ const checkForExtension = async (req, res) => {
 };
 
 
-module.exports = {registerOrganization,organizationExists,getOrganizationDetails,getOrgDetails,checkAuthorization,makeconnection,requestRefreshToken, checkForExtension};
+
+const getcrmorg = async (req, res) => {
+    const userId = req.currentUser?.user_id;
+  try {
+    console.log("userId", userId);
+    if (!userId) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User ID not found." });
+    }
+
+    const { id, module } = req.params;
+    const { catalyst } = res.locals;
+    const zcql = catalyst.zcql();
+
+   
+    const orgId = req.userDetails[0]?.usermanagement?.orgid;
+    const domain = req.userDetails[0]?.usermanagement?.domain;
+    const accessscore = req.userDetails[0]?.usermanagement?.[module];  
+
+    if (!orgId) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Organization ID not found." });
+    }
+    
+   
+    let token = await getAccessToken(orgId,req, res);
+    console.log("token", token);
+ 
+  
+    const url = `https://www.zohoapis.${domain}/crm/v7/org`;
+  
+
+    try {
+     
+      const data = await handleZohoRequest(url, "get", null, token);
+      
+      return res
+        .status(200)
+        .json({
+          success: true,
+          data,
+          username: req.currentUser.first_name + " " + req.currentUser.last_name,
+          accessscore
+        });
+    } catch (error) {
+        console.log("error",error);
+      if (error.message === "TOKEN_EXPIRED") {
+        try {
+        
+          token = await refreshAccessToken(req, res);
+          process.env.ACCESS_TOKEN = token;
+          const data = await handleZohoRequest(url, "get", null, token);
+          return res
+            .status(200)
+            .json({
+              success: true,
+              data,
+              username: req.currentUser.first_name + req.currentUser.last_name,
+              accessscore
+            });
+        } catch (refreshError) {
+          return res
+            .status(500)
+            .json({ success: false, message: refreshError.message });
+        }
+      }
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  } catch (error) {
+    console.log("error",error);
+    if (!res.headersSent) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+};
+
+const updateOrgDetails = async (req, res) => {  
+    try {
+        const orgid = req.userDetails[0]?.usermanagement.orgid;
+        const { company_name, domain_name, street, city, state, country, zip, zgid } = req.body.orgData;
+        console.log("crmorgid", zgid);
+        console.log(req.body);
+        const { catalyst } = res.locals;
+        const zcql = catalyst.zcql();
+        const updateQuery = `
+            UPDATE Organization 
+            SET orgname = '${company_name}', 
+                domain = '${domain_name}', 
+                street = '${street}', 
+                city = '${city}', 
+                state = '${state}', 
+                country = '${country}', 
+                zip = '${zip}', 
+                displayname = '${company_name}', 
+                crmorgid = ${zgid}
+            WHERE ROWID = '${orgid}'
+        `;
+        await zcql.executeZCQLQuery(updateQuery);
+        return res.status(200).json({ message: "Organization details updated successfully." }); 
+    } catch (error) {
+        res.status(500).send({
+            message: error.message || error
+        });
+    }
+}
+
+
+
+
+
+
+
+module.exports = {registerOrganization,organizationExists,getOrganizationDetails,getOrgDetails,checkAuthorization,makeconnection,requestRefreshToken, checkForExtension, getcrmorg,updateOrgDetails};
