@@ -260,6 +260,7 @@ const LeadView = () => {
         await cache.put("/leads", newResponse);
       }
     } catch (error) {
+      console.log(error);
       toast.error("Error Fetching Lead!");
     } finally {
       setLoading(false);

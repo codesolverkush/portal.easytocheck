@@ -9,7 +9,10 @@ import {
   Landmark, 
   IndianRupee,
   CheckCircle,
-  Shield
+  Shield,
+  Contact,
+  Phone,
+  Clock
 } from "lucide-react";
 
 const LicenseExpiredPage = () => {
@@ -84,7 +87,7 @@ const LicenseExpiredPage = () => {
             </div>
           ) : (
             <>
-              <div className="mb-6">
+              {/* <div className="mb-6">
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-600">License Fee</span>
                   <span className="font-medium">₹45,000.00</span>
@@ -98,9 +101,9 @@ const LicenseExpiredPage = () => {
                   <span>Total Amount</span>
                   <span>₹50,000.00</span>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="bg-gray-50 p-4 rounded-lg mb-6">
+              {/* <div className="bg-gray-50 p-4 rounded-lg mb-6">
                 <div className="flex items-center mb-2">
                   <Shield className="h-5 w-5 text-indigo-600 mr-2" />
                   <span className="text-sm font-medium text-gray-700">Secure Payment</span>
@@ -123,6 +126,41 @@ const LicenseExpiredPage = () => {
                 >
                   Cancel
                 </button>
+              </div> */}
+
+<div className="bg-gray-50 p-6 rounded-lg mb-6 border border-gray-200">
+  <div className="flex items-start mb-4">
+    <div>
+      <h3 className="text-lg font-semibold text-gray-800 mb-2">Contact Us For License Renewal</h3>
+      <div className="space-y-3">
+        <div className="flex items-center">
+          <Mail className="h-5 w-5 text-indigo-600 mr-2" />
+          <a href="mailto:support@easyportal.com" className="text-indigo-600 hover:text-indigo-700 transition font-medium">
+            portal@easyportal.com
+          </a>
+        </div>
+        <div className="flex items-center">
+          <Clock className="h-5 w-5 text-indigo-600 mr-2" />
+          <span className="text-gray-700">24/7 Support Available</span>
+        </div>
+      </div>
+      <div className="mt-4 p-3 bg-indigo-50 rounded-md">
+        <p className="text-sm text-indigo-700">
+          <span className="font-medium">Note:</span> For faster service, please include your license key and organization name in your inquiry.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+              <div className="flex flex-col space-y-3">
+                
+                <button
+                  onClick={() => setShowPaymentModal(false)}
+                  className="w-full py-2 px-6 text-gray-700 font-medium border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2"
+                >
+                  Close
+                </button>
               </div>
             </>
           )}
@@ -136,7 +174,7 @@ const LicenseExpiredPage = () => {
             <IndianRupee className="h-6 w-6 text-green-500" title="UPI" />
           </div>
           <p className="text-xs text-gray-400 text-center">
-            Secured by Razorpay Payment Gateway
+           All payments are processed through Razorpay Payment Gateway
           </p>
         </div>
       </div>
@@ -215,19 +253,11 @@ const LicenseExpiredPage = () => {
               </p>
               <div className="flex items-center justify-center mt-4 space-x-4">
                 <a
-                  href="mailto:support@easyportal.com"
+                  href="mailto:portal@easyportal.com"
                   className="flex items-center text-indigo-600 hover:text-indigo-700 transition"
                 >
                   <Mail className="h-4 w-4 mr-2" />
                   <span>Email Support</span>
-                </a>
-                <span className="text-gray-300">|</span>
-                <a
-                  href="#"
-                  className="flex items-center text-indigo-600 hover:text-indigo-700 transition"
-                >
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  <span>Live Chat</span>
                 </a>
               </div>
             </div>

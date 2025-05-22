@@ -178,6 +178,8 @@ const registerNewUser = async (req, res) => {
     const allUsers = await userManagement.getAllUsers();
     const userDetails = allUsers.find((user) => user.email_id === email_id);
 
+    console
+
     if (!userDetails) {
       return res.status(404).json({
         success: false,
@@ -230,7 +232,38 @@ const getUserDetails = async (req, res) => {
   }
 };
 
+
+// const getUserDetails = async (req, res) => {
+//   try {
+//     const user = req?.currentUser;
+//     const { catalyst } = res.locals;
+//     const zcql = catalyst.zcql();
+
+//       const checkUserQuery = `SELECT ROWID, orgid, domain FROM usermanagement WHERE userid = '${user?.user_id}' LIMIT 1`;
+//       const checkUserResult = await zcql.executeZCQLQuery(checkUserQuery);
+//       const orgId = checkUserResult?.[0]?.usermanagement?.orgid;
+
+//       const licenseDetailQuery = `SELECT activeLicense,totalLicenses from Organization WHERE ROWID = ${orgId}`;
+//       const licenseDetail = await zcql.executeZCQLQuery(licenseDetailQuery);
+
+//       const plan = licenseDetail?.[0]?.Organization?.plan;
+
+//       const planDetails = await zcql.executeZCQLQuery(`SELECT * FROM Plan WHERE plan = '${plan}'`);
+            
+
+//     res.status(200).json({
+//       user: user,
+//       orgId: checkUserResult?.[0]?.usermanagement?.orgid,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching user details:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
+
 // Controller for the testing purpose...
+
 const cookiesDetails = async (req, res) => {
   try {
     const userId = req?.decodedData;

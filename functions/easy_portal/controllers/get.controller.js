@@ -263,7 +263,7 @@ const leadDetails = async (req, res) => {
         }
     } catch (error) {
         if (!res.headersSent) {
-            return res.status(500).json({ success: false, message: error.message });
+            return res.status(500).json({ success: false, message: error.message  });
         }
     }
 };

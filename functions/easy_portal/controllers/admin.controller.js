@@ -83,6 +83,9 @@ const removeUser = async (req, res) => {
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql();
     const { id } = req?.params;
+    const userManagement = catalyst.userManagement();
+
+
 
     if (userId && id) {
       // First, get the organization ID for the user being removed
@@ -149,6 +152,9 @@ const removeUser = async (req, res) => {
                 WHERE ROWID = '${orgId}'
             `;
       await zcql.executeZCQLQuery(updateLicenseQuery);
+
+      let deleteUser = await userManagement.deleteUser(id); 
+
 
       return res.status(200).send({
         success: true,
@@ -544,7 +550,7 @@ const searchContactData = async (req, res) => {
       // ✅ If token expired, refresh and retry once
       if (error.message === 'TOKEN_EXPIRED') {
         try {
-          token = await genaccesstokenadmin(orgId,domain,req, res);
+          token = await refreshAccessToken(req, res);
           const contactDataSearch = await handleZohoRequest(searchUrl, 'post', query, token);
           return res.status(200).json({ success: true, data: contactDataSearch });
         } catch (refreshError) {
@@ -570,4 +576,27 @@ const searchContactData = async (req, res) => {
   }
 };
 
-module.exports = { webtabHander, removeUser, updateUserAccess, updatePortalUser, personalizedUpdate, searchContactData };
+
+const enableDisableUser = async (req, res) => {
+  const {catalyst} = res.locals;
+  const zcql = catalyst.zcql();
+  const {id} = req.params;
+  const userManagement = catalyst.userManagement();
+
+
+  try {
+
+    let deleteUser = await userManagement.deleteUser(4340000000117007); 
+    console.log(deleteUser);
+    return res.status(200).json({ success: true, message: "User disabled successfully!",deleteUser });
+    
+    
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ success: false, message: "Something went wrong!" });
+  }
+
+}
+  
+
+module.exports = { webtabHander, removeUser, updateUserAccess, updatePortalUser, personalizedUpdate, searchContactData,enableDisableUser };
