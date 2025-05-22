@@ -5,6 +5,7 @@ import { userExists, userNotExists } from "../redux/reducers/auth"; // Adjust pa
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
 import LicenseCheck from "../wrapper/LicenseCheck";
+import toast from "react-hot-toast";
 
 // Secret key should match the one used in authSlice
 const SECRET_KEY = process.env.REACT_APP_CRYPTO_API;
@@ -15,7 +16,7 @@ const decryptData = (ciphertext) => {
     const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     return decryptedData;
   } catch (error) {
-    console.error("Error decrypting data:", error);
+    toast.error("Please contact administrator!");
     return null;
   }
 };

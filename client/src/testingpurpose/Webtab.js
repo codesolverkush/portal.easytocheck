@@ -110,7 +110,6 @@ const OrganizationPersonalizationPanel = () => {
         toast.success("Organization details updated successfully");
       }
     } catch (error) {
-      console.error("Failed to update organization details", error);
       toast.error(error?.response?.data?.message || "Failed to update organization details");
     } finally {
       setIsLoading(false);
@@ -125,9 +124,7 @@ const OrganizationPersonalizationPanel = () => {
         const response = await axios.post(`${process.env.REACT_APP_APP_API}/org/getdetails`);
         
         if (response.status === 200) {
-          const data = response.data;
-          console.log(response);
-          
+          const data = response.data;         
          
           setOrgId(data.data[0]?.Organization?.ROWID|| "");
           
@@ -151,7 +148,6 @@ const OrganizationPersonalizationPanel = () => {
           }
         }
       } catch (error) {
-        console.error("Failed to fetch organization details", error);
         toast.error("Failed to load organization details");
       } finally {
         setIsLoading(false);
@@ -332,8 +328,6 @@ const Webtab = () => {
   const [showUserForm, setShowUserForm] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
 
-  console.log(userAccessData);
-
   // Utility Functions
   const getDaysLeft = (endDate) => {
     const end = new Date(endDate);
@@ -378,7 +372,6 @@ const Webtab = () => {
 
       toast.success('User access updated successfully');
     } catch (error) {
-      console.error("Failed to update user access", error);
       toast.error("Failed to update user access");
 
       // Revert optimistic update on error
@@ -446,7 +439,6 @@ const Webtab = () => {
       }
       setIsLoading(false);
     } catch (error) {
-      console.error("Failed to fetch data", error);
       if (error?.response?.status === 401) {
         navigate("/app/unauth")
       }
@@ -486,16 +478,12 @@ const Webtab = () => {
       // Refresh overall data to update license counts
       fetchUserDetails();
     } catch (error) {
-      console.error("Failed to remove user", error);
       toast.error(error?.response?.data?.message || "Failed to remove user");
     } finally {
       setDeleteLoadingId(null);
       closeConfirmModal();
     }
   };
-
-  console.log(formData);
-
 
 
   // Submit New User
@@ -505,8 +493,6 @@ const Webtab = () => {
 
     try {
       const response = await axios.post(`${process.env.REACT_APP_APP_API}/test/adduser`, formData);
-      console.log(response);
-
       // Reset form and show success
       setFormData({
         email_id: "",
@@ -523,7 +509,6 @@ const Webtab = () => {
 
       toast.success('User added successfully');
     } catch (error) {
-      console.error("Failed to add user", error);
       toast.error(error.response?.data?.message || "You might already be registered!");
     } finally {
       setIsSubmitting(false);
@@ -540,7 +525,6 @@ const Webtab = () => {
         `${process.env.REACT_APP_APP_API}/admin/searchcontactdata`,
         { params: { email: formData.email_id } }
       );
-      console.log(response);
 
       if (response.status === 200 && response.data && response.data.data !== "") {
         // Assuming response.data contains first_name and last_name
@@ -559,7 +543,6 @@ const Webtab = () => {
         toast.error("No user data found for this email.");
       }
     } catch (error) {
-      console.error("Failed to search user", error);
       toast.error(error.response?.data?.message || "Failed to search user");
     } finally {
       setSearchLoading(false);

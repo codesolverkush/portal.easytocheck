@@ -52,7 +52,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onTaskUpdate }) => {
       await onTaskUpdate(task.id, editedTask);
       onClose();
     } catch (error) {
-      console.error('Error updating task:', error);
+      toast.error('Error updating task!');
     }
   };
 
@@ -189,7 +189,6 @@ const TaskCard = ({ task, onTaskUpdate }) => {
         year: 'numeric'
       });
     } catch (error) {
-      console.error('Invalid date format:', dateString);
       return 'Invalid date';
     }
   };
@@ -211,7 +210,6 @@ const TaskCard = ({ task, onTaskUpdate }) => {
       toast.success("Task marked as completed!");
       setShowConfirmation(false);
     } catch (error) {
-      console.error("Error updating task status:", error);
       toast.error("Failed to update task status");
       setShowConfirmation(false);
     }
@@ -235,7 +233,6 @@ const TaskCard = ({ task, onTaskUpdate }) => {
       }
       return false;
     } catch (error) {
-      console.error('Error updating task:', error);
       toast.error("Failed to update task");
       throw error;
     }
@@ -352,7 +349,7 @@ const TaskDetailsPage = ({ contactId, cachedData, setCachedData, dataLoaded }) =
           if (setCachedData) setCachedData(fetchedTasks);
         }
       } catch (error) {
-        console.error('Error fetching tasks:', error);
+        toast.error('Error fetching tasks!');
         setTasks([]); // If API fails, treat it as no data (to prevent infinite calls)
         if (setCachedData) setCachedData([]);
       } finally {
@@ -406,7 +403,7 @@ const TaskDetailsPage = ({ contactId, cachedData, setCachedData, dataLoaded }) =
       }
       return false;
     } catch (error) {
-      console.error('Error updating task:', error);
+      toast.error('Error updating task!');
       throw error;
     }
   };
@@ -441,7 +438,7 @@ const TaskDetailsPage = ({ contactId, cachedData, setCachedData, dataLoaded }) =
         if (setCachedData) setCachedData(updatedTasks);
       }
     } catch (error) {
-      console.error("Error creating task:", error);
+      toast.error("Error creating task!");
       toast.error(error?.response?.data?.error?.data[0]?.message);
     }
     setIsCreateModalOpen(false);

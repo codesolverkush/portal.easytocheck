@@ -3,6 +3,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import CryptoJS from 'crypto-js';
+import toast from 'react-hot-toast';
 
 const API_BASE_URL = process.env.REACT_APP_APP_API;
 const SECRET_KEY = process.env.REACT_APP_CRYPTO_API;
@@ -13,7 +14,7 @@ const decryptData = (ciphertext) => {
     const bytes = CryptoJS.AES.decrypt(ciphertext, SECRET_KEY);
     return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
   } catch (error) {
-    console.error("Decryption error:", error);
+    toast.error("Decryption error!");
     return null;
   }
 };
@@ -27,7 +28,7 @@ export const getUserRoleFromCookies = () => {
     const user = decryptData(encryptedUser);
     return user?.role || null;
   } catch (error) {
-    console.error("Error getting role from cookies:", error);
+    toast.error("Error getting role from cookies!")
     return null;
   }
 };
@@ -49,7 +50,7 @@ export const checkUserRole = async () => {
     
     return response.data.role;
   } catch (error) {
-    console.error("Error checking user role:", error);
+    toast.error("Error checking user role!");
     return null;
   }
 };
@@ -60,7 +61,7 @@ export const isSuperAdmin = async () => {
     const role = await checkUserRole();
     return role === "superadmin";
   } catch (error) {
-    console.error("Error checking if user is superadmin:", error);
+    toast.error("Error checking if user is superadmin!");
     return false;
   }
 };

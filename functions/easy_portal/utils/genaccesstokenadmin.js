@@ -2,8 +2,8 @@
 const axios = require('axios');
 
 const  genaccesstokenadmin = async (orgId,domain,req, res) => {
+            const { catalyst } = res?.locals;
     try {
-        const { catalyst } = res?.locals;
         const zcql = catalyst.zcql();
 
         if (!orgId) {

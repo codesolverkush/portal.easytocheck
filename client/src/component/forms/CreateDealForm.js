@@ -246,7 +246,6 @@ export default function CreateDealForm() {
         navigate("/app/dealview");
       }
     } catch (error) {
-      console.error("Error creating deal:", error);
       toast.error(error?.response?.data?.error?.data[0]?.message || "Something went wrong!");
     } 
   }

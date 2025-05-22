@@ -193,7 +193,6 @@ const AccountDetails = ({ accessScore, data, username, accountId }) => {
 
       processFieldData(fieldData);
     } catch (error) {
-      console.error("Error fetching CRM fields:", error);
       toast.error(
         error?.response?.data?.message || "Failed to load form fields!"
       );
@@ -262,11 +261,10 @@ const AccountDetails = ({ accessScore, data, username, accountId }) => {
           setModalOpen(true); // open modal after getting location
         },
         (error) => {
-          console.error("Error fetching location:", error);
           alert("Failed to get location. Please allow location access.");
         }
       );
-    } else {
+    } else { 
       alert("Geolocation is not supported by this browser.");
     }
   };
@@ -305,10 +303,9 @@ const AccountDetails = ({ accessScore, data, username, accountId }) => {
 
         toast.success("Contact updated successfully!");
       } else {
-        toast.error("Failed to update lead. Please try again.");
+        toast.error("Failed to update account. Please try again.");
       }
     } catch (error) {
-      console.error("Error updating lead:", error);
       toast.error(
         error?.response?.data?.error?.data[0]?.message ||
           error?.response?.data?.message ||
@@ -511,7 +508,7 @@ const AccountDetails = ({ accessScore, data, username, accountId }) => {
         await cache.put("/contacts-free", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching contacts", error);
+      toast.error("Error fetching contacts!");
     }
   };
 
@@ -532,7 +529,6 @@ const AccountDetails = ({ accessScore, data, username, accountId }) => {
         fetchContacts();
       }
     } catch (error) {
-      console.error("Error creating contact:", error);
       toast.error(error?.response?.data?.error?.data[0]?.message);
     }
     setIsCreateModalOpen(false);
@@ -582,7 +578,7 @@ const AccountDetails = ({ accessScore, data, username, accountId }) => {
         deals: true,
       }));
     } catch (error) {
-      console.error("Error fetching deals:", error);
+      toast.error("Error fetching deals!");
       // Optionally show an error toast or message
     } finally {
       setIsLoading(false);
@@ -609,7 +605,6 @@ const AccountDetails = ({ accessScore, data, username, accountId }) => {
             }
         }
       );
-      console.log("response",response);
       setContacts(response?.data?.data?.data || []);
 
       // Mark tasks as loaded
@@ -618,7 +613,7 @@ const AccountDetails = ({ accessScore, data, username, accountId }) => {
         contacts: true,
       }));
     } catch (error) {
-      console.error("Error fetching contacts:", error);
+      toast.error("Error fetching contacts!");
       // Optionally show an error toast or message
     } finally {
       setIsLoading(false);

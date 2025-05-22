@@ -98,8 +98,7 @@ const DealProfile = () => {
   const location = useLocation();
   const dealId = location?.state?.dealId;
   // const accessScore = location?.state?.accessScore;
-    const [accessScore, setAccessScore] = useState(1);
-    console.log("accessScore",accessScore)
+  const [accessScore, setAccessScore] = useState(1);
 
   const [data, setData] = useState(null); // state to store the lead data
   const [username,setUsername] = useState("username");
@@ -109,7 +108,6 @@ const DealProfile = () => {
             let response;
             if (dealId) {
                 response = await axios.get(`${process.env.REACT_APP_APP_API}/gets/getbyid/Deals/${dealId}`);
-                console.log("response",response)
                
                 if(response.status === 200){
                   setData(response?.data?.data || null); // store the fetched data in state

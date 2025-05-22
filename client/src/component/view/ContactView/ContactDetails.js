@@ -243,7 +243,6 @@ const ContactDetails = ({ accessScore, data, username }) => {
 
       processFieldData(fieldData);
     } catch (error) {
-      console.error("Error fetching CRM fields:", error);
       toast.error(
         error?.response?.data?.message || "Failed to load form fields!"
       );
@@ -282,6 +281,8 @@ const ContactDetails = ({ accessScore, data, username }) => {
       [field]: value,
     }));
   };
+
+  console.log(fields)
 
   // Function to toggle edit mode
   const toggleEditMode = () => {
@@ -355,10 +356,9 @@ const ContactDetails = ({ accessScore, data, username }) => {
 
         toast.success("Contact updated successfully!");
       } else {
-        toast.error("Failed to update lead. Please try again.");
+        toast.error("Failed to update contact. Please try again.");
       }
     } catch (error) {
-      console.error("Error updating lead:", error);
       toast.error(
         error?.response?.data?.error?.data[0]?.message ||
           error?.response?.data?.message ||
@@ -559,7 +559,7 @@ const ContactDetails = ({ accessScore, data, username }) => {
         await cache.put("/contacts-free", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching contacts", error);
+      toast.error("Error fetching contacts!");
     }
   };
 
@@ -579,8 +579,7 @@ const ContactDetails = ({ accessScore, data, username }) => {
         fetchContacts();
       }
     } catch (error) {
-      console.error("Error creating contact:", error);
-      toast.error(error?.response?.data?.error?.data[0]?.message);
+      toast.error(error?.response?.data?.error?.data[0]?.message || "Error Creating Contact!");
     }
     setIsCreateModalOpen(false);
     setNewContact({
@@ -629,8 +628,7 @@ const ContactDetails = ({ accessScore, data, username }) => {
         notes: true,
       }));
     } catch (error) {
-      console.error("Error fetching notes:", error);
-      // Optionally show an error toast or message
+      toast.error("Error fetching notes!")
     } finally {
       setIsLoading(false);
     }
@@ -670,8 +668,7 @@ const ContactDetails = ({ accessScore, data, username }) => {
         tasks: true,
       }));
     } catch (error) {
-      console.error("Error fetching tasks:", error);
-      // Optionally show an error toast or message
+      toast.error("Error fetching tasks!");
     } finally {
       setIsLoading(false);
     }
@@ -701,8 +698,7 @@ const ContactDetails = ({ accessScore, data, username }) => {
         deals: true,
       }));
     } catch (error) {
-      console.error("Error fetching deals:", error);
-      // Optionally show an error toast or message
+      toast.error("Error fetching deals!");
     } finally {
       setIsLoading(false);
     }
@@ -891,15 +887,15 @@ const ContactDetails = ({ accessScore, data, username }) => {
   // Function to render individual field
   const renderField = (field) => {
     // Skip system fields or fields that shouldn't be displayed
-    if (
-      field.api_name === "id" ||
-      field.api_name === "Created_Time" ||
-      field.api_name === "Modified_Time" ||
-      field.api_name === "Created_By" ||
-      field.api_name === "Modified_By"
-    ) {
-      return null;
-    }
+    // if (
+    //   field.api_name === "id" ||
+    //   field.api_name === "Created_Time" ||
+    //   field.api_name === "Modified_Time" ||
+    //   field.api_name === "Created_By" ||
+    //   field.api_name === "Modified_By"
+    // ) {
+    //   return null;
+    // }
 
     return (
       <div
@@ -913,7 +909,9 @@ const ContactDetails = ({ accessScore, data, username }) => {
           {isEditing &&
           field.api_name !== "id" &&
           field.data_type !== "lookup" &&
-          field.data_type !== "ownerlookup" ? (
+          field.data_type !== "ownerlookup" &&
+          field.api_name !== "Modified_Time" &&
+          field.api_name !== "Created_Time" ? (
             <div className="w-full focus-within:ring-2 focus-within:ring-blue-300 rounded transition-all duration-200">
               {renderFormField(field.api_name, field)}
             </div>

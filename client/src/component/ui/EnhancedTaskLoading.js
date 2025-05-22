@@ -1,5 +1,4 @@
 const EnhancedTaskLoading = ({name}) => {
-  console.log(name);
     return (
       <div className="py-8 flex flex-col items-center justify-center">
         <div className="flex justify-center items-center space-x-2 mb-6">

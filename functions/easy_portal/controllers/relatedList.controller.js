@@ -147,6 +147,8 @@ const attachFile = async (req, res) => {
 
     let token = await getAccessToken(orgId,req,res);
     const file = req?.file;
+
+    console.log(file);
     
     if (!file) {
         return res.status(400).json({ success: false, message: "No file uploaded." });
@@ -371,15 +373,12 @@ const createOpenActivity = async (req, res) => {
             ]
         };
 
-        console.log(taskData);
-
 
         let token = await getAccessToken(orgId,req,res);
         const url = `https://www.zohoapis.${domain}/crm/v7/Tasks`;
 
         try {
             const data = await handleZohoRequest(url, 'post', taskData, token);
-            console.log(data);
             return res.status(200).json({ success: true, data });
 
         } catch (error) {

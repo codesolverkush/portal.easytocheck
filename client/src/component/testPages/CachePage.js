@@ -19,7 +19,6 @@ const CachePage = () => {
       }
       return false;
     } catch (error) {
-      console.error("Cache check failed:", error);
       return false;
     }
   };
@@ -47,7 +46,6 @@ const CachePage = () => {
       }
     } catch (error) {
       setError(error.message || 'Failed to fetch tasks');
-      console.error("Error fetching tasks:", error);
     } finally {
       setLoading(false);
     }

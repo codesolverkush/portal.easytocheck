@@ -190,7 +190,7 @@ const AccountView = () => {
 
       // If no cached data, fetch from API
       const response = await axios.get(
-        `${process.env.REACT_APP_APP_API}/get/accountsdetails`
+        `${process.env.REACT_APP_APP_API}/get/accountdetails`
       );
       if (response.status === 200) {
         const data = response.data || [];
@@ -204,7 +204,6 @@ const AccountView = () => {
         await cache.put("/accounts", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching accounts", error);
       if (
         error.response &&
         error.response.data &&
@@ -240,7 +239,6 @@ const AccountView = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_APP_API}/get/accountdetails`
       );
-      console.log("response", response);
       if (response.status === 200) {
         const data = response.data || [];
         setAccounts(data);
@@ -254,7 +252,7 @@ const AccountView = () => {
         await cache.put("/accounts", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching accounts", error);
+      toast.error("Error fetching accounts!");
     } finally {
       setLoading(false);
     }
@@ -347,7 +345,6 @@ const AccountView = () => {
         });
       }
     } catch (error) {
-      console.error("Error creating account:", error);
       toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setIsSubmitting(false);
@@ -460,7 +457,6 @@ const AccountView = () => {
                   <Settings size={16} className="mr-1 md:mr-2" />
                   <span>Manage Columns</span>
                 </button>
-                {console.log(bgColors.primary)};
                 {accessScore < 2 ? (
                   <Link
                     to="/app/accountform"

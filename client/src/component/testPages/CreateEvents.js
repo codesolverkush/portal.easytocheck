@@ -69,7 +69,6 @@ const EventForm = () => {
         });
       }
     } catch (error) {
-      console.error("Error creating event:", error);
       toast.error(error?.response?.data?.error?.data[0]?.message || "Something went wrong!");
     }
   };

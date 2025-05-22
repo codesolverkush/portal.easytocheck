@@ -22,7 +22,6 @@ const AccountProfile = () => {
                   setUsername(response?.data?.username ||  "Username");
                 }           
         } catch (err) {
-          console.log(err)
           toast.error("Contact id can't exist!");
         }
     };
@@ -31,7 +30,6 @@ const AccountProfile = () => {
     
   }, []);
 
-  console.log(data);
 
   return !data ?
   ( <ShimmerPage/>

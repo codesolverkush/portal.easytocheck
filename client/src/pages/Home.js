@@ -59,11 +59,13 @@ const HomePage = () => {
     tasks: 0,
     contacts: 0,
     deals: 0,
+    widget:"",
     isLoading: false,
     loadingLeads: false,
     loadingTasks: false,
     loadingContacts: false,
     loadingDeals: false,
+    loadingWidget:false,
   });
 
   // Helper function to check and retrieve cache
@@ -220,6 +222,34 @@ const HomePage = () => {
       setMetrics(prev => ({ ...prev, loadingDeals: false }));
     }
   };
+
+  const fetchWidget = async (skipCache = false) => {
+    // Check if the function is called
+    setMetrics(prev => ({ ...prev, loadingWidget: true }));
+    try {
+      let widget;
+      
+        const cachedWidget = await getFromCache('/api/widget');
+        if (cachedWidget !== null) {
+          widget = cachedWidget;
+          setMetrics(prev => ({ ...prev, widget:widget, loadingWidget: false }));
+          return;
+        }
+      
+
+      const widgetResponse = await axios.get(`${process.env.REACT_APP_APP_API}/org/widget`);
+       const data = widgetResponse.data;
+       widget = data.data[0]?.Organization?.widget;
+
+      // widget = dealsResponse?.data?.data?.info?.count || 0;
+      await saveToCache('/api/widget', widget);
+
+
+      setMetrics(prev => ({ ...prev, widget: widget, loadingWidget: false }));
+    } catch (error) {
+      setMetrics(prev => ({ ...prev, loadingWidget: false }));
+    }
+  };
   // Fetch all data
   const fetchAllData = async (skipCache = false) => {
     setMetrics(prev => ({ ...prev, isLoading: true }));
@@ -231,6 +261,7 @@ const HomePage = () => {
         fetchTasks(true),
         fetchContacts(true),
         fetchDeals(true),
+        fetchWidget(true),
       ]);
 
       setMetrics(prev => ({ ...prev, isLoading: false }));
@@ -255,6 +286,8 @@ const HomePage = () => {
         fetchContacts(true);
       } else if (component === 'deals') {
         fetchDeals(true);
+      } else if(component === 'widget'){
+        fetchWidget(true);
       }
     } catch (error) {
       toast.error(`Error refreshing ${component}:`, error);
@@ -294,8 +327,6 @@ const HomePage = () => {
   useEffect(() => {
     checkRole();
   }, []);
-
-  console.log("Role:", role);
 
 
   // Connection function for checking...
@@ -428,7 +459,6 @@ const HomePage = () => {
   //       toast.error(response.data.message || "Check-in failed. Please try again.");
   //     }
   //   } catch (error) {
-  //     console.error("Error during check-in:", error);
   //     toast.error(
   //       error?.response?.data?.message || "An error occurred during check-in. Please try again."
   //     );
@@ -475,7 +505,6 @@ const HomePage = () => {
   //       toast.error(response.data.message || "Check-out failed. Please try again.");
   //     }
   //   } catch (error) {
-  //     console.error("Error during check-out:", error);
   //     toast.error(
   //       error?.response?.data?.message || "An error occurred during check-out. Please try again."
   //     );
@@ -503,8 +532,8 @@ const HomePage = () => {
               </svg>
             </div>
             <div className="relative z-10">
-              <h1 className="text-3xl font-bold text-white mb-3 text-center">Welcome to Your Command Center</h1>
-              <p className="text-indigo-100 mb-6 text-center text-lg">Track, manage, and optimize your sales pipeline efficiently.</p>
+              {/* <h1 className="text-3xl font-bold text-white mb-3 text-center">Welcome to Your Command Center</h1>
+              <p className="text-indigo-100 mb-6 text-center text-lg">Track, manage, and optimize your sales pipeline efficiently.</p> */}
 
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-8">             
 
@@ -767,19 +796,40 @@ const HomePage = () => {
                   <p className="text-gray-500 text-sm">View your sales performance and analytics</p>
                 </div>
 
-                <div className="overflow-hidden w-full flex justify-center items-center">
+                <div className="overflow-hidden w-full">
                   <div 
                     className="origin-top-left scale-[0.75] sm:scale-[0.85] md:scale-[0.9] lg:scale-100" 
                     style={{ width: '1000px', height: '500px' }} // fixed size expected by Zoho
                   >
                     <iframe
-                      src="https://crm.zoho.com/crm/specific/ViewChartImage?width=1000&height=500&embedDetails=350870214961ec7506e8e2c2e9504fb60b7c4f880b6b74462f8b6f01c3bf35cca1e5a2fc0cde2a401899f16ff7d79e392f88258fa798e528031e24c2decbcccf557e8c42f10b5cf5b05268e3f89c7fb48656669b303f2f18d5d96570a0977d5e13d47176cf2f04220d9783039a67a94d"
+                      src={metrics.widget}
                       title="External Chart"
                       className="w-full h-full border-0 rounded-xl shadow"
                       loading="lazy"
                       sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                     />
                   </div>
+                  <div className="bg-gray-50 px-6 py-2 group-hover:bg-gray-100 transition-colors duration-300">
+              <button
+                onClick={() => refreshComponent('widget')}
+                className="w-full flex items-center justify-center text-xs text-gray-500 group-hover:text-gray-700"
+                disabled={metrics.loadingWidget}
+              >
+                {metrics.loadingWidget ? (
+                  <svg className="animate-spin w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Refresh data
+                  </>
+                )}
+              </button>
+            </div>
                 </div>
               </div>
             </>

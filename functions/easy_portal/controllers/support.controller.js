@@ -310,7 +310,7 @@ const createTicket = async (req, res) => {
       const emailService = catalyst.email();
       const mailOptions = {
         from_email: "portal@easytocheck.com",
-        to_email: "Aditya@easytocheck.com",
+        to_email: email || "Aditya@easytocheck.com",
         subject: emailSubject,
         content: emailContent,
         html_mode: true,
@@ -617,7 +617,7 @@ const createTicket = async (req, res) => {
 
       const mailOptions = {
         from_email: "portal@easytocheck.com",
-        to_email: "kushalpratapsingh17@gmail.com",
+        to_email: email || "test45demo@gmail.com",
         subject: emailSubject,
         content: emailContent,
         html_mode: true,

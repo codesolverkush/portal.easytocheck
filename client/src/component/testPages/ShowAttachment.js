@@ -22,7 +22,6 @@ const AttachmentCard = ({ attachment }) => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error('Error downloading attachment:', err);
       toast.error('Failed to download the attachment. Please try again.');
     }
   };
@@ -35,7 +34,6 @@ const AttachmentCard = ({ attachment }) => {
         year: 'numeric'
       });
     } catch (error) {
-      console.error('Invalid date format:', dateString);
       return 'Invalid date';
     }
   };
@@ -145,7 +143,6 @@ const ShowAttachment = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
           if (setCachedData) setCachedData([]);
         }
       } catch (error) {
-        console.error("Error fetching attachments:", error);
         setError("Failed to fetch attachments. Please try again.");
         setAttachments([]);
         if (setCachedData) setCachedData([]);
@@ -196,7 +193,6 @@ const ShowAttachment = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
   //         if (setCachedData) setCachedData([]);
   //       }
   //     } catch (error) {
-  //       console.error('Error fetching attachments:', error);
   //       setError('Failed to fetch attachments. Please try again.');
   //       setAttachments([]);
   //       if (setCachedData) setCachedData([]);
@@ -271,7 +267,6 @@ const ShowAttachment = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
         toast.error(response?.data?.message || "File Upload Failed!");
       }
     } catch (error) {
-      console.error("Error uploading file:", error);
       toast.error("Failed to upload file!");
     } finally {
       setUploadLoading(false);
@@ -312,7 +307,6 @@ const ShowAttachment = ({ leadId, cachedData, setCachedData, dataLoaded }) => {
         if (setCachedData) setCachedData([]);
       }
     } catch (error) {
-      console.error('Error refreshing attachments:', error);
       setError('Failed to refresh attachments. Please try again.');
     } finally {
       setIsLoading(false);

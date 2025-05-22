@@ -492,4 +492,82 @@ const changesDoneStatus = async (req, res) => {
   }
 };
 
-module.exports = { webtabHander, removeUser, updateUserAccess, updatePortalUser, personalizedUpdate };
+const searchContactData = async (req, res) => {
+      const {catalyst} = res.locals;
+  try {
+      const userId = req.currentUser?.user_id;
+      const orgId = req.userDetails[0]?.usermanagement?.orgid;
+      const domain = req.userDetails[0]?.usermanagement?.domain;
+      const zcql = catalyst.zcql();
+    
+    if (!userId) {
+      return res.status(404).json({ message: "Invalid User!." });
+    }
+    const {email} = req.query;
+    
+   
+
+
+
+    if (!orgId) {
+      return res.status(400).json({ success: false, message: "Organization ID not found." });
+    }
+
+    // Get domain from Organization table
+    if (!domain) {
+      return res.status(404).json({ success: false, message: "Domain not found." });
+    }
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email is required." });
+    }
+
+    // ✅ Build COQL Query
+    const query = {
+      select_query: `
+        select id, Last_Name, First_Name, Email, Full_Name, Lead_Source, Account_Name 
+        from Contacts 
+        where (((Full_Name like '%${email}%') or (Email like '%${email}%'))) 
+        limit 1000
+      `.trim(),
+    };
+
+    const searchUrl = `https://www.zohoapis.${domain}/crm/v7/coql`;
+
+    // ✅ First attempt with current access token
+    let token = await getAccessToken(orgId, req, res);
+
+    try {
+      const contactDataSearch = await handleZohoRequest(searchUrl, 'post', query, token);
+      return res.status(200).json({ success: true, data: contactDataSearch });
+    } catch (error) {
+      // ✅ If token expired, refresh and retry once
+      if (error.message === 'TOKEN_EXPIRED') {
+        try {
+          token = await genaccesstokenadmin(orgId,domain,req, res);
+          const contactDataSearch = await handleZohoRequest(searchUrl, 'post', query, token);
+          return res.status(200).json({ success: true, data: contactDataSearch });
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError.message);
+          return res.status(500).json({
+            success: false,
+            message: "Token expired and refresh failed.",
+            error: refreshError.message,
+          });
+        }
+      } else {
+        throw error;
+      }
+    }
+
+  } catch (error) {
+    console.error("Error searching contact data:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to search contact data.",
+      error: error.message || error,
+    });
+  }
+};
+
+module.exports = { webtabHander, removeUser, updateUserAccess, updatePortalUser, personalizedUpdate, searchContactData };

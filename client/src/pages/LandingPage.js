@@ -104,8 +104,7 @@ const LandingPage = () => {
   //         await cache.put(cacheKey, newResponse);
   //       }
   //     } catch (error) {
-  //       console.error("Metadata Fetch Error:", error);
-  //       // Optionally redirect or show fallback
+  //        toast.error("Metadata fetch error!")
   //     }
   //   };
   

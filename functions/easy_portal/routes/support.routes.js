@@ -4,6 +4,6 @@ const { createTicket } = require('../controllers/support.controller');
 const router = express.Router();
 
 
-router.post("/createticket",catalystAuth,createTicket);
+router.post("/createticket",createTicket);
 module.exports = router;
 

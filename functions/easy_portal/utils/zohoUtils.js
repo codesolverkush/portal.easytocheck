@@ -154,37 +154,23 @@ const handleZohoRequest = async (url, method, data = null, token) => {
 
 
 
-// const tokenCache = {}; // { orgId: { token: string, expiresAt: timestamp } }
 
-// const getAccessToken = async (orgId, res) => {
-//     const currentTime = Date.now();
+const getAccessToken2 = async (orgId, res) => {
 
-//     // Use token from cache if still valid (assume token is valid for 50 mins)
-//     const cached = tokenCache[orgId];
-//     if (cached && cached.expiresAt > currentTime) {
-//         return cached.token;
-//     }
-
-//     const { catalyst } = res.locals;
-//     const zcql = catalyst.zcql();
+    const { catalyst } = res.locals;
+    const zcql = catalyst.zcql();
     
-//     const tokenQuery = `SELECT authcode FROM Connections WHERE orgid = '${orgId}' LIMIT 1`;
-//     const existingData = await zcql.executeZCQLQuery(tokenQuery);
+    const tokenQuery = `SELECT authcode FROM Connections WHERE orgid = '${orgId}' LIMIT 1`;
+    const existingData = await zcql.executeZCQLQuery(tokenQuery);
 
-//     if (existingData.length === 0) {
-//         throw new Error("No token data found for the given orgId.");
-//     }
+    if (existingData.length === 0) {
+        throw new Error("No token data found for the given orgId.");
+    }
 
-//     const token = existingData[0].Connections.authcode || process.env.ACCESS_TOKEN;
+    const token = existingData[0].Connections.authcode || process.env.ACCESS_TOKEN;
 
-//     // Cache token for 50 minutes (assuming Zoho tokens last 1 hour)
-//     tokenCache[orgId] = {
-//         token,
-//         expiresAt: currentTime + 50 * 60 * 1000,
-//     };
-
-//     return token;
-// };
+    return token;
+};
 
 
 // const handleZohoRequest = async (url, method, data = null, token) => {
@@ -217,4 +203,4 @@ const handleZohoRequest = async (url, method, data = null, token) => {
 // };
 
 
-module.exports = {getAccessToken,handleZohoRequest}
+module.exports = {getAccessToken,handleZohoRequest,getAccessToken2}

@@ -2,7 +2,7 @@ const { executeZohoRequest } = require("../utils/authUtils");
 const { getAccessToken } = require("../utils/zohoUtils");
 
 const updateData = async (req, res) => {
-  try {c
+  try {
     const userId = req.currentUser?.user_id;
     const { module } = req.params;
 
@@ -12,14 +12,14 @@ const updateData = async (req, res) => {
     const domain = req.userDetails[0]?.usermanagement?.domain;
     const orgId = req.userDetails[0]?.usermanagement?.orgid;
 
-    // if (accessScore < 2) {
-    //   return res
-    //     .status(403)
-    //     .json({
-    //       success: false,
-    //       message: `Insufficient access rights to update a ${module}`,
-    //     });
-    // }
+    if (accessScore < 2) {
+      return res
+        .status(403)
+        .json({
+          success: false,
+          message: `Insufficient access rights to update a ${module}`,
+        });
+    }
 
     if (!userId) {
       return res
@@ -45,7 +45,7 @@ const updateData = async (req, res) => {
     ];
 
     const moduleData = {
-      data: [{ ...req.body, easyportal__Client_User: crmuserid }],
+      data: [{ ...req.body }],
       trigger: list,
     };
 
@@ -63,20 +63,22 @@ const updateData = async (req, res) => {
       );
       return res.status(200).json({ success: true, data });
     } catch (error) {
+      console.log(error)
       return res
         .status(500)
         .json({
           success: false,
-          error: error.response ? error.response.data : error.message,
+          error
         });
     }
   } catch (error) {
+    console.log(error)
     if (!res.headersSent) {
       return res
         .status(500)
         .json({
           success: false,
-          error: error.response ? error.response.data : error.message,
+          error: error
         });
     }
   }

@@ -80,7 +80,7 @@
 //     const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 //     return decryptedData;
 //   } catch (error) {
-//     console.error("Error decrypting data:", error);
+//     toast.error("Error decrypting data!");
 //     return null;
 //   }
 // };
@@ -159,7 +159,7 @@ const decryptData = (ciphertext) => {
     const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
     return decryptedData;
   } catch (error) {
-    toast.error("Error decrypting data:");
+    toast.error("Error decrypting data!");
     return null;
   }
 };
@@ -176,6 +176,7 @@ const initialState = {
   user: initialUser,
   isAdmin: false,
   loader: true,
+  isSuperAdmin:false,
   licenseActive: null,
   orgId: initialOrgId,  // Initialize from cookie if exists
 };
@@ -193,6 +194,7 @@ const authSlice = createSlice({
     userNotExists: (state) => {
       state.user = null;
       state.loader = false;
+      state.isSuperAdmin = false;
       Cookies.remove("user");
       Cookies.remove("orgRowId");
     },
@@ -211,9 +213,13 @@ const authSlice = createSlice({
       state.loader = false;
       state.orgId = null; // Clear the state value too
       Cookies.remove("orgRowId");
+    },
+    setSuperAdminStatus: (state) =>{
+      state.isSuperAdmin = true;
+      state.loader = false;
     }
   },
 });
 
 export default authSlice;
-export const { userExists, userNotExists, setCookies, setLicenseStatus, setOrgId, clearOrgCookies } = authSlice.actions;
+export const { userExists, userNotExists, setCookies, setLicenseStatus, setOrgId, clearOrgCookies,setSuperAdminStatus } = authSlice.actions;

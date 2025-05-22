@@ -54,7 +54,6 @@ const associatedContactWithAccount = async (req,res)=>{
         const orgId = req.userDetails[0]?.usermanagement?.orgid;
         const domain = req.userDetails[0]?.usermanagement?.domain;
         const {accountid} = req.query;
-        console.log(accountid);
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
@@ -68,7 +67,6 @@ const associatedContactWithAccount = async (req,res)=>{
 
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
-            console.log(data);
             return res.status(200).json({ success: true, data });
         } catch (error) {
             if (error.message === "TOKEN_EXPIRED") {

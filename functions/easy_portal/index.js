@@ -20,6 +20,7 @@ const lookupRouter = require('./routes/lookup.routes');
 const metadataRouter = require('./routes/metadata.routes');
 const supportRouter = require('./routes/support.routes');
 const testRouter = require('./routes/test.routes');
+const crmprofileRouter = require('./routes/crmprofile.routes');
 
 const cors = require('cors');
 
@@ -86,6 +87,11 @@ app.use('/support',supportRouter);
 // admin webtab api
 
 app.use('/webtab',testRouter);
+
+
+// Crm profile api
+
+app.use('/crm',crmprofileRouter);
 
 
 

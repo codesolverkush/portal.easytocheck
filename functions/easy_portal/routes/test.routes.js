@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAdminDetails, webtabHandler, updateUserAccess, createNewUser, registerNewUser, removeUser, updatePortalUser, searchContactData } = require('../controllers/test.controller');
+const { getAdminDetails, webtabHandler, updateUserAccess, createNewUser, registerNewUser, removeUser, updatePortalUser, searchContactData, getOrgDetails, editorgdetails } = require('../controllers/test.controller');
 const router = express.Router();
 
 
@@ -12,6 +12,8 @@ router.delete('/removeuser/:id',removeUser);
 router.post('/crmupdate/:crmuserid',updatePortalUser);
 
 router.get('/searchcontact',searchContactData);
+router.post('/getdetails',getOrgDetails);
+router.put('/editorgdetails',editorgdetails);
 
 
 

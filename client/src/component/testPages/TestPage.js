@@ -93,7 +93,7 @@ const AddNoteModal = ({ isOpen, onClose, leadId, username, onNoteAdded }) => {
       setNoteContent('');
       onClose();
     } catch (error) {
-      console.error('Error adding note:', error);
+      toast.error("Error adding note!");
       // Optionally show error toast
     } finally {
       setIsSubmitting(false);
@@ -195,7 +195,6 @@ const AddReasonModal = ({ isOpen, onClose, leadId, username, leadStatus, buttonN
             toast.error('Failed to update lead. Please try again.');
           }
         } catch (error) {
-          console.error('Error updating lead:', error);
           toast.error(error?.response?.data?.error?.data[0]?.message || "Something went wrong");
         } 
       }
@@ -204,7 +203,6 @@ const AddReasonModal = ({ isOpen, onClose, leadId, username, leadStatus, buttonN
       setNoteContent('');
       onClose();
     } catch (error) {
-      console.error('Error adding note:', error);
       toast.error('Failed to add note');
     } finally {
       setIsSubmitting(false);
@@ -471,7 +469,7 @@ const LeadInformationPage = ({ data, leadId, username,accessScore }) => {
       await cache.put("/lead-form-fields", newResponse);
       
     } catch (error) {
-      console.error("Error fetching dropdown options:", error);
+      toast.error("Error fetching dropdown options!");
       // Use default options if there's an error
       setLeadSourceOptions([
         "Advertisement", "Cold Call", "Employee Referral", 
@@ -585,7 +583,6 @@ const LeadInformationPage = ({ data, leadId, username,accessScore }) => {
           toast.error('Failed to update lead. Please try again.');
         }
       } catch (error) {
-        console.error('Error updating lead:', error);
         toast.error(error?.response?.data?.error?.data[0]?.message || "Something went");
       } finally {
         setIsSaving(false);
@@ -616,7 +613,7 @@ const fetchNotes = async () => {
       notes: true
     }));
   } catch (error) {
-    console.error('Error fetching notes:', error);
+    toast.error("Error fetching notes!");
     // Optionally show an error toast or message
   } finally {
     setIsLoading(false);
@@ -648,7 +645,7 @@ const fetchTasks = async () => {
       tasks: true
     }));
   } catch (error) {
-    console.error('Error fetching tasks:', error);
+    toast.error("Error fetching tasks!");
     // Optionally show an error toast or message
   } finally {
     setIsLoading(false);

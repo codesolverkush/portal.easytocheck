@@ -2,6 +2,7 @@ import axios from 'axios';
 import { X } from 'lucide-react';
 import { useState } from 'react';
 import { bgColors, focus, hoverColors } from '../../../config/colors';
+import toast from 'react-hot-toast';
 
 const AddContactNoteModal = ({ isOpen, onClose, contactId, username, onNoteAdded }) => {
 
@@ -38,7 +39,7 @@ const AddContactNoteModal = ({ isOpen, onClose, contactId, username, onNoteAdded
         setNoteContent('');
         onClose();
       } catch (error) {
-        console.error('Error adding note:', error);
+        toast.error('Error adding note!');
         // Optionally show error toast
       } finally {
         setIsSubmitting(false);

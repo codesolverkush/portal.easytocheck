@@ -208,7 +208,6 @@ const ContactView = () => {
         await cache.put("/contacts", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching contacts", error);
       if (
         error.response &&
         error.response.data &&
@@ -256,7 +255,7 @@ const ContactView = () => {
         await cache.put("/contacts", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching contacts", error);
+      toast.error("Error fetching contacts!");
     } finally {
       setLoading(false);
     }
@@ -352,7 +351,6 @@ const ContactView = () => {
         });
       }
     } catch (error) {
-      console.error("Error creating contact:", error);
       toast.error(error?.response?.data?.message || "Something went wrong");
     } finally {
       setIsSubmitting(false);
@@ -465,7 +463,6 @@ const ContactView = () => {
                   <Settings size={16} className="mr-1 md:mr-2" />
                   <span>Manage Columns</span>
                 </button>
-                {console.log(bgColors.primary)};
                 {accessScore < 2 ? (
                   <Link
                     to="/app/contactform"

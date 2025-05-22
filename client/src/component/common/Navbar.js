@@ -63,7 +63,6 @@ const Navbar = ({ accessData = {}, role }) => {
 
   // Use the resolved role value
   const currentRole = getUserRole();
-  console.log("Current user role:", currentRole);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);

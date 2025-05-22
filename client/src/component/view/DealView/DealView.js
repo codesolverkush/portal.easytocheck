@@ -204,7 +204,6 @@ const DealView = () => {
         await cache.put("/deals", newResponse);
       }
     } catch (error) {
-      console.log(error)
       if (
         error.response &&
         error.response.data &&
@@ -253,7 +252,6 @@ const DealView = () => {
         await cache.put("/deals", newResponse);
       }
     } catch (error) {
-      console.log(error);
       toast.error("Error fetching deals!");
     } finally {
       setLoading(false);

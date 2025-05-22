@@ -37,7 +37,6 @@ const  AttachFileContactPage = ({contactId}) => {
         toast.error(response?.data?.message || "File Upload Failed!");
       }
     } catch (error) {
-      console.error("Error uploading file:", error);
       toast.error("Failed to upload file!");
     } finally {
       setLoading(false);

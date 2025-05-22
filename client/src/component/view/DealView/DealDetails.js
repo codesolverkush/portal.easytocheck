@@ -193,7 +193,6 @@ const DealDetails = ({ accessScore, data, username }) => {
 
       processFieldData(fieldData);
     } catch (error) {
-      console.error("Error fetching CRM fields:", error);
       toast.error(
         error?.response?.data?.message || "Failed to load form fields!"
       );
@@ -243,9 +242,6 @@ const DealDetails = ({ accessScore, data, username }) => {
         field.api_name === "Owner"
     );
 
-    // For debugging
-    // console.log("Portal User Index:", portalUserIndex);
-    // console.log("Potential Owner Index:", potentialOwnerIndex);
 
     // If both fields exist
     if (portalUserIndex !== -1 && potentialOwnerIndex !== -1) {
@@ -288,7 +284,6 @@ const DealDetails = ({ accessScore, data, username }) => {
 
       toast.success(`Deal stage updated to ${newStage}`);
     } catch (error) {
-      console.error("Error updating deal stage:", error);
       toast.error("Failed to update deal stage");
     } finally {
       setIsLoading(false);
@@ -367,7 +362,6 @@ const DealDetails = ({ accessScore, data, username }) => {
         toast.error("Failed to update deal. Please try again.");
       }
     } catch (error) {
-      console.error("Error updating Deal:", error);
       toast.error(
         error?.response?.data?.error?.data[0]?.message ||
           error?.response?.data?.message ||
@@ -603,7 +597,7 @@ const DealDetails = ({ accessScore, data, username }) => {
         notes: true,
       }));
     } catch (error) {
-      console.error("Error fetching notes:", error);
+      toast.error("Error fetching notes!");
       // Optionally show an error toast or message
     } finally {
       setIsLoading(false);
@@ -650,8 +644,7 @@ const DealDetails = ({ accessScore, data, username }) => {
         tasks: true,
       }));
     } catch (error) {
-      console.error("Error fetching tasks:", error);
-      // Optionally show an error toast or message
+      toast.error("Error fetching tasks!");
     } finally {
       setIsLoading(false);
     }

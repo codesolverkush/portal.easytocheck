@@ -110,7 +110,6 @@ const ConvertLead = ({ isOpen, setIsOpen,lead, data, leadId, isLoading }) => {
       }, 2000);
       }
     } catch (error) {
-      console.error("Error converting lead:", error);
       toast.error(error?.response?.data?.error?.data[0]?.message || "Failed to convert lead");
     } finally {
       setIsSubmitting(false);

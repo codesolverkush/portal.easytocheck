@@ -177,7 +177,6 @@ const registerNewUser = async (req, res) => {
     // ✅ Fetch all users and match new one
     const allUsers = await userManagement.getAllUsers();
     const userDetails = allUsers.find((user) => user.email_id === email_id);
-    console.log(userDetails);
 
     if (!userDetails) {
       return res.status(404).json({

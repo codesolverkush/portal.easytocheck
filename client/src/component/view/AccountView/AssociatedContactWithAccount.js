@@ -5,7 +5,6 @@ import EnhancedTaskLoading from "../../ui/EnhancedTaskLoading";
 
 const AssociatedContactWithAccount = ({ contacts , loading = false }) => {
 
-  console.log("contacts", contacts);
   const navigate = useNavigate();
 
   const formatDate = (dateString) => {

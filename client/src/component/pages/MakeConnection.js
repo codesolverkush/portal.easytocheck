@@ -36,7 +36,7 @@ const MakeConnection = () => {
       // const redirectUri = encodeURIComponent('https://easyportal-704392036.development.catalystserverless.com/app');
       // const redirectUri = encodeURIComponent('http://localhost:3000/app');
       const redirectUri = encodeURIComponent("https://portal.easytocheck.com");
-      const scope = encodeURIComponent('ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoCRM.coql.READ,ZohoCRM.org.READ');
+      const scope = encodeURIComponent('ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoCRM.coql.READ,ZohoCRM.org.READ,ZohoCRM.settings.profiles.ALL');
       
       // Create the authorization URL
       const authUrl = `https://accounts.zoho.${domain}/oauth/v2/auth?response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${redirectUri}&access_type=offline`;

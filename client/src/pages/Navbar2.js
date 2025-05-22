@@ -59,10 +59,7 @@ const Navbar2 = () => {
     
     // Or it might update state in a parent component to conditionally render AboutUs
     // For example:
-    // props.setCurrentComponent('AboutUs');
-    
-    // console.log('Opening AboutUs.js component');
-    
+    // props.setCurrentComponent('AboutUs');  
     // This is just a placeholder - you would implement this according to your app's architecture
     // For example, if you're using window events to communicate between components:
     // window.dispatchEvent(new CustomEvent('openComponent', { detail: { component: 'AboutUs' } }));

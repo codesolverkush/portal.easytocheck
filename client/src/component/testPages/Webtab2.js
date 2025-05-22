@@ -1,226 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-
-const WebTab2 = () => {
-  const [email, setEmail] = useState(''); 
-  const [crmOrgId, setCrmOrgId] = useState('4340000000130002'); // Keep hardcoded orgID
-  const [key,setKey] = useState('');
-  const [sourceDetails, setSourceDetails] = useState({});
-  const [orgDetails, setOrgDetails] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isAuthorized, setIsAuthorized] = useState(true);
-
-
-  console.log("key",key);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const allowedDomains = ['crm.zoho.in', 'crm.zoho.com', 'crm.zoho.us', 'crm.zoho.com.au'];
-
-    const isIframe = window.self !== window.top;
-
-    let parentUrl = '';
-    try {
-      parentUrl = window.top.location.href;
-    } catch (e) {
-      parentUrl = document.referrer; // Cross-origin iframe fallback
-    }
-
-    const urlToCheck = parentUrl || document.referrer;
-    let host = '';
-    try {
-      const urlObj = new URL(urlToCheck);
-      host = urlObj.hostname;
-    } catch (e) {
-      host = '';
-    }
-
-    const isFromZohoCRM = allowedDomains.some(domain => host.endsWith(domain));
-
-    // Only set unauthorized if we're sure it's not from an allowed domain
-    if (!isIframe || !isFromZohoCRM) {
-      setIsAuthorized(false);
-    }
-
-    // For Debug Info Panel
-    const details = {
-      currentUrl: window.location.href,
-      referrer: document.referrer,
-      isInIframe: isIframe,
-      parentUrl: parentUrl || 'Cross-origin iframe detected - cannot access parent URL',
-    };
-    setSourceDetails(details);
-
-    // Get Email & OrgId from URL
-    const getUrlParameter = (name) => {
-      const fullUrl = window.location.href;
-      const hashPart = fullUrl.split('#')[1] || '';
-      if (hashPart.includes('?')) {
-        const queryString = hashPart.split('?')[1] || '';
-        const urlParams = new URLSearchParams(queryString);
-        return urlParams.get(name);
-      }
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    };
-
-    const emailParam = getUrlParameter('email');
-    if (emailParam) setEmail(emailParam);
-
-    // Keep the hardcoded orgID, but still check for URL parameter
-    // const orgIdParam = getUrlParameter('orgid');
-    // if (orgIdParam) setCrmOrgId(orgIdParam);
-    const keyParam = getUrlParameter('key');
-    if (keyParam) setKey(keyParam);
-  }, []);
-
-  useEffect(() => {
-    const fetchOrgDetails = async () => {
-      // Remove the isAuthorized check to ensure API call is made
-      if (!crmOrgId) return;
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_APP_API}/webtab/getdetails`, {
-          params: {
-            crmorgid: crmOrgId,
-            email: email,
-            key: key,
-          },
-        });
-
-        if (response.data.success) {
-          setOrgDetails(response.data.data?.Organization);
-          console.log("email exists:", email);
-          
-          // Only navigate after waiting for the API response
-          // setTimeout(() => {
-          //   navigate("/app/adminpanel", { 
-          //     state: { orgid: crmOrgId, email: email } 
-          //   });
-          // }, 2000); // Give user time to see the data before navigating
-            navigate("/app/adminpanel", { 
-              state: { orgid: crmOrgId, email: email } 
-            });
-
-        } else {
-          setError('Failed to fetch organization details');
-        }
-      } catch (err) {
-        console.error("API Error:", err);
-        setError(err.response?.data?.message || 'An error occurred while fetching organization details');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // Execute the API call when both email and orgID are available
-    if (email && crmOrgId) {
-      fetchOrgDetails();
-    }
-  }, [email, crmOrgId, navigate]);
-
-  return (
-    <div className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800">Organization Details</h1>
-
-      <div className="space-y-4">
-        {email ? (
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
-            <p className="text-gray-700">
-              Email: <span className="font-semibold">{email}</span>
-            </p>
-          </div>
-        ) : (
-          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-            <p className="text-gray-700">No email parameter found in URL.</p>
-            <p className="text-sm text-gray-500 mt-2">Add "?email=example@domain.com" to the URL to display an email.</p>
-          </div>
-        )}
-
-        {crmOrgId ? (
-          <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-            <p className="text-gray-700">
-              Organization ID: <span className="font-semibold">{crmOrgId}</span>
-            </p>
-          </div>
-        ) : (
-          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-            <p className="text-gray-700">No orgid parameter found in URL.</p>
-            <p className="text-sm text-gray-500 mt-2">Add "?orgid=your-org-id" to the URL to display an organization ID.</p>
-          </div>
-        )}
-      </div>
-
-      {crmOrgId && (
-        <div className="p-4 bg-gray-50 border border-gray-200 rounded-md">
-          <h2 className="font-semibold text-gray-700 mb-3">Organization Details</h2>
-
-          {loading && (
-            <div className="flex items-center justify-center py-4">
-              <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-              <span className="ml-2 text-gray-600">Loading...</span>
-            </div>
-          )}
-
-          {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
-              {error}
-              <p className="mt-2 text-sm">Check console for more details.</p>
-            </div>
-          )}
-
-          {orgDetails && !loading && (
-            <div className="space-y-2">
-              {Object.entries(orgDetails).map(([key, value]) => (
-                <div key={key} className="grid grid-cols-3 gap-2">
-                  <span className="font-medium text-gray-600">{key}:</span>
-                  <span className="col-span-2 text-gray-800">{value !== null ? value.toString() : 'N/A'}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {!loading && !error && !orgDetails && (
-            <p className="text-gray-600">No organization details found.</p>
-          )}
-        </div>
-      )}
-
-      <div className="p-4 bg-gray-50 border border-gray-200 rounded-md space-y-2">
-        <h2 className="font-semibold text-gray-700">Source Details</h2>
-        <p>
-          <strong>Current URL:</strong> {sourceDetails.currentUrl}
-        </p>
-        <p>
-          <strong>Referrer:</strong> {sourceDetails.referrer || 'None'}
-        </p>
-        <p>
-          <strong>Is in Iframe:</strong> {sourceDetails.isInIframe ? 'Yes' : 'No'}
-        </p>
-        <p>
-          <strong>Parent URL:</strong> {sourceDetails.parentUrl}
-        </p>
-      </div>
-    </div>
-  );
-};
-
-export default WebTab2;
-
-
 // import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
 // import { useNavigate } from 'react-router-dom';
+// import CryptoJS from "crypto-js";
 
-// const WebTabOrgDetails = () => {
-//   const [email, setEmail] = useState('');
-//   const [crmOrgId, setCrmOrgId] = useState('4340000000130002');
+// const WebTab2 = () => {
+//   const [email, setEmail] = useState(''); 
+//   const [crmOrgId, setCrmOrgId] = useState('4340000000151022');
+//   const [key,setKey] = useState('');
 //   const [sourceDetails, setSourceDetails] = useState({});
 //   const [orgDetails, setOrgDetails] = useState(null);
 //   const [loading, setLoading] = useState(false);
@@ -229,7 +15,52 @@ export default WebTab2;
 
 //   const navigate = useNavigate();
 
+
+//   const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
+  
+//   const encryptData = (data) => {
+//     const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
+//     return ciphertext;
+//   }; 
+
 //   useEffect(() => {
+//     const allowedDomains = ['crm.zoho.in', 'crm.zoho.com', 'crm.zoho.us', 'crm.zoho.com.au'];
+
+//     const isIframe = window.self !== window.top;
+
+//     let parentUrl = '';
+//     try {
+//       parentUrl = window.top.location.href;
+//     } catch (e) {
+//       parentUrl = document.referrer; // Cross-origin iframe fallback
+//     }
+
+//     const urlToCheck = parentUrl || document.referrer;
+//     let host = '';
+//     try {
+//       const urlObj = new URL(urlToCheck);
+//       host = urlObj.hostname;
+//     } catch (e) {
+//       host = '';
+//     }
+
+//     const isFromZohoCRM = allowedDomains.some(domain => host.endsWith(domain));
+
+//     // Only set unauthorized if we're sure it's not from an allowed domain
+//     if (!isIframe || !isFromZohoCRM) {
+//       setIsAuthorized(false);
+//     }
+
+//     // For Debug Info Panel
+//     const details = {
+//       currentUrl: window.location.href,
+//       referrer: document.referrer,
+//       isInIframe: isIframe,
+//       parentUrl: parentUrl || 'Cross-origin iframe detected - cannot access parent URL',
+//     };
+//     setSourceDetails(details);
+
+//     // Get Email & OrgId from URL
 //     const getUrlParameter = (name) => {
 //       const fullUrl = window.location.href;
 //       const hashPart = fullUrl.split('#')[1] || '';
@@ -245,28 +76,20 @@ export default WebTab2;
 //     const emailParam = getUrlParameter('email');
 //     if (emailParam) setEmail(emailParam);
 
+//     // Keep the hardcoded orgID, but still check for URL parameter
 //     const orgIdParam = getUrlParameter('orgid');
-//     // if (orgIdParam) setCrmOrgId(orgIdParam);
-
-//     const details = {
-//       currentUrl: window.location.href,
-//       referrer: document.referrer,
-//       isInIframe: window.self !== window.top,
-//     };
-
-//     try {
-//       details.parentUrl = window.top.location.href;
-//     } catch (e) {
-//       details.parentUrl = 'Cross-origin iframe detected - cannot access parent URL';
+//     if (orgIdParam) setCrmOrgId(orgIdParam);
+//     const keyParam = getUrlParameter('key');
+//     if (keyParam) {
+//       const encryptedKey = encryptData(keyParam);
+//       setKey(encryptedKey);    
 //     }
-
-//     setSourceDetails(details);
 //   }, []);
 
-//   // ✅ API call now depends on email & crmOrgId
 //   useEffect(() => {
 //     const fetchOrgDetails = async () => {
-//       if (!crmOrgId || !isAuthorized) return;
+//       // Remove the isAuthorized check to ensure API call is made
+//       if (!crmOrgId) return;
 
 //       setLoading(true);
 //       setError(null);
@@ -276,15 +99,26 @@ export default WebTab2;
 //           params: {
 //             crmorgid: crmOrgId,
 //             email: email,
+//             key: key,
 //           },
 //         });
 
 //         if (response.data.success) {
 //           setOrgDetails(response.data.data?.Organization);
-//           console.log("email is exist", email);
-//           navigate("/app/adminpanel", { state: { orgid: crmOrgId, email: email } });
+          
+//           // Only navigate after waiting for the API response
+//           // setTimeout(() => {
+//           //   navigate("/app/adminpanel", { 
+//           //     state: { orgid: crmOrgId, email: email } 
+//           //   });
+//           // }, 2000); // Give user time to see the data before navigating
+//             navigate("/app/adminpanel", { 
+//               state: { orgid: crmOrgId, email: email,key } 
+//             });
+
 //         } else {
 //           setError('Failed to fetch organization details');
+//           navigate("/app/unauthorized");
 //         }
 //       } catch (err) {
 //         setError(err.response?.data?.message || 'An error occurred while fetching organization details');
@@ -293,19 +127,11 @@ export default WebTab2;
 //       }
 //     };
 
+//     // Execute the API call when both email and orgID are available
 //     if (email && crmOrgId) {
 //       fetchOrgDetails();
 //     }
-//   }, [email, crmOrgId, isAuthorized]);
-
-//   if (!isAuthorized) {
-//     return (
-//       <div className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md text-center">
-//         <h1 className="text-2xl font-bold text-red-600">Unauthorized Access</h1>
-//         <p className="text-gray-700">This WebTab is only accessible within Zoho CRM.</p>
-//       </div>
-//     );
-//   }
+//   }, [email, crmOrgId, navigate]);
 
 //   return (
 //     <div className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md space-y-6">
@@ -351,7 +177,10 @@ export default WebTab2;
 //           )}
 
 //           {error && (
-//             <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700">{error}</div>
+//             <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
+//               {error}
+//               <p className="mt-2 text-sm">Check console for more details.</p>
+//             </div>
 //           )}
 
 //           {orgDetails && !loading && (
@@ -390,226 +219,220 @@ export default WebTab2;
 //   );
 // };
 
-// export default WebTabOrgDetails;
+// export default WebTab2;
 
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import CryptoJS from "crypto-js";
+import CrmLoader from '../common/CrmLoader';
 
-// // // import React, { useEffect, useState } from 'react';
-// // // import axios from 'axios';
-// // // import { useNavigate } from 'react-router-dom';
+const WebTab2 = () => {
+  const [email, setEmail] = useState('');
+  const [crmOrgId, setCrmOrgId] = useState('4340000000151022');
+  const [key, setKey] = useState('');
+  const [sourceDetails, setSourceDetails] = useState({});
+  const [orgDetails, setOrgDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isAuthorized, setIsAuthorized] = useState(true);
 
-// // // const WebTabOrgDetails = () => {
-// // //   const [email, setEmail] = useState('');
-// // //   const [crmOrgId, setCrmOrgId] = useState('4340000000130002');
-// // //   const [sourceDetails, setSourceDetails] = useState({});
-// // //   const [orgDetails, setOrgDetails] = useState(null);
-// // //   const [loading, setLoading] = useState(false);
-// // //   const [error, setError] = useState(null);
-// // //   const [isAuthorized, setIsAuthorized] = useState(true); // Protect WebTab by domain check
-// // //   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
 
-// // //   console.log("Email", email);
+  const encryptData = (data) => {
+    const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
+    return ciphertext;
+  };
 
-// // //   console.log("OrgDetails", orgDetails);
+  useEffect(() => {
+    const allowedDomains = ['crm.zoho.in', 'crm.zoho.com', 'crm.zoho.us', 'crm.zoho.com.au'];
 
-// // //   useEffect(() => {
-// // //     // Domain Protection: Only allow *.zoho.com as parent, referrer or current domain
-// // //     const isFromZohoCRM = () => {
-// // //       const currentUrl = window.location.href;
-// // //       const referrer = document.referrer;
-// // //       let parentUrl = '';
+    const isIframe = window.self !== window.top;
 
-// // //       try {
-// // //         parentUrl = window.top.location.href;
-// // //       } catch (e) {
-// // //         parentUrl = 'Cross-origin iframe detected';
-// // //       }
+    let parentUrl = '';
+    try {
+      parentUrl = window.top.location.href;
+    } catch (e) {
+      parentUrl = document.referrer; // Fallback for cross-origin
+    }
 
-// // //       const matchesZohoDomain = (url) => {
-// // //         try {
-// // //           const hostname = new URL(url).hostname;
-// // //           console.log("Checked Hostname:", hostname);
-// // //           return hostname.endsWith('zoho.com');
-// // //         } catch {
-// // //           return false;
-// // //         }
-// // //       };
+    const urlToCheck = parentUrl || document.referrer;
+    let host = '';
+    try {
+      const urlObj = new URL(urlToCheck);
+      host = urlObj.hostname;
+    } catch (e) {
+      host = '';
+    }
 
-// // //       if (matchesZohoDomain(currentUrl) || matchesZohoDomain(referrer) || matchesZohoDomain(parentUrl)) {
-// // //         return true;
-// // //       }
+    const isFromZohoCRM = allowedDomains.some(domain => host.endsWith(domain));
+    const isValidEnvironment = isIframe && isFromZohoCRM;
 
-// // //       return false;
-// // //     };
+    // For Debug Info Panel
+    const details = {
+      currentUrl: window.location.href,
+      referrer: document.referrer,
+      isInIframe: isIframe,
+      parentUrl: parentUrl || 'Cross-origin iframe detected - cannot access parent URL',
+      isFromZohoCRM,
+    };
+    setSourceDetails(details);
 
-// // //     // if (!isFromZohoCRM()) {
-// // //     //   console.warn('Unauthorized access: This WebTab only works inside Zoho CRM.');
-// // //     //   setIsAuthorized(false);
-// // //     //   return;
-// // //     // }
+    if (!isValidEnvironment) {
+      setIsAuthorized(false);
+      navigate("/app/unauthorized");
+      return;
+    }
 
-// // //     // Proceed if authorized
-// // //     const getUrlParameter = (name) => {
-// // //       const fullUrl = window.location.href;
-// // //       const hashPart = fullUrl.split('#')[1] || '';
+    const getUrlParameter = (name) => {
+      const fullUrl = window.location.href;
+      const hashPart = fullUrl.split('#')[1] || '';
+      if (hashPart.includes('?')) {
+        const queryString = hashPart.split('?')[1] || '';
+        const urlParams = new URLSearchParams(queryString);
+        return urlParams.get(name);
+      }
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    };
 
-// // //       if (hashPart.includes('?')) {
-// // //         const queryString = hashPart.split('?')[1] || '';
-// // //         const urlParams = new URLSearchParams(queryString);
-// // //         return urlParams.get(name);
-// // //       }
+    const emailParam = getUrlParameter('email');
+    if (emailParam) setEmail(emailParam);
 
-// // //       const urlParams = new URLSearchParams(window.location.search);
-// // //       return urlParams.get(name);
-// // //     };
+    const orgIdParam = getUrlParameter('orgid');
+    if (orgIdParam) setCrmOrgId(orgIdParam);
 
-// // //     const emailParam = getUrlParameter('email');
-// // //     if (emailParam) setEmail(emailParam);
+    const keyParam = getUrlParameter('key');
+    if (keyParam) {
+      const encryptedKey = encryptData(keyParam);
+      setKey(encryptedKey);
+    }
+  }, [navigate]);
 
-// // //     const orgIdParam = getUrlParameter('orgid');
-// // //     if (orgIdParam) setCrmOrgId(orgIdParam);
+  useEffect(() => {
+    const fetchOrgDetails = async () => {
+      if (!crmOrgId || !isAuthorized) return;
 
-// // //     const details = {
-// // //       currentUrl: window.location.href,
-// // //       referrer: document.referrer,
-// // //       isInIframe: window.self !== window.top,
-// // //     };
+      setLoading(true);
+      setError(null);
 
-// // //     try {
-// // //       details.parentUrl = window.top.location.href;
-// // //     } catch (e) {
-// // //       details.parentUrl = 'Cross-origin iframe detected - cannot access parent URL';
-// // //     }
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_APP_API}/webtab/getdetails`, {
+          params: {
+            crmorgid: crmOrgId,
+            email,
+            key,
+          },
+        });
 
-// // //     console.log('Source Details:', details);
-// // //     setSourceDetails(details);
-// // //   }, []);
+        if (response.data.success) {
+          setOrgDetails(response.data.data?.Organization);
+          navigate("/app/adminpanel", {
+            state: { orgid: crmOrgId, email, key }
+          });
+        } else {
+          setError('Failed to fetch organization details');
+          navigate("/app/unauthorized");
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || 'An error occurred while fetching organization details');
+        navigate("/app/unauthorized");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-// // //   // Fetch organization details when crmOrgId is available
-// // //   useEffect(() => {
-// // //     const fetchOrgDetails = async () => {
-// // //       if (!crmOrgId || !isAuthorized) return;
+    if (email && crmOrgId && isAuthorized) {
+      fetchOrgDetails();
+    }
+  }, [email, crmOrgId, isAuthorized, key, navigate]);
 
-// // //       setLoading(true);
-// // //       setError(null);
+  if (!isAuthorized) {
+    return (
+      <div className="p-6 text-red-600 text-center">
+        Unauthorized Access: This application is only available inside Zoho CRM.
+      </div>
+    );
+  }
 
-// // //       try {
-// // //         const response = await axios.get(`${process.env.REACT_APP_APP_API}/webtab/getdetails`, {
-// // //           params: {
-// // //             crmorgid: crmOrgId,
-// // //             email: email,
-// // //           },
-// // //         });
+  return (
+    <div className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md space-y-6">
+      {/* <h1 className="text-2xl font-bold text-gray-800">Organization Details</h1> */}
 
-// // //         if (response.data.success) {
-// // //           setOrgDetails(response.data.data?.Organization);
-// // //           // navigate("/app/adminpanel", { state: { orgid: crmOrgId, email: email } });
-// // //           console.log("email is exist", email);
-          
-// // //         } else {
-// // //           setError('Failed to fetch organization details');
-// // //         }
-// // //       } catch (err) {
-// // //         console.error('Error fetching org details:', err);
-// // //         setError(err.response?.data?.message || 'An error occurred while fetching organization details');
-// // //       } finally {
-// // //         setLoading(false);
-// // //       }
-// // //     };
+      {/* <div className="space-y-4">
+        {email ? (
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <p className="text-gray-700">
+              Email: <span className="font-semibold">{email}</span>
+            </p>
+          </div>
+        ) : (
+          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+            <p className="text-gray-700">No email parameter found in URL.</p>
+            <p className="text-sm text-gray-500 mt-2">Add "?email=example@domain.com" to the URL.</p>
+          </div>
+        )}
 
-// // //     fetchOrgDetails();
-// // //   }, []);
+        {crmOrgId ? (
+          <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+            <p className="text-gray-700">
+              Organization ID: <span className="font-semibold">{crmOrgId}</span>
+            </p>
+          </div>
+        ) : (
+          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+            <p className="text-gray-700">No orgid parameter found in URL.</p>
+          </div>
+        )}
+      </div> */}
 
-// // //   if (!isAuthorized) {
-// // //     return (
-// // //       <div className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md space-y-4 text-center">
-// // //         <h1 className="text-2xl font-bold text-red-600">Unauthorized Access</h1>
-// // //         <p className="text-gray-700">This WebTab is only accessible within Zoho CRM.</p>
-// // //       </div>
-// // //     );
-// // //   }
+      {crmOrgId && (
+        <div className="p-4 bg-gray-50 border border-gray-200 rounded-md">
+          {/* <h2 className="font-semibold text-gray-700 mb-3">Organization Details</h2> */}
 
-// // //   return (
-// // //     <div className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md space-y-6">
-// // //       <h1 className="text-2xl font-bold text-gray-800">Organization Details</h1>
+          {loading && (
+            // <div className="flex items-center justify-center py-4">
+            //   <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            //   <span className="ml-2 text-gray-600">Loading...</span>
+            // </div>
+            <CrmLoader/>
+          )}
 
-// // //       <div className="space-y-4">
-// // //         {email ? (
-// // //           <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
-// // //             <p className="text-gray-700">
-// // //               Email: <span className="font-semibold">{email}</span>
-// // //             </p>
-// // //           </div>
-// // //         ) : (
-// // //           <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-// // //             <p className="text-gray-700">No email parameter found in URL.</p>
-// // //             <p className="text-sm text-gray-500 mt-2">Add "?email=example@domain.com" to the URL to display an email.</p>
-// // //           </div>
-// // //         )}
+          {/* {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
+              {error}
+              <p className="mt-2 text-sm">Check console for more details.</p>
+            </div>
+          )} */}
 
-// // //         {crmOrgId ? (
-// // //           <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-// // //             <p className="text-gray-700">
-// // //               Organization ID: <span className="font-semibold">{crmOrgId}</span>
-// // //             </p>
-// // //           </div>
-// // //         ) : (
-// // //           <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-// // //             <p className="text-gray-700">No orgid parameter found in URL.</p>
-// // //             <p className="text-sm text-gray-500 mt-2">Add "?orgid=your-org-id" to the URL to display an organization ID.</p>
-// // //           </div>
-// // //         )}
-// // //       </div>
+          {/* {orgDetails && !loading && (
+            <div className="space-y-2">
+              {Object.entries(orgDetails).map(([key, value]) => (
+                <div key={key} className="grid grid-cols-3 gap-2">
+                  <span className="font-medium text-gray-600">{key}:</span>
+                  <span className="col-span-2 text-gray-800">{value !== null ? value.toString() : 'N/A'}</span>
+                </div>
+              ))}
+            </div>
+          )} */}
 
-// // //       {/* Organization Details Section */}
-// // //       {crmOrgId && (
-// // //         <div className="p-4 bg-gray-50 border border-gray-200 rounded-md">
-// // //           <h2 className="font-semibold text-gray-700 mb-3">Organization Details</h2>
+          {/* {!loading && !error && !orgDetails && (
+            <p className="text-gray-600">No organization details found.</p>
+          )} */}
+        </div>
+      )}
 
-// // //           {loading && (
-// // //             <div className="flex items-center justify-center py-4">
-// // //               <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-// // //               <span className="ml-2 text-gray-600">Loading...</span>
-// // //             </div>
-// // //           )}
+      {/* <div className="p-4 bg-gray-50 border border-gray-200 rounded-md space-y-2">
+        <h2 className="font-semibold text-gray-700">Source Details</h2>
+        <p><strong>Current URL:</strong> {sourceDetails.currentUrl}</p>
+        <p><strong>Referrer:</strong> {sourceDetails.referrer || 'None'}</p>
+        <p><strong>Is in Iframe:</strong> {sourceDetails.isInIframe ? 'Yes' : 'No'}</p>
+        <p><strong>Parent URL:</strong> {sourceDetails.parentUrl}</p>
+        <p><strong>Is from Zoho CRM:</strong> {sourceDetails.isFromZohoCRM ? 'Yes' : 'No'}</p>
+      </div> */}
+    </div>
+  );
+};
 
-// // //           {error && (
-// // //             <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700">{error}</div>
-// // //           )}
-
-// // //           {orgDetails && !loading && (
-// // //             <div className="space-y-2">
-// // //               {Object.entries(orgDetails).map(([key, value]) => (
-// // //                 <div key={key} className="grid grid-cols-3 gap-2">
-// // //                   <span className="font-medium text-gray-600">{key}:</span>
-// // //                   <span className="col-span-2 text-gray-800">{value !== null ? value.toString() : 'N/A'}</span>
-// // //                 </div>
-// // //               ))}
-// // //             </div>
-// // //           )}
-
-// // //           {!loading && !error && !orgDetails && (
-// // //             <p className="text-gray-600">No organization details found.</p>
-// // //           )}
-// // //         </div>
-// // //       )}
-
-// // //       <div className="p-4 bg-gray-50 border border-gray-200 rounded-md space-y-2">
-// // //         <h2 className="font-semibold text-gray-700">Source Details</h2>
-// // //         <p>
-// // //           <strong>Current URL:</strong> {sourceDetails.currentUrl}
-// // //         </p>
-// // //         <p>
-// // //           <strong>Referrer:</strong> {sourceDetails.referrer || 'None'}
-// // //         </p>
-// // //         <p>
-// // //           <strong>Is in Iframe:</strong> {sourceDetails.isInIframe ? 'Yes' : 'No'}
-// // //         </p>
-// // //         <p>
-// // //           <strong>Parent URL:</strong> {sourceDetails.parentUrl}
-// // //         </p>
-// // //       </div>
-// // //     </div>
-// // //   );
-// // // };
-
-// // // export default WebTabOrgDetails;
+export default WebTab2;

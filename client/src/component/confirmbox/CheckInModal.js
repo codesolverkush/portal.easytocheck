@@ -43,7 +43,6 @@ const CheckInModal  = ({ location, onClose,id,module,username,onNoteAdded}) => {
       setNoteContent("");
       onClose();
     } catch (error) {
-      console.error("Error adding note:", error);
       // Optionally show error toast
     } finally {
       setIsSubmitting(false);

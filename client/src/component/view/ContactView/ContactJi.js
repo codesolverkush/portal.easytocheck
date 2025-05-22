@@ -85,7 +85,7 @@ const TaskView = () => {
         await cache.put("/tasks", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching tasks", error);
+      toast.error("Error fetching tasks!");
     } finally {
       setLoading(false);
     }
@@ -110,7 +110,7 @@ const TaskView = () => {
         await cache.put("/tasks", newResponse);
       }
     } catch (error) {
-      console.error("Error fetching tasks", error);
+      toast.error("Error fetching tasks!");
     } finally {
       setLoading(false);
     }
@@ -232,8 +232,7 @@ const TaskView = () => {
         toast.success("Task Created Successfully!");
       }
     } catch (error) {
-      console.error("Error creating contact:", error);
-      toast.error(error?.response?.data?.error?.data[0]?.message);
+      toast.error(error?.response?.data?.error?.data[0]?.message || "Error Creating Contact!");
     }
 
     setIsCreateModalOpen(false);

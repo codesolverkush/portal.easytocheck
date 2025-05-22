@@ -6,7 +6,6 @@ const { handleZohoRequest, getAccessToken } = require("../utils/zohoUtils");
 const getDataById = async (req, res) => {
     const userId = req.currentUser?.user_id;
   try {
-    console.log("userId", userId);
     if (!userId) {
       return res
         .status(404)

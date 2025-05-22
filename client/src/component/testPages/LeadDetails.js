@@ -162,7 +162,7 @@ const AddNoteModal = ({ isOpen, onClose, leadId, username, onNoteAdded }) => {
       setNoteContent("");
       onClose();
     } catch (error) {
-      console.error("Error adding note:", error);
+      toast.error("Error adding note!");
       // Optionally show error toast
     } finally {
       setIsSubmitting(false);
@@ -285,7 +285,7 @@ const AddReasonModal = ({
             toast.error("Failed to update lead. Please try again.");
           }
         } catch (error) {
-          console.error("Error updating lead:", error);
+          console.log(error)
           toast.error(
             error?.response?.data?.error?.data[0]?.message ||
               error?.response?.data?.message ||
@@ -298,7 +298,6 @@ const AddReasonModal = ({
       setNoteContent("");
       onClose();
     } catch (error) {
-      console.error("Error adding note:", error);
       toast.error("Failed to add note");
     } finally {
       setIsSubmitting(false);
@@ -424,7 +423,6 @@ const CATEGORY_ORDER = Object.freeze({
 const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
   const lead = data?.data[0]; // Take the first lead from the array
 
-  console.log(lead);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(true); // State to control details visibility
@@ -543,7 +541,6 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
 
       processFieldData(fieldData);
     } catch (error) {
-      console.error("Error fetching CRM fields:", error);
       toast.error(
         error?.response?.data?.message || "Failed to load form fields!"
       );
@@ -793,7 +790,6 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
           setModalOpen(true); // open modal after getting location
         },
         (error) => {
-          console.error("Error fetching location:", error);
           alert("Failed to get location. Please allow location access.");
         }
       );
@@ -832,7 +828,6 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
         toast.error("Failed to update lead. Please try again.");
       }
     } catch (error) {
-      console.error("Error updating lead:", error);
       toast.error(
         error?.response?.data?.error?.data[0]?.message || "Something went wrong"
       );
@@ -870,7 +865,6 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
         toast.error("Failed to find matching records. Please try again.");
       }
     } catch (error) {
-      console.error("Error searching lead records:", error);
       toast.error(
         error?.response?.data?.error?.data?.[0]?.message ||
           error?.response?.data?.message ||
@@ -1063,7 +1057,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
         notes: true,
       }));
     } catch (error) {
-      console.error("Error fetching notes:", error);
+      toast.error("Error fetching notes!");
       // Optionally show an error toast or message
     } finally {
       setIsLoading(false);
@@ -1104,8 +1098,7 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
         tasks: true,
       }));
     } catch (error) {
-      console.error("Error fetching tasks:", error);
-      // Optionally show an error toast or message
+       toast.error("Error fetching tasks");
     } finally {
       setIsLoading(false);
     }
@@ -1118,7 +1111,6 @@ const LeadInformationPage = ({ data, leadId, username, accessScore }) => {
   };
 
   const handleButtonStatus = (status) => {
-    console.log("Status", status);
     setActiveStatus(status);
   };
 
