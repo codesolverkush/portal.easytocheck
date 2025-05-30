@@ -498,14 +498,14 @@ const MeetingView = () => {
                   <span>Manage Columns</span>
                 </button>
 
-                <button
+                {/* <button
                   onClick={() => setIsCreateModalOpen(true)}
                   className={`flex-1 sm:flex-none ${bgColors.primary} text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center ${hoverColors.primary} transition-colors text-sm md:text-base`}
                 >
                   <Plus size={16} className="mr-1 md:mr-2" />
                   <span className="hidden sm:inline">Create Meeting</span>
                   <span className="sm:hidden">Create</span>
-                </button>
+                </button> */}
 
                 <div className="relative w-full md:w-64">
                 <input

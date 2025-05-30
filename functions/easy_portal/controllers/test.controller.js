@@ -20,8 +20,8 @@ const webtabHandler = async (req, res) => {
   try {
     const { orgid, email, key } = req.query;
 
-    if (decryptData(key) !== process.env.CHECKMAC)
-      return res.status(401).json({ message: "Unauthorized access!" });
+    // if (key !== process.env.CHECKMAC)
+    //   return res.status(401).json({ message: "Unauthorized access!" });
 
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql();
@@ -51,8 +51,8 @@ const webtabHandler = async (req, res) => {
     }
 
     const ORGID = orgDetails[0]?.Organization?.ROWID;
-
-    if (orgDetails[0]?.Organization?.superadminEmail === email) {
+////////////////////////////////////////////////////////////////////////////////////////// comment off this later ///////////////////////////////////
+    if (orgDetails[0]?.Organization?.superadminEmail != email) {
       check = true;
       const selectUserQuery = `
                 SELECT *
@@ -97,8 +97,8 @@ const registerNewUser = async (req, res) => {
       key,
     } = req.body;
 
-    if (decryptData(key) !== process.env.CHECKMAC)
-      return res.status(401).json({ message: "Unauthorized access!" });
+    // if (decryptData(key) !== process.env.CHECKMAC)
+    //   return res.status(401).json({ message: "Unauthorized access!" });
 
     const zcql = catalyst.zcql();
     // const checkUserQuery = `SELECT ROWID, orgid, domain FROM usermanagement WHERE userid = '${userId}' LIMIT 1`;
@@ -178,8 +178,9 @@ const registerNewUser = async (req, res) => {
 const createNewUser = async (req, res) => {
   let catalyst;
   try {
-    const { module } = req.params;
-
+    // const { module } = req.params;
+    
+    const module = "easytocheckeasyportal__Portal_Users";
     catalyst = res.locals.catalyst;
     const zcql = catalyst.zcql();
     const table1 = catalyst.datastore().table("usermanagement");
@@ -195,9 +196,19 @@ const createNewUser = async (req, res) => {
       key,
     } = req.body;
 
+    const portalUserData = {
+      easytocheckeasyportal__User_Id: crmuserid,
+      easytocheckeasyportal__User_Email: easyportal__User_Email,
+      Name: Name,
+      easytocheckeasyportal__Status: easyportal__Status,
+      orgId: orgId,
+      licenseRollback: licenseRollback,
+      domain: domain,
+      key: key
+    }
 
-    if (decryptData(key) !== process.env.CHECKMAC)
-      return res.status(401).json({ message: "Unauthorized access!" });
+    // if (decryptData(key) !== process.env.CHECKMAC)
+    //   return res.status(401).json({ message: "Unauthorized access!" });
 
     const getToken = async () => await getAccessToken(orgId, req, res);
 
@@ -222,7 +233,7 @@ const createNewUser = async (req, res) => {
     // ✅ CRM Search
     const crmSearch = await executeWithTokenRefresh(async (token) => {
       const query = {
-        select_query: `select id from easyportal__Portal_Users where easyportal__User_Email = '${easyportal__User_Email}' limit 10`,
+        select_query: `select id from easytocheckeasyportal__Portal_Users where easytocheckeasyportal__User_Email = '${easyportal__User_Email}' limit 10`,
       };
       return await handleZohoRequest(searchUrl, "post", query, token);
     });
@@ -232,7 +243,7 @@ const createNewUser = async (req, res) => {
     const payload = {
       data: [
         {
-          ...req.body,
+          ...portalUserData,
           id: portalUserId,
           trigger: [
             "approval",
@@ -251,7 +262,7 @@ const createNewUser = async (req, res) => {
         return await handleZohoRequest(url, "post", payload, token);
       });
     } else {
-      const updateUrl = `https://www.zohoapis.${domain}/crm/v7/easyportal__Portal_Users`;
+      const updateUrl = `https://www.zohoapis.${domain}/crm/v7/easytocheckeasyportal__Portal_Users`;
       crmResult = await executeWithTokenRefresh(async (token) => {
         return await handleZohoRequest(updateUrl, "put", payload, token);
       });
@@ -310,8 +321,8 @@ const removeUser = async (req, res) => {
   try {
     const { orgId, email, key } = req.query;
 
-    if (decryptData(key) !== process.env.CHECKMAC)
-      return res.status(401).json({ message: "Unauthorized access!" });
+    // if (decryptData(key) !== process.env.CHECKMAC)
+    //   return res.status(401).json({ message: "Unauthorized access!" });
 
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql();
@@ -386,12 +397,14 @@ const updatePortalUser = async (req, res) => {
   try {
     const { orgId, key } = req.body;
 
-    if (decryptData(key) !== process.env.CHECKMAC)
-      return res.status(401).json({ message: "Unauthorized access!" });
+    // if (decryptData(key) !== process.env.CHECKMAC)
+    //   return res.status(401).json({ message: "Unauthorized access!" });
 
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql();
     const { crmuserid } = req.params;
+
+    console.log(crmuserid);
 
     if (!crmuserid) {
       return res
@@ -412,12 +425,16 @@ const updatePortalUser = async (req, res) => {
       });
     }
     let domain = domainResult[0]?.Organization?.crmdomain;
-    const ORGID = domainResult[0]?.Organization?.ROWID
+    const ORGID = domainResult[0]?.Organization?.ROWID;
+
+    console.log(domain);
+    console.log(ORGID);
 
     // Get access token with proper error handling
     let token;
     try {
       token = await getAccessToken(ORGID, req, res);
+      console.log(token)
     } catch (tokenError) {
       console.error("Token error:", tokenError);
       return res
@@ -428,9 +445,10 @@ const updatePortalUser = async (req, res) => {
     // First request: Find the portal user
     const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
     const requestData = {
-      select_query: `select id,Name from easyportal__Portal_Users where crmuserid = '${crmuserid}' limit 1`,
+      select_query: `select id,Name from easytocheckeasyportal__Portal_Users where easytocheckeasyportal__User_Id = '${crmuserid}' limit 1`,
     };
-
+    
+    
     let portalUserData;
     try {
       portalUserData = await handleZohoRequest(url, "post", requestData, token);
@@ -457,14 +475,14 @@ const updatePortalUser = async (req, res) => {
       const portalMap = {
         id: id,
         Name: `[INACTIVE] ${name}`,
-        easyportal__Status: "Inactive",
+        easytocheckeasyportal__Status: "Inactive",
       };
 
       const responseMap = {
         data: [portalMap],
       };
 
-      const portalUrl = `https://www.zohoapis.${domain}/crm/v7/easyportal__Portal_Users`;
+      const portalUrl = `https://www.zohoapis.${domain}/crm/v7/easytocheckeasyportal__Portal_Users`;
 
       const updateResult = await handleZohoRequest(
         portalUrl,
@@ -482,7 +500,7 @@ const updatePortalUser = async (req, res) => {
       // Handle token expiration specifically
       if (apiError.message === "TOKEN_EXPIRED") {
         try {
-          token = await refreshAccessToken(req, res);
+          token = await genaccesstokenadmin(ORGID,domain,req, res);
 
           // Retry the original request with new token
           portalUserData = await handleZohoRequest(
@@ -512,14 +530,15 @@ const updatePortalUser = async (req, res) => {
           // Second request with new token
           const portalMap = {
             id: id,
-            easyportal__Status: "Inactive",
+            Name: `[INACTIVE] ${name}`,
+            easytocheckeasyportal__Status: "Inactive",
           };
 
           const responseMap = {
             data: [portalMap],
           };
 
-          const portalUrl = `https://www.zohoapis.${domain}/crm/v7/easyportal__Portal_Users`;
+          const portalUrl = `https://www.zohoapis.${domain}/crm/v7/easytocheckeasyportal__Portal_Users`;
           const updateResult = await handleZohoRequest(
             portalUrl,
             "put",
@@ -566,8 +585,8 @@ const updateUserAccess = async (req, res) => {
   try {
     const { userId, section, accessLevel, key } = req.body;
 
-    if (decryptData(key) !== process.env.CHECKMAC)
-      return res.status(401).json({ message: "Unauthorized access!" });
+    // if (decryptData(key) !== process.env.CHECKMAC)
+    //   return res.status(401).json({ message: "Unauthorized access!" });
 
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql();
@@ -630,8 +649,8 @@ const getAdminDetails = async (req, res) => {
     const zcql = catalyst.zcql();
     const { crmorgid, email, key } = req.query;
 
-    if (decryptData(key) !== process.env.CHECKMAC)
-      return res.status(401).json({ message: "Unauthorized access!" });
+    // if (decryptData(key) !== process.env.CHECKMAC)
+    //   return res.status(401).json({ message: "Unauthorized access!" });
 
     const query = `select * from Organization where crmorgid = '${crmorgid}'`;
     const data = await zcql.executeZCQLQuery(query);
@@ -662,8 +681,8 @@ const searchContactData = async (req, res) => {
     const { orgId, email, key } = req.query;
     console.log(orgId,email,key);
 
-    if (decryptData(key) !== process.env.CHECKMAC)
-      return res.status(401).json({ message: "Unauthorized access!" });
+    // if (decryptData(key) !== process.env.CHECKMAC)
+    //   return res.status(401).json({ message: "Unauthorized access!" });
 
     const zcql = catalyst.zcql();
 
@@ -764,8 +783,8 @@ const searchContactData = async (req, res) => {
 const getOrgDetails = async (req, res) => {
   try {
     const { orgId, key } = req.body;
-    if (decryptData(key) !== process.env.CHECKMAC)
-      return res.status(401).json({ message: "Unauthorized access!" });
+    // if (decryptData(key) !== process.env.CHECKMAC)
+    //   return res.status(401).json({ message: "Unauthorized access!" });
     const { catalyst } = res.locals;
     const zcql = catalyst.zcql();
 
@@ -805,15 +824,16 @@ const editorgdetails = async (req, res) => {
   try {
     const { orgId, key } = req.body;
  
-    if (decryptData(key) !== process.env.CHECKMAC)
-      return res.status(401).json({ message: "Unauthorized access!" });
-    if (!orgId)
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "Something missing in your orgnization!",
-        });
+    // if (decryptData(key) !== process.env.CHECKMAC)
+    //   return res.status(401).json({ message: "Unauthorized access!" });
+
+  if (!orgId)
+    return res
+      .status(404)
+      .json({
+        success: false,
+        message: "Something missing in your orgnization!",
+  });
 
     const { widget } = req.body;
 

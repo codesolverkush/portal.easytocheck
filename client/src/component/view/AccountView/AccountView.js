@@ -459,7 +459,7 @@ const AccountView = () => {
                 </button>
                 {accessScore < 2 ? (
                   <Link
-                    to="/app/accountform"
+                    to="/app/accountcreate"
                     onClick={() =>
                       toast.error(
                         "Insufficient access rights to create a account."
@@ -473,7 +473,7 @@ const AccountView = () => {
                   </Link>
                 ) : (
                   <Link
-                    to="/app/accountform"
+                    to="/app/accountcreate"
                     onClick={() => setIsCreateModalOpen(true)}
                     className={`flex-1 sm:flex-none ${bgColors.primary} text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center ${hoverColors.primary} transition-colors text-sm md:text-base`}
                   >

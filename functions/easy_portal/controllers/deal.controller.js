@@ -22,7 +22,7 @@ const associatedDealWithContact = async (req,res)=>{
         let token = await getAccessToken(orgId,req,res);
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
         const requestData = {
-            select_query: `SELECT Deal_Name, id, Closing_Date, Created_Time, Amount, Stage, Account_Name FROM Deals WHERE (Contact_Name = ${contactId} and easyportal__Portal_User = ${crmuserid}) ORDER BY Created_Time DESC LIMIT 1000`
+            select_query: `SELECT Deal_Name, id, Closing_Date, Created_Time, Amount, Stage, Account_Name FROM Deals WHERE (Contact_Name = ${contactId} and easytocheckeasyportal__Portal_User = ${crmuserid}) ORDER BY Created_Time DESC LIMIT 1000`
         };
 
         try {

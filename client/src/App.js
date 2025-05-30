@@ -479,6 +479,8 @@ const Webtab = lazy(() => import('./pages/Webtab.js'));
 const CreateDealForm = lazy(() => import('./component/forms/CreateDealForm.js'));
 const DealView = lazy(() => import('./component/view/DealView/DealView.js'));
 const DealProfile = lazy(()=> import('./component/view/DealView/DealProfile.js'));
+
+const CreateAccountForm =  lazy(() => import('./component/forms/CreateAccountForm.js'));
 const AccountView = lazy(() => import('./component/view/AccountView/AccountView.js'));
 const AboutUs = lazy(()=> import('./component/landingComponent/AboutUs.js'));
 
@@ -660,6 +662,15 @@ function App() {
           {/* Lead route end */}
 
           {/* Account route start */}
+          <Route
+            path="/app/accountcreate"
+            element={
+              <ProtectedRouteWithLicense>
+                 <CreateAccountForm/>
+              </ProtectedRouteWithLicense>
+            }
+          />
+
           <Route
             path="/app/accountview"
             element={

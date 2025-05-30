@@ -64,6 +64,7 @@ const totalTask = async (req, res) => {
     try {
         const orgId = req.userDetails[0]?.usermanagement?.orgid;
         const domain = req.userDetails[0]?.usermanagement?.domain;
+        const email = req.currentUser?.email_id;
 
         if (!orgId) {
             return res.status(404).json({ message: "Organization ID not found." });
@@ -73,7 +74,7 @@ const totalTask = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: "SELECT Subject,Due_Date,Status,Priority,Created_Time FROM Tasks WHERE Subject != '' ORDER BY Created_Time DESC LIMIT 1000"
+            select_query: `SELECT Subject,Due_Date,Status,Priority,Created_Time FROM Tasks WHERE easytocheckeasyportal__Created_for = '${email}' ORDER BY Created_Time DESC LIMIT 1000`
         };
 
 
@@ -106,6 +107,7 @@ const totalMeeting = async (req, res) => {
 
         const orgId = req.userDetails[0]?.usermanagement?.orgid;
         const domain = req.userDetails[0]?.usermanagement?.domain;
+        const email = req.currentUser?.email_id;
 
 
         if (!orgId) {
@@ -116,7 +118,7 @@ const totalMeeting = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: "SELECT id, Event_Title, Start_DateTime, End_DateTime, Owner, Created_Time FROM Events WHERE Event_Title != '' ORDER BY Created_Time DESC LIMIT 1000"
+            select_query: `SELECT id, Event_Title, Start_DateTime, End_DateTime, Owner, Created_Time FROM Events WHERE easytocheckeasyportal__Created_for_email = '${email }' ORDER BY Created_Time DESC LIMIT 1000`
         };
 
 
@@ -197,7 +199,7 @@ const totalContacts = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: `SELECT Full_Name,Email,Lead_Source,Phone,Date_of_Birth,Mailing_Street,Mailing_State,Mailing_Country,Mailing_City,Mailing_Zip,Other_Phone,Secondary_Email,Skype_ID from Contacts WHERE (((easyportal__Client_User = ${crmuserid}) or (Mark_as_Public = true))) ORDER BY Created_Time DESC`
+            select_query: `SELECT Full_Name,Email,Lead_Source,Phone,Date_of_Birth,Mailing_Street,Mailing_State,Mailing_Country,Mailing_City,Mailing_Zip,Other_Phone,Secondary_Email,Skype_ID from Contacts WHERE (((easytocheckeasyportal__Portal_User = ${crmuserid}) or (easytocheckeasyportal__Mark_as_public = true))) ORDER BY Created_Time DESC`
         };
         try {
             const data = await handleZohoRequest(url, 'post', requestData, token);
@@ -239,7 +241,7 @@ const leadDetails = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: `SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Lead_Status,Created_Time FROM Leads WHERE (((easyportal__Client_User = ${crmuserid}) or (Mark_as_Public	= true))) ORDER BY Created_Time DESC LIMIT 1000`
+            select_query: `SELECT id,Last_Name,Full_Name,Company,Phone,Mobile,Email,Lead_Status,Created_Time FROM Leads WHERE (((easytocheckeasyportal__Portal_User = ${crmuserid}) or (easytocheckeasyportal__Mark_as_public	= true))) ORDER BY Created_Time DESC LIMIT 1000`
         };
            
         try {
@@ -301,7 +303,7 @@ const dealDetails = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: `SELECT id,Deal_Name,Closing_Date,Contact_Name,Account_Name,Stage,Pipeline,Created_Time FROM Deals WHERE (((easyportal__Portal_User = ${crmuserid}) or (Mark_as_Public = true))) ORDER BY Created_Time DESC LIMIT 2000 `
+            select_query: `SELECT id,Deal_Name,Closing_Date,Contact_Name,Account_Name,Stage,Pipeline,Created_Time FROM Deals WHERE (((easytocheckeasyportal__Portal_User = ${crmuserid}) or (easytocheckeasyportal__Mark_as_public = true))) ORDER BY Created_Time DESC LIMIT 2000 `
         };
            
         try {
@@ -347,7 +349,7 @@ const accountDetails = async (req, res) => {
         const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
 
         const requestData = {
-            select_query: `SELECT id,Account_Name,Account_Type,Phone,Ownership,Created_Time FROM Accounts WHERE (((easyportal__Portal_User = ${crmuserid}) or (Mark_as_Public = true))) ORDER BY Created_Time DESC LIMIT 2000 `
+            select_query: `SELECT id,Account_Name,Account_Type,Phone,Ownership,Created_Time FROM Accounts WHERE (((easytocheckeasyportal__Portal_User = ${crmuserid}) or (easytocheckeasyportal__Mark_as_public = true))) ORDER BY Created_Time DESC LIMIT 2000 `
         };
            
         try {
@@ -373,7 +375,7 @@ const accountDetails = async (req, res) => {
         }
     } catch (error) {
         if (!res.headersSent) {
-            return res.status(500).json({ success: false, message: error });
+            return res.status(500).json({ success: false, message: error, error1: error.response.data, error2: error.response });
         }
     }
 };

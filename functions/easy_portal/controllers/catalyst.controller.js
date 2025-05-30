@@ -178,7 +178,7 @@ const registerNewUser = async (req, res) => {
     const allUsers = await userManagement.getAllUsers();
     const userDetails = allUsers.find((user) => user.email_id === email_id);
 
-    console
+    console.log(userDetails);
 
     if (!userDetails) {
       return res.status(404).json({

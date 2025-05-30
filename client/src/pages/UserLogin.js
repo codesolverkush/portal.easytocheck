@@ -43,8 +43,10 @@ const UserLogin = () => {
 
             // Check if user is super admin
             if (isSuperAdmin) {
-              navigate("/app/orgprofile");
+              // navigate("/app/orgprofile");
+            
               dispatch(setSuperAdminStatus());
+            
               toast.success(`Welcome back, ${displayname} admin!`);
             } else if (active) {
               navigate("/app/home", { state: { orgId } });

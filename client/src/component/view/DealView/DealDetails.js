@@ -231,7 +231,7 @@ const DealDetails = ({ accessScore, data, username }) => {
 
     // Find portal user field - try multiple possible field names
     const portalUserIndex = orderedFields.findIndex(
-      (field) => field.api_name === "easyportal__Portal_User"
+      (field) => field.api_name === "easytocheckeasyportal__Portal_User"
     );
 
     // Find potential owner field - try multiple possible field names

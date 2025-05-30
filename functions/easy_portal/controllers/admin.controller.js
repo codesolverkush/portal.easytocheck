@@ -286,7 +286,7 @@ const updatePortalUser = async (req, res) => {
     // First request: Find the portal user
     const url = `https://www.zohoapis.${domain}/crm/v7/coql`;
     const requestData = {
-      select_query: `select id,Name from easyportal__Portal_Users where crmuserid = '${crmuserid}' limit 1`
+      select_query: `select id,Name from easytocheckeasyportal__Portal_Users where easytocheckeasyportal__User_Id = '${crmuserid}' limit 1`
     };
 
     
@@ -308,7 +308,7 @@ const updatePortalUser = async (req, res) => {
       const portalMap = {
         id: id,
         Name:`[INACTIVE] ${name}`,
-        easyportal__Status: "Inactive" 
+        easytocheckeasyportal__Status: "Inactive" 
       };
 
       
@@ -317,7 +317,7 @@ const updatePortalUser = async (req, res) => {
         data: [portalMap]
       };
       
-      const portalUrl = `https://www.zohoapis.${domain}/crm/v7/easyportal__Portal_Users`;
+      const portalUrl = `https://www.zohoapis.${domain}/crm/v7/easytocheckeasyportal__Portal_Users`;
       
       const updateResult = await handleZohoRequest(portalUrl, 'put', responseMap, token);
       
@@ -348,14 +348,14 @@ const updatePortalUser = async (req, res) => {
           // Second request with new token
           const portalMap = {
             id: id,
-            easyportal__Status: "Inactive"
+            easytocheckeasyportal__Status: "Inactive"
           };
           
           const responseMap = {
             data: [portalMap]
           };
           
-          const portalUrl = `https://www.zohoapis.${domain}/crm/v7/easyportal__Portal_Users`;
+          const portalUrl = `https://www.zohoapis.${domain}/crm/v7/easytocheckeasyportal__Portal_Users`;
           const updateResult = await handleZohoRequest(portalUrl, 'put', responseMap, token);
           
           return res.status(200).json({ 

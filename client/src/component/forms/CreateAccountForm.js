@@ -11,23 +11,31 @@ const CACHE_NAME = "crm-cache";
 const PRIORITY = Object.freeze({
   // Deal Information priorities
   OWNER: 1,
-  DEAL_NAME: 2,
-  ACCOUNT_NAME: 3,
-  CONTACT_NAME: 4,
-  AMOUNT: 5,
-  CLOSING_DATE: 6,
-  STAGE: 7,
-  LEAD_SOURCE: 8,
-  PRODUCT: 9,
-  MOQ: 10,
-  SAMPLE_QTY: 11,
+  ACCOUNT_NAME: 2,
+  Parent_Account: 3,
+  ACCOUNT_NUMBER: 4,
+  ACCOUNT_SITE: 5,
+  ACCOUNT_TYPE: 6,
   
-  // Description Information priorities
+  // Address Information priorities
   DESCRIPTION: 1,
   DEVELOPMENT_DATE: 2,
   SAMPLE_RECEIVED_DATE: 3,
   SAMPLE_RECEIVED_STATUS: 4,
   REASON_FOR_LOSS: 5,
+
+  // Address Information Priorities
+
+  BILLING_CITY: 1,
+  BILLING_CODE: 2,
+  BILLING_COUNTRY: 3,
+  BILLING_STATE:4,
+  BILLING_STREET: 5,
+  SHIPPING_CITY:6,
+  SHIPPING_CODE:7,
+  SHIPPING_COUNTRY:8,
+  SHIPPING_STATE:9,
+  SHIPPING_STREET:10,
   
   // Default priority
   DEFAULT: 100,
@@ -35,20 +43,19 @@ const PRIORITY = Object.freeze({
 
 // Category order enum
 const CATEGORY_ORDER = Object.freeze({
-  DEAL: "Deal Information",
+  DEAL: "Account Information",
+  ADDRESS: "Address Information",
   DESCRIPTION: "Description Information",
+
 });
 
 export default function CreateDealForm() {
   const [fields, setFields] = useState([]);
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(true);
-  const [contactSuggestions, setContactSuggestions] = useState([]);
-  const [accountSuggestions, setAccountSuggestions] = useState([]);
-  const [showContactSuggestions, setShowContactSuggestions] = useState(false);
-  const [showAccountSuggestions, setShowAccountSuggestions] = useState(false);
-  const [searchingContacts, setSearchingContacts] = useState(false);
-  const [searchingAccounts, setSearchingAccounts] = useState(false);
+  const [parentAccountSuggestions, setParentAccountSuggestions] = useState([]);
+  const [showParentAccountSuggestions, setShowParentAccountSuggestions] = useState(false);
+  const [searchingParentAccounts, setSearchingParentAccounts] = useState(false);
 
   const navigate = useNavigate();
 
@@ -62,7 +69,7 @@ export default function CreateDealForm() {
       
       // Try to get data from cache first
       const cache = await caches.open(CACHE_NAME);
-      const cachedResponse = await cache.match("/deal-form-fields");
+      const cachedResponse = await cache.match("/account-form-fields");
       
       if (cachedResponse) {
         const data = await cachedResponse.json();
@@ -72,14 +79,14 @@ export default function CreateDealForm() {
       
       // If no cached data, fetch from API
       const response = await axios.get(
-        `${process.env.REACT_APP_APP_API}/gets/getfields/Deals`
+        `${process.env.REACT_APP_APP_API}/gets/getfields/Accounts`
       );
       const fieldData = response?.data?.data?.fields || [];
       
       // Store the fetched data in Cache Storage
       const newResponse = new Response(JSON.stringify(fieldData), 
         { headers: { "Content-Type": "application/json" } });
-      await cache.put("/deal-form-fields", newResponse);
+      await cache.put("/account-form-fields", newResponse);
       
       processFieldData(fieldData);
     } catch (error) {
@@ -91,7 +98,7 @@ export default function CreateDealForm() {
   
   function processFieldData(fieldData) {
     // Filter fields based on view_type.create
-   let filteredFields = fieldData.filter(
+    let filteredFields = fieldData.filter(
       (field) =>
         field.view_type?.create !== false &&
         field.data_type !== "ownerlookup" &&
@@ -112,47 +119,25 @@ export default function CreateDealForm() {
     );
   }
 
-  async function searchContacts(query) {
+  async function searchParentAccounts(query) {
     if (!query || query.length < 2) {
-      setContactSuggestions([]);
-      setShowContactSuggestions(false);
+      setParentAccountSuggestions([]);
+      setShowParentAccountSuggestions(false);
       return;
     }
     
     try {
-      setSearchingContacts(true);
-      const response = await axios.get(
-        `${process.env.REACT_APP_APP_API}/lookup/fetchcontacts?query=${query}`
-      );
-      const contacts = response?.data?.data || [];
-      setContactSuggestions(contacts?.data || []);
-      setShowContactSuggestions(true);
-    } catch (error) {
-      toast.error("Failed to fetch contacts");
-    } finally {
-      setSearchingContacts(false);
-    }
-  }
-
-  async function searchAccounts(query) {
-    if (!query || query.length < 2) {
-      setAccountSuggestions([]);
-      setShowAccountSuggestions(false);
-      return;
-    }
-    
-    try {
-      setSearchingAccounts(true);
+      setSearchingParentAccounts(true);
       const response = await axios.get(
         `${process.env.REACT_APP_APP_API}/lookup/fetchaccounts?query=${query}`
       );
       const accounts = response?.data?.data || [];
-      setAccountSuggestions(accounts?.data || []);
-      setShowAccountSuggestions(true);
+      setParentAccountSuggestions(accounts?.data || []);
+      setShowParentAccountSuggestions(true);
     } catch (error) {
-      toast.error("Failed to fetch accounts");
+      toast.error("Failed to fetch parent accounts");
     } finally {
-      setSearchingAccounts(false);
+      setSearchingParentAccounts(false);
     }
   }
 
@@ -166,49 +151,32 @@ export default function CreateDealForm() {
   }
   
   function handleSearchClick(fieldType) {
-    if (fieldType === 'contact') {
-      const contactQuery = formData['Contact_Name'];
-      if (contactQuery && contactQuery.length >= 2) {
-        searchContacts(contactQuery);
-      } else {
-        toast.error("Please enter at least 2 characters to search");
-      }
-    } else if (fieldType === 'account') {
-      const accountQuery = formData['Account_Name'];
-      if (accountQuery && accountQuery.length >= 2) {
-        searchAccounts(accountQuery);
+    if (fieldType === 'parent_account') {
+      const parentAccountQuery = formData['Parent_Account'];
+      if (parentAccountQuery && parentAccountQuery.length >= 2) {
+        searchParentAccounts(parentAccountQuery);
       } else {
         toast.error("Please enter at least 2 characters to search");
       }
     }
   }
 
-  function handleContactSelect(contact) {
+  function handleParentAccountSelect(account) {
     setFormData(prev => ({
       ...prev,
-      Contact_Name: contact.Full_Name,
-      contact_id: contact.id
+      Parent_Account: account.Account_Name,
+      parent_account_id: account.id
     }));
-    setShowContactSuggestions(false);
-  }
-
-  function handleAccountSelect(account) {
-    setFormData(prev => ({
-      ...prev,
-      Account_name: account.Account_Name,
-      account_id: account.id
-    }));
-    setShowAccountSuggestions(false);
+    setShowParentAccountSuggestions(false);
   }
   
   // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
-      if (showContactSuggestions || showAccountSuggestions) {
+      if (showParentAccountSuggestions) {
         // Close suggestions only if clicking outside the suggestion area
         if (!event.target.closest('.suggestions-container')) {
-          setShowContactSuggestions(false);
-          setShowAccountSuggestions(false);
+          setShowParentAccountSuggestions(false);
         }
       }
     }
@@ -217,7 +185,7 @@ export default function CreateDealForm() {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showContactSuggestions, showAccountSuggestions]);
+  }, [showParentAccountSuggestions]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -235,24 +203,20 @@ export default function CreateDealForm() {
         formattedData[field.api_name] = value;
       });
             
-      // Also add the IDs for contact and account if available
-      if (formData.contact_id) {
-        formattedData.Contact_Name = formData.contact_id;
-      }
-      
-      if (formData.account_id) {
-        formattedData.Account_Name = formData.account_id;
+      // Also add the ID for parent account if available
+      if (formData.parent_account_id) {
+        formattedData.Parent_Account = formData.parent_account_id;
       }
 
       const response = await axios.post(
-        `${process.env.REACT_APP_APP_API}/create/createdata/Deals`,
+        `${process.env.REACT_APP_APP_API}/create/createdata/Accounts`,
         formattedData
       );
       if (response?.status === 200) {
-        toast.success("Deal Created Successfully!");
+        toast.success("Account Created Successfully!");
         const cache = await caches.open(CACHE_NAME);
-        await cache.delete("/deals");
-        navigate("/app/dealview");
+        await cache.delete("/accounts");
+        navigate("/app/accountview");
       }
     } catch (error) {
       toast.error(error?.response?.data?.error?.data[0]?.message || "Something went wrong!");
@@ -286,16 +250,30 @@ export default function CreateDealForm() {
 
     // Deal Information priorities
     if (lowerName.includes("owner")) return PRIORITY.OWNER;
-    if (lowerName.includes("deal_name")) return PRIORITY.DEAL_NAME;
     if (lowerName.includes("account_name")) return PRIORITY.ACCOUNT_NAME;
-    if (lowerName.includes("contact_name")) return PRIORITY.CONTACT_NAME;
-    if (lowerName.includes("amount")) return PRIORITY.AMOUNT;
-    if (lowerName.includes("closing_date")) return PRIORITY.CLOSING_DATE;
-    if (lowerName.includes("stage")) return PRIORITY.STAGE;
+    if (lowerName.includes("parent_account")) return PRIORITY.Parent_Account;
+    if (lowerName.includes("account_number")) return PRIORITY.ACCOUNT_NUMBER;
+    if (lowerName.includes("account_site")) return PRIORITY.ACCOUNT_SITE;
+    if (lowerName.includes("account_type")) return PRIORITY.ACCOUNT_TYPE;
     if (lowerName.includes("lead_source")) return PRIORITY.LEAD_SOURCE;
     if (lowerName.includes("product")) return PRIORITY.PRODUCT;
     if (lowerName.includes("moq")) return PRIORITY.MOQ;
     if (lowerName.includes("sample_qty")) return PRIORITY.SAMPLE_QTY;
+
+
+    // Address information priorities
+
+    if(lowerName.includes("billing_city")) return PRIORITY.BILLING_CITY;
+    if(lowerName.includes("billing_code")) return PRIORITY.BILLING_CODE;
+    if(lowerName.includes("billing_country")) return PRIORITY.BILLING_COUNTRY;
+    if(lowerName.includes("billing_state")) return PRIORITY.BILLING_STATE;
+    if(lowerName.includes("billing_street")) return PRIORITY.BILLING_STREET;
+    if(lowerName.includes("shipping_city")) return PRIORITY.SHIPPING_CITY;
+    if(lowerName.includes("shipping_code")) return PRIORITY.SHIPPING_CODE;
+    if(lowerName.includes("shipping_country")) return PRIORITY.SHIPPING_COUNTRY;
+    if(lowerName.includes("shipping_state")) return PRIORITY.SHIPPING_STATE;
+    if(lowerName.includes("shipping_street")) return PRIORITY.SHIPPING_STREET;
+
 
     // Description Information priorities
     if (lowerName.includes("description")) return PRIORITY.DESCRIPTION;
@@ -308,20 +286,13 @@ export default function CreateDealForm() {
     return PRIORITY.DEFAULT;
   };
 
-  // Custom field renderer for contact and account name lookups with search button
+  // Custom field renderer for parent account lookup with search button
   function renderLookupField(field) {
     const fieldName = field.display_label || field.api_name.replace(/_/g, " ");
     const isRequired = field.required === true;
-    const isContactField = field.api_name.toLowerCase().includes('contact_name');
-    const isAccountField = field.api_name.toLowerCase().includes('account_name');
+    const isParentAccountField = field.api_name.toLowerCase().includes('parent_account');
     
-    if (isContactField || isAccountField) {
-      const suggestions = isContactField ? contactSuggestions : accountSuggestions;
-      const showSuggestions = isContactField ? showContactSuggestions : showAccountSuggestions;
-      const isSearching = isContactField ? searchingContacts : searchingAccounts;
-      const handleSelect = isContactField ? handleContactSelect : handleAccountSelect;
-      const fieldType = isContactField ? 'contact' : 'account';
-      
+    if (isParentAccountField) {
       return (
         <div key={field.api_name} className="mb-3 relative suggestions-container">
           <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">
@@ -340,7 +311,7 @@ export default function CreateDealForm() {
             />
             <button
               type="button"
-              onClick={() => handleSearchClick(fieldType)}
+              onClick={() => handleSearchClick('parent_account')}
               className={`px-3 py-2 ${bgColors.primary} text-white rounded-r-md ${hoverColors.primary} focus:outline-none focus:ring-2 ${focus.ring}`}
             >
               <svg 
@@ -361,28 +332,19 @@ export default function CreateDealForm() {
           </div>
           
         {/* Suggestions dropdown */}
-
-        {showSuggestions && (
+        {showParentAccountSuggestions && (
           <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
-            {isSearching ? (
+            {searchingParentAccounts ? (
               <div className="text-center py-2 text-gray-500">Loading...</div>
-            ) : suggestions.length > 0 ? (
-              suggestions.map((item) => (
+            ) : parentAccountSuggestions.length > 0 ? (
+              parentAccountSuggestions.map((item) => (
                 <div
                   key={item.id}
-                  onClick={() => handleSelect(item)}
+                  onClick={() => handleParentAccountSelect(item)}
                   className="cursor-pointer hover:bg-gray-100 px-4 py-2"
                 >
-                  {isContactField ? (
-                    // Display for contacts
-                    <>
-                      <div className="font-medium">{item.Full_Name}</div>
-                      {item.Email && <div className="text-xs text-gray-500">{item.Email}</div>}
-                    </>
-                  ) : (
-                    // Display for accounts
-                    <div className="font-medium">{item.Account_Name}</div>
-                  )}
+                  <div className="font-medium">{item.Account_Name}</div>
+                  {item.Email && <div className="text-xs text-gray-500">{item.Email}</div>}
                 </div>
               ))
             ) : (
@@ -392,14 +354,9 @@ export default function CreateDealForm() {
         )}
           
           {/* Show selected ID information if available */}
-          {isContactField && formData.contact_id && (
+          {formData.parent_account_id && (
             <div className="text-xs text-gray-500 mt-1">
-              Selected Contact ID: {formData.contact_id}
-            </div>
-          )}
-          {isAccountField && formData.account_id && (
-            <div className="text-xs text-gray-500 mt-1">
-              Selected Account ID: {formData.account_id}
+              Selected Parent Account ID: {formData.parent_account_id}
             </div>
           )}
         </div>
@@ -413,7 +370,8 @@ export default function CreateDealForm() {
   function renderFormFields() {
     const categoryOrder = [
       CATEGORY_ORDER.DEAL,
-      CATEGORY_ORDER.DESCRIPTION,
+      CATEGORY_ORDER.ADDRESS,
+      CATEGORY_ORDER.DESCRIPTION    
     ];
 
     const groupedFields = {};
@@ -430,6 +388,27 @@ export default function CreateDealForm() {
         field.api_name.toLowerCase().includes("reason_for_loss")
       ) {
         category = CATEGORY_ORDER.DESCRIPTION;
+      }else if (
+        field.api_name.toLowerCase().includes("billing_city") ||
+        field.api_name.toLowerCase().includes("billing_code") ||
+        field.api_name.toLowerCase().includes("billing_country") ||
+        field.api_name.toLowerCase().includes("billing_state") ||
+        field.api_name.toLowerCase().includes("billing_street") ||
+        field.api_name.toLowerCase().includes("shipping_city") ||
+        field.api_name.toLowerCase().includes("shipping_code") ||
+        field.api_name.toLowerCase().includes("shipping_country") ||
+        field.api_name.toLowerCase().includes("shipping_state") ||
+        field.api_name.toLowerCase().includes("shipping_street")
+      ) {
+        category = CATEGORY_ORDER.ADDRESS;
+      } else if (
+        field.api_name.toLowerCase().includes("account_name") ||
+        field.api_name.toLowerCase().includes("parent_account") ||
+        field.api_name.toLowerCase().includes("account_number") ||
+        field.api_name.toLowerCase().includes("account_site") ||
+        field.api_name.toLowerCase().includes("account_type") 
+      ){
+        category = CATEGORY_ORDER.DEAL
       }
 
       if (!groupedFields[category]) {
@@ -470,11 +449,10 @@ export default function CreateDealForm() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {groupedFields[category].map((field) => {
-              // Check if this is a contact or account field for special handling
-              const isContactField = field.api_name.toLowerCase().includes('contact_name');
-              const isAccountField = field.api_name.toLowerCase().includes('account_name');
+              // Check if this is a parent account field for special handling
+              const isParentAccountField = field.api_name.toLowerCase().includes('parent_account');
               
-              if (isContactField || isAccountField) {
+              if (isParentAccountField) {
                 return renderLookupField(field);
               } else {
                 return renderField(field);
@@ -570,7 +548,7 @@ export default function CreateDealForm() {
         <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-800 rounded-full animate-spin"></div>
         <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-b-indigo-800 rounded-full animate-ping opacity-50"></div>
       </div>
-      <p className={`${focus.text} mt-4 text-lg font-medium`}>Loading Deal Form...</p>
+      <p className={`${focus.text} mt-4 text-lg font-medium`}>Loading Account Form...</p>
     </div>
   );
 
@@ -600,10 +578,10 @@ export default function CreateDealForm() {
                       d="M12 4v16m8-8H4"
                     />
                   </svg>
-                  Create New Deal
+                  Create New Account
                 </h2>
                 <p className="text-indigo-100 mt-1">
-                  Enter the deal details below to add to your CRM
+                  Enter the account details below to add to your CRM
                 </p>
               </div>
 
@@ -616,7 +594,7 @@ export default function CreateDealForm() {
                   <div className="flex justify-end space-x-4 mt-8 pt-4 border-t border-gray-200">
                     <button
                       type="button"
-                      onClick={() => navigate("/app/dealview")}
+                      onClick={() => navigate("/app/accountview")}
                       className={`px-5 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${focus.ring}`}
                     >
                       Cancel
@@ -639,7 +617,7 @@ export default function CreateDealForm() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      Create Deal
+                      Create Account
                     </button>
                   </div>
                 </form>

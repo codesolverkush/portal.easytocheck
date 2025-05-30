@@ -572,7 +572,7 @@ const requestRefreshToken = async (req, res) => {
       // Make a request to Zoho's token endpoint
     
       const tokenResponse = await axios.post(
-        `https://accounts.zoho.${domain}/oauth/v2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${authCode}&grant_type=authorization_code&redirect_uri=http://localhost:3000/app`,
+        `https://accounts.zoho.${domain}/oauth/v2/token?client_id=${clientId}&client_secret=${clientSecret}&code=${authCode}&grant_type=authorization_code&redirect_uri=https://portal.easytocheck.com`,
         null, null
       );
       
@@ -632,7 +632,7 @@ const requestRefreshToken2 = async (req, res) => {
           client_secret: clientSecret,
           code: authCode,
           grant_type: "authorization_code",
-          redirect_uri: "http://localhost:3000/app"
+          redirect_uri: "https://portal.easytocheck.com"
         }
       }
     );
@@ -766,7 +766,7 @@ const checkForExtension = async (req, res) => {
         }
 
         let token = await getAccessToken(orgId, req, res);
-        const url = `https://www.zohoapis.${domain}/crm/v7/settings/modules/easyportal__Portal_Users`;
+        const url = `https://www.zohoapis.${domain}/crm/v7/settings/modules/easytocheckeasyportal__Portal_Users`;
 
         try {
             const data = await handleZohoRequest(url, 'get', null, token);

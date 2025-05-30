@@ -490,12 +490,12 @@ const [isShowingSuggestions, setIsShowingSuggestions] = useState(false);
       const regResponse = await axios.post(`${process.env.REACT_APP_APP_API}/test/adduser`, formData);
   
       if (regResponse.status === 200) {
-        const crmresponse = await axios.post(`${process.env.REACT_APP_APP_API}/create/createnewuser/easyportal__Portal_Users`, {
-          crmuserid: regResponse.data.data.user_id,
-          easyportal__User_Email: formData.email_id,
+        const crmresponse = await axios.post(`${process.env.REACT_APP_APP_API}/create/createnewuser/easytocheckeasyportal__Portal_Users`, {
+          easytocheckeasyportal__User_Id: regResponse.data.data.user_id,
+          easytocheckeasyportal__User_Email: formData.email_id,
           domain:regResponse.data.data.domain,
           Name: `${formData.first_name} ${formData.last_name}`,
-          easyportal__Status: "Active",
+          easytocheckeasyportal__Status: "Active",
           orgId: regResponse.data.data.orgId,
           licenseRollback: regResponse.data.data.licenseRollback,
         });

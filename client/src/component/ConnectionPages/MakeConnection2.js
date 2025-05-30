@@ -58,8 +58,8 @@ const MakeConnection2 = () => {
     try {
       // Prepare the authorization URL with correct scope for creating leads in Zoho CRM
       // const redirectUri = encodeURIComponent('https://easyportal-704392036.development.catalystserverless.com/app');
-      const redirectUri = encodeURIComponent('http://localhost:3000/app');
-      // const redirectUri = encodeURIComponent("https://portal.easytocheck.com");
+      // const redirectUri = encodeURIComponent('http://localhost:3000/app');
+      const redirectUri = encodeURIComponent("https://portal.easytocheck.com");
       const scope = encodeURIComponent('ZohoCRM.modules.ALL,ZohoCRM.settings.ALL,ZohoCRM.coql.READ,ZohoCRM.org.READ,ZohoCRM.settings.profiles.ALL');
       
       // Create the authorization URL using the selected domain

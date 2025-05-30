@@ -20,11 +20,11 @@ root.render(
     <UserContext>
     <SupportPopupProvider>
      <Provider store={store}>
-        <BrowserRouter>
+        <HashRouter>
         {/* <div onContextMenu={(e)=>e.preventDefault()}> */}
           <App />
         {/* </div> */}
-        </BrowserRouter>
+        </HashRouter>
      </Provider>
     </SupportPopupProvider>
       </UserContext> 
